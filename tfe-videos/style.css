@@ -1,0 +1,46 @@
+.timeline {
+	overflow-x: auto;
+}
+
+table {
+	border-spacing: 0;
+}
+
+tr {
+	height: 64px;
+}
+
+tr:nth-child(odd) {
+	background: white;
+}
+ 
+tr:nth-child(even) {
+	background: silver;
+}
+
+tr:nth-child(odd) th {
+	background: white;
+}
+ 
+tr:nth-child(even) th {
+	background: silver;
+}
+
+th {
+	position: sticky;
+	left: 0;
+	z-index: 1;
+}
+
+td {
+	padding: 0;
+	display: block;
+	position: relative;
+	white-space: nowrap;
+}
+
+.videoblock {
+	background: blue;
+	position: absolute;
+	height: 64px;
+}
