@@ -46,7 +46,7 @@ export class Timeline {
 		this.#clips      = [];
 		this.#syncPoints = [];
 		this.#events     = [];
-		this.#zoom       = +Infinity;
+		this.#zoom       = NaN;
 		this.#minTimeMs  = +Infinity;
 		this.#maxTimeMs  = -Infinity;
 		this.#rowsNeeded = 0;
@@ -322,7 +322,9 @@ export class Timeline {
 			throw new Error("Before rendering the timeline, the start and end date need to be determined.");
 		}
 		
-		this.#zoom = Math.min(this.#zoom, (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth);
+		if (Number.isNaN(this.#zoom)) {
+			this.#zoom = (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth * 0.25;
+		}
 		this.#svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		this.#svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 		this.#svg.setAttribute("style", "background-color:#333333");

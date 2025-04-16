@@ -34,7 +34,7 @@ const ts = {
 	/** E.g. at full hour, Westminster first plays a jingle, then counts the hours. */
 	churchBells : new TimeSource("stroke of a church clock"                                 , -2*1000, +3*1000),
 	sun         : new TimeSource("guess based on the sun angle (+/- 7 minutes)"             , -7*60*1000, +7*60*1000),
-	moon        : new TimeSource("guess based on location and azimuth of moon in the sky"   , -7*60*1000, +7*60*1000),
+	moon        : new TimeSource("guess based on location and azimuth of moon in the sky"   , -9.6*60*1000, +9.6*60*1000),
 	takeoff     : new TimeSource("departure (break release) time synced to a take-off"      , 0, 20*60*1000),
 	eta         : new TimeSource("extrapolated from ETA on in-flight entertainment screen"  , -61*1000, +61*1000),
 	hourMention : new TimeSource("someone mentions what full hour it is"                    , -10*60*1000, +10*60*1000),
@@ -71,7 +71,7 @@ const cams = {
 	/** Critical Think’s action cam. */
 	criticalAction : new Camera(peeps.ct      , true , "Austek AT-M40(R/TRW)"),
 	/** Critical Think’s phone. */
-	criticalPhone  : new Camera(peeps.ct      , true , "Samsung Galaxy S22/23/24 Ultra"),
+	criticalPhone  : new Camera(peeps.ct      , true , "Samsung Galaxy S24 Ultra"),
 	/** Critical Think’s laptop. */
 	criticalLaptop : new Camera(peeps.ct      , true , "Unknown Laptop"),
 	// Dave brought following lenses:
@@ -243,14 +243,9 @@ const vids = {
 	mctoonLiveBack            : new YouTubeVideo(timeline, "yw7yfsH5XuM", "MCToon Live", "Back from the Ice", 20482.961, 30, cams.mctoonLaptop, "2024-12-19T03:06:22Z", "2024-12-19T11:58:41Z"),
 
 	// Micheal Toon (as Conspiracy Toonz) / videos
-	mctoon2ToGo               : new YouTubeVideo(timeline, "gIzwZyRQI-s", "Conspiracy Toonz", "We are in South America: Flerfs on Ice 2 to Go", 729.921, 30, peeps.mctoon, "2024-12-12T09:00:46Z"),
-	mctoonMarathon            : new YouTubeVideo(timeline, "sWOvth8Sg2o", "Conspiracy Toonz", "Marathons in Antarctica and the North Pole", 809.821, 30, peeps.mctoon, "2024-12-12T21:00:41Z"),
 	mctoon1ToGo               : new YouTubeVideo(timeline, "LATFvsNdz3M", "Conspiracy Toonz", "Antarctica Tomorrow", 753.941, 30, peeps.mctoon, "2024-12-13T13:45:02Z")
 		.setCoordinates(-53.1626, -70.9028),
 	mctoon0ToGo               : new YouTubeVideo(timeline, "zpCv8t7mIZg", "Conspiracy Toonz", "Flerfs on Ice: 0 to go", 529.601, 30, peeps.mctoon, "2024-12-14T11:01:11Z"),
-	mctoonFlightTl            : new YouTubeVideo(timeline, "VEDcntQQuuA", "Conspiracy Toonz", "Timelapse of the Flight from Punta Arenas to Union Glacier Right Side View", 600.021, 30, peeps.mctoon, "2024-12-18T19:40:44Z")
-		.setTimelapseRate(30),
-	mctoonBlueIceRunway       : new YouTubeVideo(timeline, "xpseYOD8clw", "Conspiracy Toonz", "Antarctica Blue Ice Runway", 508.761, 30, peeps.mctoon, "2024-12-23T12:01:15Z"),
 	mctoon360Part1            : new YouTubeVideo(timeline, "qbQJx9T5_WU", "Conspiracy Toonz", "Antarctic 360° Real Time 24 Hour Sun Part A", 42834.381, NTSC30, cams.mctoon360, "2025-01-08T12:01:12Z"),
 	mctoon360Part2            : new YouTubeVideo(timeline, "95P8urNDzDQ", "Conspiracy Toonz", "Antarctic 360° Real Time 24 Hour Sun Part B", 43207.161, NTSC30, cams.mctoon360, "2025-01-09T00:00:06Z"),
 	mctoon360Part3            : new YouTubeVideo(timeline, "Mp4E2PQLUgg", "Conspiracy Toonz", "Antarctic 360° Real Time 24 Hour Sun Part C",  1619.821, NTSC30, cams.mctoon360, "2025-01-09T12:00:35Z"),
@@ -311,7 +306,7 @@ const vids = {
 
 	mctoonDji11064027         : new MCToonDjiUpload(timeline, "DJI_20241211064027_0001_D", "06:41:06;28", 1183.115, "MCToon-TFEAntarctica-20241211064027"),
 	mctoonDji11071936         : new MCToonDjiUpload(timeline, "DJI_20241211071936_0002_D", "07:20:15;10", 1867.699, "MCToon-TFEAntarctica-20241211071936"),
-	mctoonDji11075044         : new MCToonDjiUpload(timeline, "DJI_20241211075044_0003_D", "07:51:22;28", 1922.921, "MCToon-TFEAntarctica-20241211075044"), // TODO: Marathon runner interview is here
+	mctoonDji11075044         : new MCToonDjiUpload(timeline, "DJI_20241211075044_0003_D", "07:51:22;28", 1922.921, "MCToon-TFEAntarctica-20241211075044"), // TODO: Marathon runner interview is here, Ted Jackson is the name
 	mctoonDji11082247         : new MCToonDjiUpload(timeline, "DJI_20241211082247_0004_D", "08:23:25;22", 1479.177, "MCToon-TFEAntarctica-20241211082247")  // TODO: Austin, Jeran, Lisbeth arrive this night
 	.addAnchorTime("11T11:35-03", "00:13:55.143", ts.digital).addAnchorTime("11T11:35-03", "00:14:02.922", ts.digital),
 	mctoonDji11090219         : new MCToonDjiUpload(timeline, "DJI_20241211090219_0007_D", "09:02:58;05",  953.852, "MCToon-TFEAntarctica-20241211090219")  // TODO: Talk about Jeran's flight
@@ -344,7 +339,14 @@ const vids = {
 	mctoonDji11192648         : new MCToonDjiUpload(timeline, "DJI_20241211192648_0025_D", "19:27:26;11", 1565.130, "MCToon-TFEAntarctica-20241211192648"),
 	mctoonDji11195257         : new MCToonDjiUpload(timeline, "DJI_20241211195257_0026_D", "19:53:36;10", 1249.047, "MCToon-TFEAntarctica-20241211195257")
 	.addAnchorTime("11T22:57-03", "00:05:28.261", ts.digitalFlip),
+	mctoonDji11224151         : new MCToonDjiUpload(timeline, "DJI_20241211224151_0001_D", "22:42:31;03",  730.396, "MCToon-TFEAntarctica-20241211224151"),
+	mctoonDji11230053         : new MCToonDjiUpload(timeline, "DJI_20241211230053_0002_D", "23:01:32;20",  127.744, "MCToon-TFEAntarctica-20241211230053"),
+	mctoonDji11230329         : new MCToonDjiUpload(timeline, "DJI_20241211230329_0003_D", "23:04:08;12",   73.273, "MCToon-TFEAntarctica-20241211230329"),
+	mctoonDji11230741         : new MCToonDjiUpload(timeline, "DJI_20241211230741_0004_D", "23:08:21;00",  118.421, "MCToon-TFEAntarctica-20241211230741"),
+
+	//mctoonDji12065455         : new MCToonDjiUpload(timeline, "DJI_20241212065455_0005_D", "", , "MCToon-TFEAntarctica-20241212065455.mp4"),
 	
+	mctoonDji14065714         : new MCToonDjiUpload(timeline, "DJI_20241214065714_0006_D", "06:57:52;02",   44.444, "MCToon-TFEAntarctica-20241214065714"),
 	mctoonDji14065900         : new MCToonDjiUpload(timeline, "DJI_20241214065900_0007_D", "06:59:39;09", 1687.986, "MCToon-TFEAntarctica-20241214065900")
 	.addAnchorTime("14T10:01-03", "00:04:24.097", ts.digital).addAnchorTime("14T10:01-03", "00:04:25.952", ts.digital),
 	mctoonDji14072709         : new MCToonDjiUpload(timeline, "DJI_20241214072709_0008_D", "07:27:47;08", 2376.240, "MCToon-TFEAntarctica-20241214072709"),
@@ -352,6 +354,49 @@ const vids = {
 	mctoonDji14085536         : new MCToonDjiUpload(timeline, "DJI_20241214085536_0010_D", "08:56:14;15", 3255.852, "MCToon-TFEAntarctica-20241214085536"),
 	mctoonDji14094952         : new MCToonDjiUpload(timeline, "DJI_20241214094952_0011_D", "09:50:30;09", 2950.647, "MCToon-TFEAntarctica-20241214094952"),
 	mctoonDji14103903         : new MCToonDjiUpload(timeline, "DJI_20241214103903_0012_D", "10:39:41;00", 3728.825, "MCToon-TFEAntarctica-20241214103903"),
+	mctoonDji14114112         : new MCToonDjiUpload(timeline, "DJI_20241214114112_0013_D", "11:41:49;17",   29.729, "MCToon-TFEAntarctica-20241214114112"),
+	mctoonDji14114921         : new MCToonDjiUpload(timeline, "DJI_20241214114921_0014_D", "11:50:00;09",  788.287, "MCToon-TFEAntarctica-20241214114921"),
+	//mctoonDji14120616         : new MCToonDjiUpload(timeline, "DJI_20241214120616_0015_D", "", , "MCToon-TFEAntarctica-20241214120616"),
+	//mctoonDji14125732         : new MCToonDjiUpload(timeline, "DJI_20241214125732_0016_D", "", , "MCToon-TFEAntarctica-20241214125732"),
+	//mctoonDji14132046         : new MCToonDjiUpload(timeline, "DJI_20241214132046_0017_D", "", , "MCToon-TFEAntarctica-20241214132046"),
+	//mctoonDji14132528         : new MCToonDjiUpload(timeline, "DJI_20241214132528_0018_D", "", , "MCToon-TFEAntarctica-20241214132528"),
+	//mctoonDji14135209         : new MCToonDjiUpload(timeline, "DJI_20241214135209_0019_D", "", , "MCToon-TFEAntarctica-20241214135209"),
+	//mctoonDji14140003         : new MCToonDjiUpload(timeline, "DJI_20241214140003_0020_D", "", , "MCToon-TFEAntarctica-20241214140003"),
+	//mctoonDji14142627         : new MCToonDjiUpload(timeline, "DJI_20241214142627_0021_D", "", , "MCToon-TFEAntarctica-20241214142627"),
+	//mctoonDji14165200         : new MCToonDjiUpload(timeline, "DJI_20241214165200_0022_D", "", , "MCToon-TFEAntarctica-20241214165200"),
+	//mctoonDji14172419         : new MCToonDjiUpload(timeline, "DJI_20241214172419_0023_D", "", , "MCToon-TFEAntarctica-20241214172419"),
+	//mctoonDji14174459         : new MCToonDjiUpload(timeline, "DJI_20241214174459_0024_D", "", , "MCToon-TFEAntarctica-20241214174459"),
+	//mctoonDji14190856         : new MCToonDjiUpload(timeline, "DJI_20241214190856_0025_D", "", , "MCToon-TFEAntarctica-20241214190856"),
+	//mctoonDji14193427         : new MCToonDjiUpload(timeline, "DJI_20241214193427_0026_D", "", , "MCToon-TFEAntarctica-20241214193427"),
+	//mctoonDji14203509         : new MCToonDjiUpload(timeline, "DJI_20241214203509_0028_D", "", , "MCToon-TFEAntarctica-20241214203509"),
+	//mctoonDji14210043         : new MCToonDjiUpload(timeline, "DJI_20241214210043_0029_D", "", , "MCToon-TFEAntarctica-20241214210043"),
+	//mctoonDji14212623         : new MCToonDjiUpload(timeline, "DJI_20241214212623_0030_D", "", , "MCToon-TFEAntarctica-20241214212623"),
+	//mctoonDji14215156         : new MCToonDjiUpload(timeline, "DJI_20241214215156_0031_D", "", , "MCToon-TFEAntarctica-20241214215156"),
+	//mctoonDji14230216         : new MCToonDjiUpload(timeline, "DJI_20241214230216_0032_D", "", , "MCToon-TFEAntarctica-20241214230216"),
+	//mctoonDji14232729         : new MCToonDjiUpload(timeline, "DJI_20241214232729_0033_D", "", , "MCToon-TFEAntarctica-20241214232729"),
+	//mctoonDji14235233         : new MCToonDjiUpload(timeline, "DJI_20241214235233_0034_D", "", , "MCToon-TFEAntarctica-20241214235233"),
+	
+	//mctoonDji15001737         : new MCToonDjiUpload(timeline, "DJI_20241215001737_0035_D", "", , "MCToon-TFEAntarctica-20241215001737"),
+	//mctoonDji15004256         : new MCToonDjiUpload(timeline, "DJI_20241215004256_0036_D", "", , "MCToon-TFEAntarctica-20241215004256"),
+	//mctoonDji15010905         : new MCToonDjiUpload(timeline, "DJI_20241215010905_0037_D", "", , "MCToon-TFEAntarctica-20241215010905"),
+	//mctoonDji15013540         : new MCToonDjiUpload(timeline, "DJI_20241215013540_0038_D", "", , "MCToon-TFEAntarctica-20241215013540"),
+	//mctoonDji15020146         : new MCToonDjiUpload(timeline, "DJI_20241215020146_0039_D", "", , "MCToon-TFEAntarctica-"),
+	//mctoonDji15090747         : new MCToonDjiUpload(timeline, "DJI_20241215090747_0002_D", "", , "MCToon-TFEAntarctica-20241215090747"),
+	//mctoonDji15105216         : new MCToonDjiUpload(timeline, "DJI_20241215105216_0003_D", "", , "MCToon-TFEAntarctica-20241215105216"),
+	//mctoonDji15113656         : new MCToonDjiUpload(timeline, "DJI_20241215113656_0004_D", "", , "MCToon-TFEAntarctica-20241215113656"),
+	//mctoonDji15120519         : new MCToonDjiUpload(timeline, "DJI_20241215120519_0005_D", "", , "MCToon-TFEAntarctica-20241215120519"),
+	//mctoonDji15123301         : new MCToonDjiUpload(timeline, "DJI_20241215123301_0006_D", "", , "MCToon-TFEAntarctica-20241215123301"),
+	//mctoonDji15124738         : new MCToonDjiUpload(timeline, "DJI_20241215124738_0007_D", "", , "MCToon-TFEAntarctica-20241215124738"),
+	//mctoonDji15131404         : new MCToonDjiUpload(timeline, "DJI_20241215131404_0008_D", "", , "MCToon-TFEAntarctica-20241215131404"),
+	//mctoonDji15132637         : new MCToonDjiUpload(timeline, "DJI_20241215132637_0009_D", "", , "MCToon-TFEAntarctica-20241215132637"),
+	//mctoonDji15135407         : new MCToonDjiUpload(timeline, "DJI_20241215135407_0010_D", "", , "MCToon-TFEAntarctica-20241215135407"),
+	//mctoonDji15142105         : new MCToonDjiUpload(timeline, "DJI_20241215142105_0011_D", "", , "MCToon-TFEAntarctica-20241215142105"),
+	//mctoonDji15144717         : new MCToonDjiUpload(timeline, "DJI_20241215144717_0012_D", "", , "MCToon-TFEAntarctica-20241215144717"),
+	//mctoonDji15151405         : new MCToonDjiUpload(timeline, "DJI_20241215151405_0013_D", "", , "MCToon-TFEAntarctica-20241215151405"),
+	//mctoonDji15154128         : new MCToonDjiUpload(timeline, "DJI_20241215154128_0014_D", "", , "MCToon-TFEAntarctica-20241215154128"),
+	//mctoonDji15194240         : new MCToonDjiUpload(timeline, "DJI_20241215194240_0015_D", "", , "MCToon-TFEAntarctica-20241215194240"),
+	//mctoonDji15201628         : new MCToonDjiUpload(timeline, "DJI_20241215201628_0016_D", "", , "MCToon-TFEAntarctica-20241215201628"),
+	//mctoonDji15204825         : new MCToonDjiUpload(timeline, "DJI_20241215204825_0017_D", "", , "MCToon-TFEAntarctica-20241215204825"),
 
 	// Wheres Wally / videos
 	wallyJeranometer          : new YouTubeVideo(timeline, "u8CZEPYQLfE", "WheresWally", "The FIRST Data From Wally's Jeronometer Experiment Is Released, And It's GLOBE", 448.281, 30, cams.wallyAction, "2024-12-19T15:43:14Z")
@@ -1105,21 +1150,12 @@ export const clips = {
 		.createClip(),
 
 	// Micheal Toon (as Conspiracy Toonz) / videos
-	mctoon2ToGo                : vids.mctoon2ToGo
-		.addAnchorTime("12T02:00:53-03", "00:09:56/11", ts.moon)
-		.addAnchorTime("12T02:00:08-03", "00:11:05/27", ts.moon)
-		.createClip(), // TODO: this is after the flat earthers arrived
-	mctoonMarathon             : vids.mctoonMarathon
-		.addAnchorTime("12T02:39:59-03", "00:01:33/20", ts.moon)
-		.createClip("00:01:47/08"),
 	mctoon1ToGo                : vids.mctoon1ToGo
 		.addAnchorTime("12T23:51:52-03", "00:10:25/21", ts.moon)
 		.createClip(),
 	mctoon0ToGo                : vids.mctoon0ToGo
 		.addAnchorTime("14T03:33:06-03", "00:00:00", new TimeSource("Mentions that it is the day they fly, so after the midnight live stream, and it is still dark, so before sunrise.", -5344000, +5344000))
 		.createClip(),
-	mctoonFlightTl             : vids.mctoonFlightTl.createClip(),
-	mctoonBlueIceRunway        : vids.mctoonBlueIceRunway.createClip(),
 	mctoon360Part1A            : vids.mctoon360Part1.createClip("09:59:57/10"),
 	mctoon360Part1B            : vids.mctoon360Part1.createClip(),
 	mctoon360Part2             : vids.mctoon360Part2.createClip(),
@@ -1217,11 +1253,10 @@ timeline.addSyncPoint(vids.daveSunspots, "00:17:24/17", vids.daveSunspots, "00:1
 vids.austin24hPart1.concat(vids.austin24hPart2);
 timeline.addSyncPoint(vids.criticalFlight2Tl, "00:00:32/16", vids.daveToUGTl, "00:00:09/00", 1);
 timeline.addSyncPoint(vids.criticalFlight2Tl, "00:08:18/05", vids.criticalFlight2Landing, "00:03:02/29"); // ident
+timeline.addSyncPoint(vids.mctoonDji14085536, "00:35:04.951", vids.markQA2, "00:07:28/12", 11);
 timeline.addSyncPoint(vids.mctoonDji14103903, "01:00:29.475", vids.criticalFlight2Landing, "00:10:29/03", 0.15);
 timeline.addSyncPoint(vids.daveSolarPhotography, "00:14:22/18", vids.daveToUGTl, "00:02:56/09");
-timeline.addSyncPoint(vids.mctoonDji14103903, "00:53:14.524", vids.mctoonFlightTl, "00:09:14/09"); // ident
 timeline.addSyncPoint(vids.mctoonDji14103903, "00:54:12.307", vids.daveToUGTl, "00:04:00/05", 0.25);
-timeline.addSyncPoint(vids.mctoonDji14103903, "01:00:03.046", vids.mctoonBlueIceRunway, "00:07:50/21"); // ident
 timeline.addSyncPoint(vids.daveVapegate, "00:11:53/14", vids.daveVapegate, "00:12:06/18");
 timeline.addSyncPoint(vids.daveVapegate, "00:11:56/07", vids.daveVapegate, "00:12:09/24");
 timeline.addSyncPoint(vids.daveVapegate, "00:11:59/16", vids.daveVapegate, "00:12:12/20");
@@ -1234,8 +1269,7 @@ timeline.addSyncPoint(vids.mark360CampTour, "00:08:21/07", vids.daveSunspots, "0
 timeline.addSyncPoint(vids.mark360CampTour, "00:08:46/06", vids.daveSunspots, "00:05:06/04");
 timeline.addSyncPoint(vids.mark360Disembark, "00:03:35/03", vids.mark360DisembarkPhone, "00:00:03/26");
 timeline.addSyncPoint(vids.mark360Disembark, "00:05:40/01", vids.daveSunspots, "00:05:23/17");
-timeline.addSyncPoint(vids.mark360Disembark, "00:05:45/28", vids.mctoonFlightTl, "00:09:34/19");
-timeline.addSyncPoint(vids.markQA2, "00:07:28/12", vids.mctoonFlightTl, "00:05:07/19", 11);
+timeline.addSyncPoint(vids.mark360Disembark, "00:05:45/28", vids.mctoonDji14114921, "00:00:38.081");
 // Dave’s & Will’s 360° footage
 timeline.addSyncPoint(vids.will360Part1, "00:00:00/02", vids.austin24hPart1, "00:00:00/01");
 timeline.addSyncPoint(vids.will360Part1, "00:55:39/00", vids.daveSolarPhotography, "00:05:48/15"); // TODO: could be aligned more precisely. Maybe when I have YT embeds.
