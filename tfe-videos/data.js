@@ -25,6 +25,8 @@ const ts = {
 	gps90       : new TimeSource("estimated from GPS track (+/-90s)"                        , -90*1000, +90*1000),
 	/** A video aligned via wall clock +/-60 secs. */
 	analog      : new TimeSource("wall clock reading"                                       , -60*1000, +60*1000),
+	/** The dining hall clock at Union Glacier camp, corrected from other Will’s phone and MCToon’s phone and DJI camera. */
+	diningClock : new TimeSource("dining hall clock at Union Glacier (ahead by 17:23)"      , -1044*1000, -1042*1000), // TODO: Update "analog" clock readings with this one where applicable
 	/** Can be 4 minutes too early or 10 minutes too late. */
 	roundabout  : new TimeSource("someone saying the time without checking any time piece"  , -4*60*1000, +10*60*1000),
 	/** Can be 4 minutes too early or 1 second to late. */
@@ -344,7 +346,7 @@ const vids = {
 	mctoonDji11230329         : new MCToonDjiUpload(timeline, "DJI_20241211230329_0003_D", "23:04:08;12",   73.273, "MCToon-TFEAntarctica-20241211230329"),
 	mctoonDji11230741         : new MCToonDjiUpload(timeline, "DJI_20241211230741_0004_D", "23:08:21;00",  118.421, "MCToon-TFEAntarctica-20241211230741"),
 
-	//mctoonDji12065455         : new MCToonDjiUpload(timeline, "DJI_20241212065455_0005_D", "", , "MCToon-TFEAntarctica-20241212065455.mp4"),
+	mctoonDji12065455         : new MCToonDjiUpload(timeline, "DJI_20241212065455_0005_D", "06:55:34;25", 1505.637, "MCToon-TFEAntarctica-20241212065455.mp4"),
 	
 	mctoonDji14065714         : new MCToonDjiUpload(timeline, "DJI_20241214065714_0006_D", "06:57:52;02",   44.444, "MCToon-TFEAntarctica-20241214065714"),
 	mctoonDji14065900         : new MCToonDjiUpload(timeline, "DJI_20241214065900_0007_D", "06:59:39;09", 1687.986, "MCToon-TFEAntarctica-20241214065900")
@@ -356,12 +358,17 @@ const vids = {
 	mctoonDji14103903         : new MCToonDjiUpload(timeline, "DJI_20241214103903_0012_D", "10:39:41;00", 3728.825, "MCToon-TFEAntarctica-20241214103903"),
 	mctoonDji14114112         : new MCToonDjiUpload(timeline, "DJI_20241214114112_0013_D", "11:41:49;17",   29.729, "MCToon-TFEAntarctica-20241214114112"),
 	mctoonDji14114921         : new MCToonDjiUpload(timeline, "DJI_20241214114921_0014_D", "11:50:00;09",  788.287, "MCToon-TFEAntarctica-20241214114921"),
-	//mctoonDji14120616         : new MCToonDjiUpload(timeline, "DJI_20241214120616_0015_D", "", , "MCToon-TFEAntarctica-20241214120616"),
-	//mctoonDji14125732         : new MCToonDjiUpload(timeline, "DJI_20241214125732_0016_D", "", , "MCToon-TFEAntarctica-20241214125732"),
-	//mctoonDji14132046         : new MCToonDjiUpload(timeline, "DJI_20241214132046_0017_D", "", , "MCToon-TFEAntarctica-20241214132046"),
-	//mctoonDji14132528         : new MCToonDjiUpload(timeline, "DJI_20241214132528_0018_D", "", , "MCToon-TFEAntarctica-20241214132528"),
-	//mctoonDji14135209         : new MCToonDjiUpload(timeline, "DJI_20241214135209_0019_D", "", , "MCToon-TFEAntarctica-20241214135209"),
-	//mctoonDji14140003         : new MCToonDjiUpload(timeline, "DJI_20241214140003_0020_D", "", , "MCToon-TFEAntarctica-20241214140003"),
+	mctoonDji14120616         : new MCToonDjiUpload(timeline, "DJI_20241214120616_0015_D", "12:06:55;01", 1452.017, "MCToon-TFEAntarctica-20241214120616")
+	.addAnchorTime("14T15:40:35-03", "00:18:32.029", ts.diningClock)
+	.addAnchorTime("14T15:27-03", "00:22:40.633", ts.digital),
+	mctoonDji14125732         : new MCToonDjiUpload(timeline, "DJI_20241214125732_0016_D", "12:58:10;10", 1177.009, "MCToon-TFEAntarctica-20241214125732")
+	.addAnchorTime("14T16:09-03", "00:13:43", ts.digitalRead)
+	.addAnchorTime("14T16:14-03", "00:18:33.245", ts.digitalRead).addAnchorTime("14T16:14-03", "00:18:41.038", ts.digitalRead),
+	mctoonDji14132046         : new MCToonDjiUpload(timeline, "DJI_20241214132046_0017_D", "13:21:24;00",   36.416, "MCToon-TFEAntarctica-20241214132046"),
+	mctoonDji14132528         : new MCToonDjiUpload(timeline, "DJI_20241214132528_0018_D", "13:26:06;18", 1599.998, "MCToon-TFEAntarctica-20241214132528")
+	.addAnchorTime("14T16:44-03", "00:20:41.5", ts.digitalRead),
+	mctoonDji14135209         : new MCToonDjiUpload(timeline, "DJI_20241214135209_0019_D", "13:52:46;13",   49.649, "MCToon-TFEAntarctica-20241214135209"),
+	mctoonDji14140003         : new MCToonDjiUpload(timeline, "DJI_20241214140003_0020_D", "14:00:40;28",  149.716, "MCToon-TFEAntarctica-20241214140003"),
 	//mctoonDji14142627         : new MCToonDjiUpload(timeline, "DJI_20241214142627_0021_D", "", , "MCToon-TFEAntarctica-20241214142627"),
 	//mctoonDji14165200         : new MCToonDjiUpload(timeline, "DJI_20241214165200_0022_D", "", , "MCToon-TFEAntarctica-20241214165200"),
 	//mctoonDji14172419         : new MCToonDjiUpload(timeline, "DJI_20241214172419_0023_D", "", , "MCToon-TFEAntarctica-20241214172419"),
