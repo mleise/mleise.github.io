@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "video_times.js",
+            "program": "tfe-videos/video_times.js",
             "console": "internalConsole",
         }
     ]
