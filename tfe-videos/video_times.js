@@ -4,8 +4,8 @@ import { clips, timeline } from "./data.js";
 
 timeline.process();
 
-console.log(clips.criticalArrivedC.endTimeAvgMs);
-console.log(clips.criticalArrivedD.startTimeAvgMs);
+//console.log(clips.criticalArrivedC.endTimeAvgMs);
+//console.log(clips.criticalArrivedD.startTimeAvgMs);
 
 //console.log(clips.mctoonLive100Percent.confidenceIntervalMs + " from David Weiss’ app");
 //console.log(clips.will360Part1.confidenceIntervalMs);

@@ -227,7 +227,7 @@ export class Timeline {
 					const clipB = clipA.getSucceedingClip(i);
 					const overTime = clipA.endTimeAvgMs - clipB.startTimeAvgMs;
 					if (overTime > 0) {
-						console.log(`${overTime} ms: ${clipA} -> ${clipB}`);
+						//console.log(`${overTime} ms: ${clipA} -> ${clipB}`);
 					}
 				}
 			}
