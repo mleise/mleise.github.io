@@ -12,13 +12,11 @@ export const timeline = new Timeline();
 
 /** Various time sources. */
 const ts = {
-	digitalRead : new TimeSource("read off a digital clock with NTP or GPS source"          , -20, 60*1000-1 + 553),
+	digitalRead : new TimeSource("read off a digital clock with NTP or GPS source"          , -1020, 61*1000-1 + 553),
 	compromised : new TimeSource("a digital clock that is off by a known number of minutes" , -20-60*1000, 120*1000-1 + 553),
 	/** A digital clock updated from NTP or GPS. */
-	digital     : new TimeSource("a digital clock with NTP or GPS source"                   , -20, 60*1000-1 + 53),
-	digitalFlip : new TimeSource("a digital clock with NTP or GPS incremented on video"     , -20, +53),
-	/** iPhone clock set from NTP (time.apple.com) via Starlink with high latency. */
-	iPhoneSl    : new TimeSource("iPhone on Starlink"                                       , -100, 60*1000-1 + 133),
+	digital     : new TimeSource("a digital clock with NTP or GPS source"                   , -1020, 61*1000-1 + 53),
+	digitalFlip : new TimeSource("a digital clock with NTP or GPS incremented on video"     , -1020, +1053),
 	/** A video aligned with a GPS track node +/-60 secs. */
 	gps60       : new TimeSource("estimated from GPS track (+/-60s)"                        , -60*1000, +60*1000),
 	/** A video aligned with a GPS track node +/-90 secs. */
@@ -39,6 +37,7 @@ const ts = {
 	moon        : new TimeSource("guess based on location and azimuth of moon in the sky"   , -9.6*60*1000, +9.6*60*1000),
 	takeoff     : new TimeSource("departure (break release) time synced to a take-off"      , 0, 20*60*1000),
 	eta         : new TimeSource("extrapolated from ETA on in-flight entertainment screen"  , -61*1000, +61*1000),
+	/** Someone mentions what full hour it is. */
 	hourMention : new TimeSource("someone mentions what full hour it is"                    , -10*60*1000, +10*60*1000),
 };
 
@@ -251,10 +250,6 @@ const vids = {
 	mctoon360Part1            : new YouTubeVideo(timeline, "qbQJx9T5_WU", "Conspiracy Toonz", "Antarctic 360° Real Time 24 Hour Sun Part A", 42834.381, NTSC30, cams.mctoon360, "2025-01-08T12:01:12Z"),
 	mctoon360Part2            : new YouTubeVideo(timeline, "95P8urNDzDQ", "Conspiracy Toonz", "Antarctic 360° Real Time 24 Hour Sun Part B", 43207.161, NTSC30, cams.mctoon360, "2025-01-09T00:00:06Z"),
 	mctoon360Part3            : new YouTubeVideo(timeline, "Mp4E2PQLUgg", "Conspiracy Toonz", "Antarctic 360° Real Time 24 Hour Sun Part C",  1619.821, NTSC30, cams.mctoon360, "2025-01-09T12:00:35Z"),
-	mctoonSunDialShadow       : new YouTubeVideo(timeline, "n9_cU3EDWG4", "Conspiracy Toonz", "Antarctic 24 hour Sun Dial: 79°S, not 74°S", 134.561, NTSC60, cams.mctoon360, "2024-12-27T01:20:00Z")
-		.setTimelapseRate(undefined),
-	mctoonSunDialSun          : new YouTubeVideo(timeline, "xR3wPw2MoG0", "Conspiracy Toonz", "What does the Sun do in Antarctica?", 272.361, 60, cams.mctoon360, "2024-12-31T11:06:26Z")
-		.setTimelapseRate(undefined),
 	mctoonOakley              : new YouTubeVideo(timeline, "6bwNkVviosM", "Conspiracy Toonz", "I Called a Flat Earther from Antarctica", 481.281, 25, cams.daveSonyA7iv, "2024-12-16T13:30:06Z"),
 	mctoonFinalDay            : new YouTubeVideo(timeline, "337B7iNYbjA", "Conspiracy Toonz", "The Final Experiment: The Final Day", 980.881, 30, cams.mctoonAction, "2024-12-20T02:30:02Z")
 		.setClipsAreSequential(false),
@@ -376,36 +371,43 @@ const vids = {
 	mctoonDji14174459         : new MCToonDjiUpload(timeline, "DJI_20241214174459_0024_D", "17:45:37;13", 1903.067, "MCToon-TFEAntarctica-20241214174459"),
 	mctoonDji14190856         : new MCToonDjiUpload(timeline, "DJI_20241214190856_0025_D", "19:09:34;07", 1530.128, "MCToon-TFEAntarctica-20241214190856")
 	.addAnchorTime("14T22:00-03", "00:05:42.5", ts.roundabout),
-	//mctoonDji14193427         : new MCToonDjiUpload(timeline, "DJI_20241214193427_0026_D", "", , "MCToon-TFEAntarctica-20241214193427"),
+	mctoonDji14193427         : new MCToonDjiUpload(timeline, "DJI_20241214193427_0026_D", "19:35:04;08",  909.875, "MCToon-TFEAntarctica-20241214193427"),
 	//mctoonDji14203509         : new MCToonDjiUpload(timeline, "DJI_20241214203509_0028_D", "", , "MCToon-TFEAntarctica-20241214203509"),
 	//mctoonDji14210043         : new MCToonDjiUpload(timeline, "DJI_20241214210043_0029_D", "", , "MCToon-TFEAntarctica-20241214210043"),
-	//mctoonDji14212623         : new MCToonDjiUpload(timeline, "DJI_20241214212623_0030_D", "", , "MCToon-TFEAntarctica-20241214212623"),
-	//mctoonDji14215156         : new MCToonDjiUpload(timeline, "DJI_20241214215156_0031_D", "", , "MCToon-TFEAntarctica-20241214215156"),
-	//mctoonDji14230216         : new MCToonDjiUpload(timeline, "DJI_20241214230216_0032_D", "", , "MCToon-TFEAntarctica-20241214230216"),
-	//mctoonDji14232729         : new MCToonDjiUpload(timeline, "DJI_20241214232729_0033_D", "", , "MCToon-TFEAntarctica-20241214232729"),
-	//mctoonDji14235233         : new MCToonDjiUpload(timeline, "DJI_20241214235233_0034_D", "", , "MCToon-TFEAntarctica-20241214235233"),
+	mctoonDji14212623         : new MCToonDjiUpload(timeline, "DJI_20241214212623_0030_D", "21:27:00;19", 1532.731, "MCToon-TFEAntarctica-20241214212623"),
+	mctoonDji14215156         : new MCToonDjiUpload(timeline, "DJI_20241214215156_0031_D", "21:52:33;06", 1272.004, "MCToon-TFEAntarctica-20241214215156") // Critical Think gets his camera back :)
+	.addAnchorTime("15T01:00-03", "00:07:17", ts.hourMention),
+	mctoonDji14230216         : new MCToonDjiUpload(timeline, "DJI_20241214230216_0032_D", "23:02:54;16", 1511.576, "MCToon-TFEAntarctica-20241214230216")
+	.addAnchorTime("15T02:18-03", "00:18.08.8", ts.digitalRead),
+	mctoonDji14232729         : new MCToonDjiUpload(timeline, "DJI_20241214232729_0033_D", "23:28:06;03", 1503.802, "MCToon-TFEAntarctica-20241214232729")
+	.addAnchorTime("15T02:29-03", "00:03:59", ts.digitalRead),
+	mctoonDji14235233         : new MCToonDjiUpload(timeline, "DJI_20241214235233_0034_D", "23:53:09;24", 1504.069, "MCToon-TFEAntarctica-20241214235233"),
 	
-	//mctoonDji15001737         : new MCToonDjiUpload(timeline, "DJI_20241215001737_0035_D", "", , "MCToon-TFEAntarctica-20241215001737"),
-	//mctoonDji15004256         : new MCToonDjiUpload(timeline, "DJI_20241215004256_0036_D", "", , "MCToon-TFEAntarctica-20241215004256"),
-	//mctoonDji15010905         : new MCToonDjiUpload(timeline, "DJI_20241215010905_0037_D", "", , "MCToon-TFEAntarctica-20241215010905"),
-	//mctoonDji15013540         : new MCToonDjiUpload(timeline, "DJI_20241215013540_0038_D", "", , "MCToon-TFEAntarctica-20241215013540"),
-	//mctoonDji15020146         : new MCToonDjiUpload(timeline, "DJI_20241215020146_0039_D", "", , "MCToon-TFEAntarctica-"),
-	//mctoonDji15090747         : new MCToonDjiUpload(timeline, "DJI_20241215090747_0002_D", "", , "MCToon-TFEAntarctica-20241215090747"),
-	//mctoonDji15105216         : new MCToonDjiUpload(timeline, "DJI_20241215105216_0003_D", "", , "MCToon-TFEAntarctica-20241215105216"),
-	//mctoonDji15113656         : new MCToonDjiUpload(timeline, "DJI_20241215113656_0004_D", "", , "MCToon-TFEAntarctica-20241215113656"),
-	//mctoonDji15120519         : new MCToonDjiUpload(timeline, "DJI_20241215120519_0005_D", "", , "MCToon-TFEAntarctica-20241215120519"),
-	//mctoonDji15123301         : new MCToonDjiUpload(timeline, "DJI_20241215123301_0006_D", "", , "MCToon-TFEAntarctica-20241215123301"),
-	//mctoonDji15124738         : new MCToonDjiUpload(timeline, "DJI_20241215124738_0007_D", "", , "MCToon-TFEAntarctica-20241215124738"),
-	//mctoonDji15131404         : new MCToonDjiUpload(timeline, "DJI_20241215131404_0008_D", "", , "MCToon-TFEAntarctica-20241215131404"),
-	//mctoonDji15132637         : new MCToonDjiUpload(timeline, "DJI_20241215132637_0009_D", "", , "MCToon-TFEAntarctica-20241215132637"),
-	//mctoonDji15135407         : new MCToonDjiUpload(timeline, "DJI_20241215135407_0010_D", "", , "MCToon-TFEAntarctica-20241215135407"),
-	//mctoonDji15142105         : new MCToonDjiUpload(timeline, "DJI_20241215142105_0011_D", "", , "MCToon-TFEAntarctica-20241215142105"),
-	//mctoonDji15144717         : new MCToonDjiUpload(timeline, "DJI_20241215144717_0012_D", "", , "MCToon-TFEAntarctica-20241215144717"),
-	//mctoonDji15151405         : new MCToonDjiUpload(timeline, "DJI_20241215151405_0013_D", "", , "MCToon-TFEAntarctica-20241215151405"),
-	//mctoonDji15154128         : new MCToonDjiUpload(timeline, "DJI_20241215154128_0014_D", "", , "MCToon-TFEAntarctica-20241215154128"),
-	//mctoonDji15194240         : new MCToonDjiUpload(timeline, "DJI_20241215194240_0015_D", "", , "MCToon-TFEAntarctica-20241215194240"),
-	//mctoonDji15201628         : new MCToonDjiUpload(timeline, "DJI_20241215201628_0016_D", "", , "MCToon-TFEAntarctica-20241215201628"),
-	//mctoonDji15204825         : new MCToonDjiUpload(timeline, "DJI_20241215204825_0017_D", "", , "MCToon-TFEAntarctica-20241215204825"),
+	mctoonDji15001737         : new MCToonDjiUpload(timeline, "DJI_20241215001737_0035_D", "00:18:13;24", 1519.084, "MCToon-TFEAntarctica-20241215001737")
+	.addAnchorTime("15T03:41-03", "00:25:02.3", ts.digitalRead),
+	mctoonDji15004256         : new MCToonDjiUpload(timeline, "DJI_20241215004256_0036_D", "00:43:32;22", 1569.668, "MCToon-TFEAntarctica-20241215004256"),
+	mctoonDji15010905         : new MCToonDjiUpload(timeline, "DJI_20241215010905_0037_D", "01:09:42;11", 1595.026, "MCToon-TFEAntarctica-20241215010905"),
+	mctoonDji15013540         : new MCToonDjiUpload(timeline, "DJI_20241215013540_0038_D", "01:36:17;09", 1565.230, "MCToon-TFEAntarctica-20241215013540"),
+	mctoonDji15020146         : new MCToonDjiUpload(timeline, "DJI_20241215020146_0039_D", "02:02:22;12",   18.651, "MCToon-TFEAntarctica-"),
+	mctoonDji15090747         : new MCToonDjiUpload(timeline, "DJI_20241215090747_0002_D", "09:08:24;22", 2560.190, "MCToon-TFEAntarctica-20241215090747")
+	.addAnchorTime("15T12:42-03", "00:36:27.5", ts.digitalRead),
+	mctoonDji15105216         : new MCToonDjiUpload(timeline, "DJI_20241215105216_0003_D", "10:52:53;26",   51.484, "MCToon-TFEAntarctica-20241215105216"),
+	mctoonDji15113656         : new MCToonDjiUpload(timeline, "DJI_20241215113656_0004_D", "11:37:33;27", 1702.267, "MCToon-TFEAntarctica-20241215113656"),
+	mctoonDji15120519         : new MCToonDjiUpload(timeline, "DJI_20241215120519_0005_D", "12:05:56;01", 1661.726, "MCToon-TFEAntarctica-20241215120519"),
+	mctoonDji15123301         : new MCToonDjiUpload(timeline, "DJI_20241215123301_0006_D", "12:33:37;20",  804.770, "MCToon-TFEAntarctica-20241215123301"),
+	mctoonDji15124738         : new MCToonDjiUpload(timeline, "DJI_20241215124738_0007_D", "12:48:15;10", 1585.150, "MCToon-TFEAntarctica-20241215124738"),
+	mctoonDji15131404         : new MCToonDjiUpload(timeline, "DJI_20241215131404_0008_D", "13:14:40;10",  726.559, "MCToon-TFEAntarctica-20241215131404"),
+	mctoonDji15132637         : new MCToonDjiUpload(timeline, "DJI_20241215132637_0009_D", "13:27:14;12", 1649.581, "MCToon-TFEAntarctica-20241215132637"),
+	mctoonDji15135407         : new MCToonDjiUpload(timeline, "DJI_20241215135407_0010_D", "13:54:43;25", 1618.016, "MCToon-TFEAntarctica-20241215135407"),
+	mctoonDji15142105         : new MCToonDjiUpload(timeline, "DJI_20241215142105_0011_D", "14:21:41;23", 1571.736, "MCToon-TFEAntarctica-20241215142105"),
+	mctoonDji15144717         : new MCToonDjiUpload(timeline, "DJI_20241215144717_0012_D", "14:47:53;13", 1607.739, "MCToon-TFEAntarctica-20241215144717"),
+	mctoonDji15151405         : new MCToonDjiUpload(timeline, "DJI_20241215151405_0013_D", "15:14:41;02", 1643.341, "MCToon-TFEAntarctica-20241215151405"),
+	mctoonDji15154128         : new MCToonDjiUpload(timeline, "DJI_20241215154128_0014_D", "15:42:04;10",  250.183, "MCToon-TFEAntarctica-20241215154128"),
+	mctoonDji15194240         : new MCToonDjiUpload(timeline, "DJI_20241215194240_0015_D", "19:43:17;13", 2026.891, "MCToon-TFEAntarctica-20241215194240")
+	.addAnchorTime("15T23:00-03", "00:19:39.5", ts.hourMention),
+	mctoonDji15201628         : new MCToonDjiUpload(timeline, "DJI_20241215201628_0016_D", "20:17:04;08", 1917.515, "MCToon-TFEAntarctica-20241215201628")
+	.addAnchorTime("15T23:31-03", "00:16:21.5", ts.digitalRead),
+	mctoonDji15204825         : new MCToonDjiUpload(timeline, "DJI_20241215204825_0017_D", "20:49:01;20", 1899.664, "MCToon-TFEAntarctica-20241215204825"),
 
 	// Wheres Wally / videos
 	wallyJeranometer          : new YouTubeVideo(timeline, "u8CZEPYQLfE", "WheresWally", "The FIRST Data From Wally's Jeronometer Experiment Is Released, And It's GLOBE", 448.281, 30, cams.wallyAction, "2024-12-19T15:43:14Z")
@@ -482,7 +484,7 @@ export const clips = {
 	criticalMike               : vids.criticalMike
 		.addAnchorTime("15T14:25+10", "00:21:45/15", ts.digital)
 		.addAnchorTime("15T01:35-03", "00:31:47/00", ts.digitalRead)
-		.addAnchorTime("15T14:45+10", "00:41:26.5", ts.digitalRead)
+		//.addAnchorTime("15T14:45+10", "00:41:26.5", ts.digitalRead)
 		.createClip(),
 	criticalWolf               : vids.criticalWolf.createClip(),
 	criticalWeight             : vids.criticalWeight.createClip(),
@@ -1169,8 +1171,6 @@ export const clips = {
 	mctoon360Part1B            : vids.mctoon360Part1.createClip(),
 	mctoon360Part2             : vids.mctoon360Part2.createClip(),
 	mctoon360Part3             : vids.mctoon360Part3.createClip(),
-	mctoonSunDialShadow        : vids.mctoonSunDialShadow.skipClip("00:00:14/34").createClip(),
-	mctoonSunDialSun           : vids.mctoonSunDialSun.skipClip("00:00:13/20").createClip(),
 	mctoonOakley               : vids.mctoonOakley
 		.addAnchorTime("15T17:30-03", "00:02:00/10", ts.digitalFlip)
 		.createClip("00:07:33/22"),
@@ -1203,8 +1203,14 @@ export const clips = {
 
 	// Will Duffy / videos
 	willPuntaArenas            : vids.willPuntaArenas.createClip(),
-	willTenseSituation         : vids.willTenseSituation.createClip(), // TODO: after Mark Herman's arrival
-	willLastUpdateBeforeUG     : vids.willLastUpdateBeforeUG.createClip(), // TODO: One day after an interview with marathon runner. "Last night" ate eel, slept till 4:45am, went out with the drone and met Dave with a tripod.
+	willTenseSituation         : vids.willTenseSituation
+		.createClip()
+		.setTimesManually("12T17:00:06-03", "12T22:04:33-03", "this is after the orienation and the argument between MCToon, Austin and Jeran and after the 24h Moon video from Will went online, but before sunset on the 12th"),
+	willLastUpdateBeforeUG     : vids.willLastUpdateBeforeUG
+		.createClip()
+		.setTimesManually("14T04:45-03", "14T09:30-03", "the marathon was yesterday and Will woke up at 4:45, but they are still at the hotel"),
+		// TODO: This morning the sun rise drone footage was recorded after 4:45 AM.
+		// TODO: Video hints at Will having filmed the Southern celestial pole last night.
 	willObservationArmy        : vids.willObservationArmy.createClip(), // TODO: After "2 full days", so 16th afternoon.
 	will360Part1               : vids.will360Part1.createClip().enableAutoDuration(),
 	will360Part2               : vids.will360Part2.createClip().enableAutoDuration(),
@@ -1220,7 +1226,7 @@ export const clips = {
 		.createClip("00:11:43/21").setTimelapseRate(1), // TODO
 	willSunriseSunsetPuntaArenasA : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:16:40/04")
-		.addAnchorTime("12T18:27:59-03", "00:16:46/07", ts.sun) // Based on weather conditions, the 12th had the least clouds in the evening.
+		//.addAnchorTime("12T18:27:59-03", "00:16:46/07", ts.sun) // Based on weather conditions, the 12th had the least clouds in the evening.
 		.createClip("00:16:50/02").setTimelapseRate(1),
 	willSunriseSunsetPuntaArenasB : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:16:56/02")
@@ -1283,6 +1289,8 @@ timeline.addSyncPoint(vids.daveSunspots, "00:06:24/16", vids.mctoonDji14142627, 
 // Dave’s & Will’s 360° footage
 timeline.addSyncPoint(vids.will360Part1, "00:00:00/02", vids.austin24hPart1, "00:00:00/01");
 //timeline.addSyncPoint(vids.will360Part1, "00:53:49/25", vids.mctoonDji14190856, "00:09:26.123", 0.04); // TODO: Fix the 5 second inconsistency
+timeline.addSyncPoint(vids.mctoonDji14215156, "00:16:05.082", vids.criticalMike, "00:02:50/02", 0.04);
+//timeline.addSyncPoint(vids.mctoonDji14230216, "00:02:29.770", vids.mctoonLive100Percent, "00:03:04/07", 0.04);
 timeline.addSyncPoint(vids.will360Part1, "00:55:39/00", vids.daveSolarPhotography, "00:05:48/15"); // TODO: could be aligned more precisely. Maybe when I have YT embeds.
 timeline.addSyncPoint(vids.will360Part2, "02:13:35/13", vids.austin24hTl, "00:35:10/22");
 timeline.addSyncPoint(vids.will360Part1, "06:33:19/07", vids.mctoonLive100Percent, "01:56:07/23", 0.04);
@@ -1313,20 +1321,18 @@ timeline.addSyncPoint(vids.daveSunspots, "00:07:26/08", vids.will360Part1, "00:5
 timeline.addSyncPoint(vids.daveSolarPhotography, "00:09:51/19", vids.daveSunspots, "00:02:03/09");
 timeline.addSyncPoint(vids.daveSunspots, "00:01:57/23", vids.will360Part2, "08:43:35/06");
 timeline.addSyncPoint(vids.will360Part3, "03:58:28/11", vids.jonathanIRThermal, "00:00:26.485");
+timeline.addSyncPoint(vids.mctoonDji15194240, "00:27:32.360", vids.jeranLiveUG2, "00:05:22/11", 0.02);
+timeline.addSyncPoint(vids.mctoonDji15204825, "00:15:37.804", vids.willLiveAntarctica, "00:02:08/14", 0.1);
 // MCToon’s & Will’s 2nd 360° footage
-timeline.addSyncPoint(vids.mctoon360Part1, "00:01:01/05", vids.mctoonSunDialSun, "00:00:13/31");
 timeline.addSyncPoint(vids.mctoon360Part1, "00:08:39/12", vids.willLiveAntarctica, "00:05:15/04");
-timeline.establishTimelapseRate(vids.mctoonSunDialShadow, "00:00:16/29", "00:01:03/49", vids.mctoon360Part1, "00:37:34/05", "09:59:55/06");
-timeline.addSyncPoint(vids.mctoon360Part1, "00:56:42/20", vids.mctoonSunDialSun, "00:00:23/32");
-timeline.addSyncPoint(vids.mctoon360Part1, "09:57:13/07", vids.mctoonSunDialSun, "00:02:00/45");
 timeline.addSyncPoint(vids.willMidnightAntarctica, "00:05:36/25", vids.daveVapegate, "00:01:32/17");
 timeline.addSyncPoint(vids.willSecond360, "00:03:10/24", vids.daveExcuses, "00:08:43");
 timeline.addSyncPoint(vids.willSecond360, "00:10:33/21", vids.willObservationArmy, "00:00:32/30", 10);
 timeline.addSyncPoint(vids.willSecond360, "00:11:49/10", vids.jeranLiveSunspots, "00:05:20", 20);
-timeline.addSyncPoint(vids.willSecond360, "00:17:54/28", vids.mctoon360Part2, "08:05:23/26");
+timeline.addSyncPoint(vids.willSecond360, "00:17:54/28", vids.mctoon360Part2, "08:05:23/26", 150);
 timeline.addSyncPoint(vids.willSecond360, "00:24:15/24", vids.daveSolarPhotography, "00:04:20/10", 150); // TODO: What's broken?
 timeline.addSyncPoint(vids.willSecond360, "00:24:18/06", vids.daveSolarPhotography, "00:04:48", 150);
-timeline.addSyncPoint(vids.willSecond360, "00:21:59/26", vids.mctoon360Part3, "00:13:01/03"); // roundabout
+timeline.addSyncPoint(vids.willSecond360, "00:21:59/26", vids.mctoon360Part3, "00:13:01/03", 150);
 timeline.addSyncPoint(vids.will360Part3, "01:57:50", vids.jonathanIce, "00:00:00", 150); // roundabout
 timeline.addSyncPoint(vids.will360Part3, "01:59:10", vids.jonathanSnowcat, "00:00:00", 80); // roundabout
 timeline.addSyncPoint(vids.willSecond360, "00:30:25/16", vids.jonathanShort, "00:00:11/16"); // roundabout
