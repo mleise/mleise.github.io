@@ -184,12 +184,13 @@ export class Video {
 	/**
 	 * Anchors a frame or event in the video to a real time.
 	 * @param {string|Date} realTime Real time of event.
-	 * @param {string} videoTime Time stamp in video showing the event.
+	 * @param {string|number} videoTime Time stamp in video showing the event.
 	 * @param {TimeSource} timeSource Time source providing the imprecision of the estimated real time.
 	 * @returns {Video} This video.
 	 */
 	addAnchorTime(realTime, videoTime, timeSource) {
-		const anchorTime = new AnchorTime(realTime, this.parseVideoTime(videoTime), timeSource);
+		videoTime = typeof videoTime === "number" ? videoTime : this.parseVideoTime(videoTime);
+		const anchorTime = new AnchorTime(realTime, videoTime, timeSource);
 		this.#anchorTimes.push(anchorTime);
 		for (const clip of this.#clips) {
 			clip.applyAnchorTime(anchorTime);

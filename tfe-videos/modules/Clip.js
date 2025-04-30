@@ -6,6 +6,7 @@ import { AnchorTime } from "./AnchorTime.js";
 import { DATE_FORMAT_UGC_TOOLTIP, DATE_FORMAT_UGC_DETAILED } from "./Timeline.js";
 import { Person } from "./Person.js";
 import { TimeInterval } from "./TimeInterval.js";
+import { TimeSource } from "./TimeSource.js";
 
 /**
  * Part of a {@link Video}. Many videos will just be a single clip, but edited video may contain many.
@@ -176,6 +177,27 @@ export class Clip {
 		}
 	}
 
+	/**
+	 * Anchors the start of the clip manually given two dates.
+	 * @param {string|Date} minStart Earliest possible date this clip could start.
+	 * @param {string|Date} maxEnd Last possible date this clip could end.
+	 * @param {string} reasoning The explanation for why we think the dates are correct.
+	 * @returns {Clip} This clip.
+	 */
+	setTimesManually(minStart, maxEnd, reasoning) {
+		minStart = minStart instanceof Date ? minStart : new Date("2024-12-" + minStart + ":00");
+		maxEnd = maxEnd instanceof Date ? maxEnd : new Date("2024-12-" + maxEnd + ":00");
+		const maxStart = new Date(maxEnd.valueOf() - this.realTimeDurationMs);
+		if (minStart > maxStart) {
+			throw new Error("First date lies after second date.");
+		}
+		const midTime = new Date((minStart.valueOf() + maxStart.valueOf()) / 2);
+		const toleranceMs = (maxStart.valueOf() - minStart.valueOf()) / 2;
+		const timeSource = new TimeSource(reasoning, -toleranceMs, +toleranceMs);
+		this.video.addAnchorTime(midTime, this.start, timeSource);
+		return this;
+	}
+	
 	/** @returns The real time duration of this clip in milliseconds. */
 	get realTimeDurationMs() {
 		if (!this.#timelapseRate) {
