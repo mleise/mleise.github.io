@@ -102,6 +102,15 @@ export class TimeInterval {
 
 	/** @returns A textual description of the confidence interval. */
 	get confidenceIntervalStr() {
-		return `± ${Math.round(this.confidenceIntervalMs) / 2000} s`;
+		const confidenceIntervalMs = this.confidenceIntervalMs;
+		if (confidenceIntervalMs > 3600000) {
+			return `± ${Math.round(this.confidenceIntervalMs / 720000) / 10} h`;
+		}
+		else if (confidenceIntervalMs > 60000) {
+			return `± ${Math.round(this.confidenceIntervalMs / 12000) / 10} m`;
+		}
+		else {
+			return `± ${Math.round(this.confidenceIntervalMs / 200) / 10} s`;
+		}
 	}
 }

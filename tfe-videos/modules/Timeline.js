@@ -237,7 +237,7 @@ export class Timeline {
 		let skip = 0;
 		for (let i = 0; i < this.#clips.length; i++) {
 			const clip = this.#clips[i];
-			if (clip.confidenceIntervalMs > 1200000) {
+			if (clip.confidenceIntervalMs === Infinity) {
 				if (skip > 0) {
 					skip--;
 					continue;
@@ -341,6 +341,39 @@ export class Timeline {
 		};
 
 		const rowHeight = 1;
+		for (const clip of this.#clips) {
+			if (clip.hasDefinedStartTimes) {
+				const capA = document.createElementNS("http://www.w3.org/2000/svg", "line");
+				const capB = document.createElementNS("http://www.w3.org/2000/svg", "line");
+				const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+				const width = clip.realTimeDurationMs / this.#zoom;
+				const x1 = (clip.startTimeMinMs - this.#minTimeMs) / this.#zoom;
+				capA.setAttribute("x1", `${x1}px`);
+				capA.setAttribute("x2", `${x1}px`);
+				line.setAttribute("x1", `${x1}px`);
+				const x2 = (clip.startTimeMaxMs + clip.realTimeDurationMs - this.#minTimeMs) / this.#zoom;
+				capB.setAttribute("x1", `${x2}px`);
+				capB.setAttribute("x2", `${x2}px`);
+				line.setAttribute("x2", `${x2}px`);
+				const y = rowHeight * (3.5 + clip.timelineRow);
+				line.setAttribute("y1", `${y}em`);
+				line.setAttribute("y2", `${y}em`);
+				capA.setAttribute("y1", `${y - 0.3 * rowHeight}em`);
+				capB.setAttribute("y1", `${y - 0.3 * rowHeight}em`);
+				capA.setAttribute("y2", `${y + 0.3 * rowHeight}em`);
+				capB.setAttribute("y2", `${y + 0.3 * rowHeight}em`);
+				const dasharray = `${0.2 * rowHeight}em,${0.2 * rowHeight}em`;
+				const color = "#101010";
+				line.setAttribute("stroke", color);
+				capA.setAttribute("stroke", color);
+				capB.setAttribute("stroke", color);
+				line.setAttribute("stroke-dasharray", dasharray);
+				line.setAttribute("stroke-dashoffset", `${0.1 * rowHeight}em`);
+				this.#svg.appendChild(line);
+				this.#svg.appendChild(capA);
+				this.#svg.appendChild(capB);
+			}
+		}
 		for (const clip of this.#clips) {
 			if (clip.hasDefinedStartTimes) {
 				const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
