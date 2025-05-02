@@ -197,6 +197,16 @@ export class Clip {
 		this.video.addAnchorTime(midTime, this.start, timeSource);
 		return this;
 	}
+
+	/**
+	 * Appends a clip to this clip.
+	 * @param {Clip} other The clip to be appended.
+	 * @returns {Clip} The appended clip.
+	 */
+	concat(other) {
+		this.#video.timeline.chronology(this.video, this.start, other.video, other.start, 0, 0, 0, this.duration);
+		return other;
+	}
 	
 	/** @returns The real time duration of this clip in milliseconds. */
 	get realTimeDurationMs() {
