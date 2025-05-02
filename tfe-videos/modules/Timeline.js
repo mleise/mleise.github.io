@@ -116,15 +116,17 @@ export class Timeline {
 	/**
 	 * Declares that two videos show the same moment at the given respective times.
 	 * @param {Video} video1 Video 1.
-	 * @param {string} time1 Time code in video 1 as a string in HH:mm:ss.sss format.
+	 * @param {string|number} time1 Time code in video 1 as a string in HH:mm:ss.sss format or number in seconds.
 	 * @param {Video} video2 Video 2.
-	 * @param {string} time2 Time code in video 2 as a string in HH:mm:ss.sss format.
+	 * @param {string|number} time2 Time code in video 2 as a string in HH:mm:ss.sss format or number in seconds.
 	 * @param {number} [tolerance=0] If the sync isn't perfect, state the tolerance (+/-) in seconds here.
 	 * @param {number} [deltaMs=0] Time in milliseconds between the event in the first video and the second video. Used to set video clips apart by a known amount of time. Defaults to 0.
 	 * @returns {SyncPoint} The added sync point.
 	 */
 	addSyncPoint(video1, time1, video2, time2, tolerance = 0, deltaMs = 0) {
-		const syncPoint = new SyncPoint(video1, video1.parseVideoTime(time1), video2, video2.parseVideoTime(time2), tolerance, deltaMs);
+		time1 = typeof time1 === "number" ? time1 : video1.parseVideoTime(time1);
+		time2 = typeof time2 === "number" ? time2 : video2.parseVideoTime(time2);
+		const syncPoint = new SyncPoint(video1, time1, video2, time2, tolerance, deltaMs);
 		this.#syncPoints.push(syncPoint);
 		this.#applySyncPoint(syncPoint, syncPoint.getClip(0), syncPoint.getClip(1));
 		return syncPoint;
@@ -133,14 +135,14 @@ export class Timeline {
 	/**
 	 * Declares that points in two videos are a certain time apart.
 	 * @param {Video} video1 
-	 * @param {string} time1 Time code in video 1 as a string in HH:mm:ss.sss format.
+	 * @param {string|number} time1 Time code in video 1 as a string in HH:mm:ss.sss format or number in seconds.
 	 * @param {Video} video2 
-	 * @param {string} time2 Time code in video 2 as a string in HH:mm:ss.sss format.
+	 * @param {string|number} time2 Time code in video 2 as a string in HH:mm:ss.sss format or number in seconds.
 	 * @param {number} days Full days from `time1` to `time2`.
 	 * @param {number} hours Full hours from `time1` to `time2`.
 	 * @param {number} minutes Full minutes from `time1` to `time2`.
 	 * @param {number} seconds Full seconds from `time1` to `time2`.
-	 * @returns {Object} The added sync point.
+	 * @returns {SyncPoint} The added sync point.
 	 */
 	chronology(video1, time1, video2, time2, days, hours, minutes, seconds) {
 		return this.addSyncPoint(video1, time1, video2, time2, 0, (((days * 24 + hours) * 60 + minutes) * 60 + seconds) * 1000);
@@ -233,17 +235,26 @@ export class Timeline {
 			}
 		}
 
+		/** @type Set<string> */
+		const unfixable = new Set();
+		unfixable.add("0:41.067 to 1:33.221 in tHere flafter mee ,a hhhomage tu meye bestee"); // MCFlatty drawing a passport (likely in the dining tent).
+		unfixable.add("0:13.367 to 1:16.633 in The Final Experiment: The Final Day"); // MCToon walking through Punta Arenas, talking about police and having a flashback.
+		unfixable.add("The Globe Predicts 24-Hour Sun AND 24-Hour Moon in Antarctica!"); // Will speaking about the 24h Moon the 1st time after his prerecorded video.
+		unfixable.add("10:55.767 to 11:05.868 in THE FINAL EXPERIMENTS - South Celestial Pole"); // MCToon’s star trail footage from Punta Arenas.
+		unfixable.add("11:10.667 to 11:18.267 in THE FINAL EXPERIMENTS - South Celestial Pole"); // Dave’s star trail footage from Punta Arenas.
+		unfixable.add("16:40.16 to 16:50.08 in THE FINAL EXPERIMENTS - Sunrise & Sunset Direction"); // Will’s drone in the afernoon/evening filming monument, sunny.
+		unfixable.add("16:56.08 to 17:04.4 in THE FINAL EXPERIMENTS - Sunrise & Sunset Direction"); // Will’s drone filming orange sculpture, overcast.
+
 		console.log("Remaining clips are:");
 		let skip = 0;
 		for (let i = 0; i < this.#clips.length; i++) {
 			const clip = this.#clips[i];
-			if (clip.confidenceIntervalMs === Infinity) {
+			if (clip.confidenceIntervalMs === Infinity && !unfixable.has(clip.toString())) {
 				if (skip > 0) {
 					skip--;
 					continue;
 				}
 				console.log(clip.toString());
-				//break;
 			}
 		}
 
