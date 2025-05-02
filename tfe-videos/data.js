@@ -34,7 +34,8 @@ const ts = {
 	/** E.g. at full hour, Westminster first plays a jingle, then counts the hours. */
 	churchBells : new TimeSource("stroke of a church clock"                                 , -2*1000, +3*1000),
 	sun         : new TimeSource("guess based on the sun angle (+/- 7 minutes)"             , -7*60*1000, +7*60*1000),
-	moon        : new TimeSource("guess based on location and azimuth of moon in the sky"   , -9.6*60*1000, +9.6*60*1000),
+	moon        : new TimeSource("guess based on location and azimuth of moon in the sky"   , -16*60*1000, +16*60*1000),
+	stars       : new TimeSource("guess based on location of stars in the sky"              , -60*60*1000, +60*60*1000),
 	takeoff     : new TimeSource("departure (break release) time synced to a take-off"      , 0, 20*60*1000),
 	eta         : new TimeSource("extrapolated from ETA on in-flight entertainment screen"  , -61*1000, +61*1000),
 	/** Someone mentions what full hour it is. */
@@ -231,7 +232,8 @@ const vids = {
 	// Micheal Toon (as McFlatty) / videos
 	flattyPantyArena          : new YouTubeVideo(timeline, "OHzz96tO0c0", "McFlatty", "maid it too pantyarena ,next a ship to alask artica", 119.041, 24, cams.mctoonPhone, "2024-12-14T06:36:59Z"),
 	flatty24Suns              : new YouTubeVideo(timeline, "IbGezIhqhNo", "McFlatty", "alaskarctica experimentalizashuns won", 123.956, NTSC30, cams.mctoonPhone, "2024-12-17T16:45:33Z"),
-	flattyHome                : new YouTubeVideo(timeline, "62wCG4DyFro", "McFlatty", "tHere flafter mee ,a hhhomage tu meye bestee", 93.221, NTSC30, cams.mctoonPhone, "2024-12-19T01:59:30Z"),
+	flattyHome                : new YouTubeVideo(timeline, "62wCG4DyFro", "McFlatty", "tHere flafter mee ,a hhhomage tu meye bestee", 93.221, NTSC30, cams.mctoonPhone, "2024-12-19T01:59:30Z")
+		.setClipsAreSequential(false),
 	flattyFiguredItOut        : new YouTubeVideo(timeline, "m7tH56QE0R8", "McFlatty", "I tHink i fingered it owt", 15.379, 30, cams.mctoonPhone, "2024-12-19T20:00:20Z"),
 	flattyIRThermometer       : new YouTubeVideo(timeline, "w_aaCW0zWIA", "McFlatty", "mikee smith meshure the tempature ov the sun", 58.901, NTSC30, cams.mctoonPhone, "2024-12-21T03:05:25Z"),
 	flattyEscape              : new YouTubeVideo(timeline, "RT1rQZ9QT3Q", "McFlatty", "time tu exkape with all teh experimentalization data", 71.841, NTSC30, cams.mctoonPhone, "2024-12-22T02:37:16Z"),
@@ -253,7 +255,7 @@ const vids = {
 	mctoonOakley              : new YouTubeVideo(timeline, "6bwNkVviosM", "Conspiracy Toonz", "I Called a Flat Earther from Antarctica", 481.281, 25, cams.daveSonyA7iv, "2024-12-16T13:30:06Z"),
 	mctoonFinalDay            : new YouTubeVideo(timeline, "337B7iNYbjA", "Conspiracy Toonz", "The Final Experiment: The Final Day", 980.881, 30, cams.mctoonAction, "2024-12-20T02:30:02Z")
 		.setClipsAreSequential(false),
-	mctoonClockApp            : new YouTubeVideo(timeline, "M2zsplLqbgc", "Conspiracy Toonz", "Antarctica Tested: FE Clock App", 681.101, 30, peeps.mctoon, "2024-12-21T14:30:16Z"), // TODO: Recorded on the 20th in Santiago airport, was flying at 21st 23:15
+	mctoonClockApp            : new YouTubeVideo(timeline, "M2zsplLqbgc", "Conspiracy Toonz", "Antarctica Tested: FE Clock App", 681.101, 30, peeps.mctoon, "2024-12-21T14:30:16Z"),
 	// Micheal Toon (as Conspiracy Toonz) / streams
 	mctoonShowingExperiments  : new YouTubeVideo(timeline, "idrvFgrMK_A", "Conspiracy Toonz", "Showing experiments in Antarctica", 1739.001, 30, peeps.mctoon, "2024-12-15T17:50:16Z", "2024-12-15T18:19:11Z"),
 	
@@ -410,7 +412,7 @@ const vids = {
 	mctoonDji15204825         : new MCToonDjiUpload(timeline, "DJI_20241215204825_0017_D", "20:49:01;20", 1899.664, "MCToon-TFEAntarctica-20241215204825"),
 
 	// Wheres Wally / videos
-	wallyJeranometer          : new YouTubeVideo(timeline, "u8CZEPYQLfE", "WheresWally", "The FIRST Data From Wally's Jeronometer Experiment Is Released, And It's GLOBE", 448.281, 30, cams.wallyAction, "2024-12-19T15:43:14Z")
+	wallyJeranometer          : new YouTubeVideo(timeline, "4N3EY7SgxXU", "WheresWally", "LAP 0008 A RAW",  49.400, 30, cams.wallyAction, "2024-12-19T15:43:14Z")
 		.setTimelapseRate(1800.2025658338960162052667116813),
 	wallyGreenscreen          : new YouTubeVideo(timeline, "CAUBiTBFUR4", "WheresWally", "The Final Experiment Drone Supercut Wrecks Drone Gate by Fkatzoid & Sovereign Soul Unchained Mind", 850.401, 30, cams.willDrone, "2025-01-02T15:12:54Z"),
 	wallyDrone                : new YouTubeVideo(timeline, "x1yKGnMzVoE", "WheresWally", "The Final Experiment Mile High Drone with Ascent and Descent by Will Duffy Telemetry by WheresWally", 1305.131, NTSC60, cams.willDrone, "2025-01-14T00:03:36Z"),
@@ -1184,16 +1186,16 @@ export const clips = {
 		.createClip("00:08:42/29"),
 	mctoonFinalDayC            : vids.mctoonFinalDay
 		.skipClip("00:08:44/25")
-		.addAnchorTime("19T12:20-03", "00:15:53/15", ts.analog) // TODO: or 16:00?
+		.addAnchorTime("19T16:01-03", "00:15:53/15", ts.analog) // MCToon also mentions that this night they will fly home.
 		.createClip(),
-	mctoonClockApp             : vids.mctoonClockApp.createClip("00:08:20/16"), // TODO: Photo in hotel on 19th, 21:58:29 local
+	mctoonClockApp             : vids.mctoonClockApp
+		.createClip("00:08:20/16").setTimesManually("20T06:29-03", "20T20:51-03", "MCToon says it is the 20th in the video and the sky is blue"),
+		// TODO: contains Photo in hotel on 19th, 21:58:29 local
 	// Micheal Toon (as Conspiracy Toonz) / streams
-	mctoonShowingExperiments   : vids.mctoonShowingExperiments.createClip(), // TODO: Will signed the Jeranometer before this: 12/15
+	mctoonShowingExperiments   : vids.mctoonShowingExperiments.createClip(),
 
 	// Wheres Wally / videos
-	wallyJeranometer           : vids.wallyJeranometer
-		.skipClip("00:02:24/06")
-		.createClip("00:03:13/18"),
+	wallyJeranometer           : vids.wallyJeranometer.createClip(),
 	wallyGreenscreen           : vids.wallyGreenscreen
 		.skipClip("00:00:08/26")
 		.createClip("00:01:21/01"),
@@ -1217,27 +1219,28 @@ export const clips = {
 	will360Part3               : vids.will360Part3.createClip(),
 	willStartrailsA            : vids.willStartrails
 		.skipClip("00:10:55/23")
-		.createClip("00:11:05/26").setTimelapseRate(1),
+		.createClip("00:11:05/26").setTimelapseRate(1), // TODO
 	willStartrailsB            : vids.willStartrails
 		.skipClip("00:11:10/20")
-		.createClip("00:11:18/08").setTimelapseRate(1),
+		.createClip("00:11:18/08").setTimelapseRate(1), // TODO
 	willStartrailsC            : vids.willStartrails
+		.addAnchorTime("13T01:38:18-03", "00:11:37/25", ts.stars)
 		.skipClip("00:11:34/24")
-		.createClip("00:11:43/21").setTimelapseRate(1), // TODO
+		.createClip("00:11:43/21").setTimelapseRate(1278.1714285714285714285714285714),
 	willSunriseSunsetPuntaArenasA : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:16:40/04")
-		//.addAnchorTime("12T18:27:59-03", "00:16:46/07", ts.sun) // Based on weather conditions, the 12th had the least clouds in the evening.
+		// 10th 18:35:12 / 11th 18:35:23 / 12th 18:35:35 / 13th 18:35:50 (maybe too cloudy) / 18th 18:37:31 / 19th 18:37:57
 		.createClip("00:16:50/02").setTimelapseRate(1),
 	willSunriseSunsetPuntaArenasB : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:16:56/02")
 		.createClip("00:17:04/10").setTimelapseRate(1),
 	willSunriseSunsetPuntaArenasC : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:17:48/04")
-		.addAnchorTime("19T05:20:00-03", "00:18:29", ts.sun) // TODO: Which day? (11th - 14th, 18th, 19th)
+		//.addAnchorTime("19T05:20:00-03", "00:18:29", ts.sun) // TODO: Which day? (11th - 14th, 18th, 19th)
 		.createClip("00:18:33/23").setTimelapseRate(1),
 	willSunriseSunsetPuntaArenasD : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:21:48/14")
-		.addAnchorTime("12T05:19:00-03", "00:21:53/21", ts.sun) // TODO: Which day? (11th - 14th, 18th, 19th)
+		//.addAnchorTime("12T05:19:00-03", "00:21:53/21", ts.sun) // TODO: Which day? (11th - 14th, 18th, 19th)
 		.createClip("00:22:02/17").setOwner(peeps.jonathan).setTimelapseRate(1), // TODO
 	willSecond360                 : vids.willSecond360.createClip(),
 	// Will Duffy / streams
@@ -1249,11 +1252,12 @@ export const clips = {
 
 // Order some clips to be sequential and non-overlapping.
 Clip.orderClips(clips.mctoonPuntaArenasLive3, clips.mctoon0ToGo);
-Clip.orderClips(clips.mctoonFinalDayFlashback, clips.mctoonFinalDayA, clips.mctoonFinalDayB, clips.mctoonFinalDayC);
+Clip.orderClips(clips.mctoonLiveBack, clips.mctoonFinalDayA, clips.mctoonFinalDayB, clips.mctoonFinalDayC, clips.mctoonFinalDayFlashback, clips.willFinalDayLive);
 Clip.orderClips(clips.austin24hPart1, clips.austin24hPart2, clips.austin24hPart3);
 Clip.orderClips(clips.mctoon360Part1A, clips.mctoon360Part1B, clips.mctoon360Part2, clips.mctoon360Part3);
 Clip.orderClips(clips.will360Part1, clips.will360Part2, clips.will360Part3);
 Clip.orderClips(clips.daveSunspotsP, clips.daveSunspotsH, clips.daveSunspotsI); // First sunspot photo tests.
+clips.mctoonFinalDayA.concat(clips.mctoonFinalDayB);
 
 // Videos that recorded hours or days apart, but have a common clock allowing us to space them out correctly relative to each other.
 timeline.chronology(vids.criticalFlight1Tl, "00:13:38/08", vids.criticalFlight2Tl, "00:05:10/11", 4, 7, 0, 0);
@@ -1264,6 +1268,8 @@ timeline.addSyncPoint(vids.daveSunspots, "00:17:25/17", vids.daveSunspots, "00:1
 //timeline.addSyncPoint(vids.daveSunspots, "00:17:33/18", vids.daveSunspots, "00:17:38/15"); // TODO: Do not uncomment, just for the timelapse calculation. +8.040s / +3.880s
 timeline.addSyncPoint(vids.daveSunspots, "00:17:24/17", vids.daveSunspots, "00:17:40/04"); // ident
 //timeline.addSyncPoint(vids.daveSunspots, "00:17:24/24", vids.daveSunspots, "00:17:45/12"); // TODO: Do not uncomment, just for the timelapse calculation.
+timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:47", vids.mctoon1ToGo, "00:06:55/25", 43); // Cloud paterns
+timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:30", vids.mctoon1ToGo, "00:06:56/10", 1); // Lisbeth filming to the left and Jonathan approaching Austin
 // Flight to Union Glacier
 vids.austin24hPart1.concat(vids.austin24hPart2);
 timeline.addSyncPoint(vids.criticalFlight2Tl, "00:00:32/16", vids.daveToUGTl, "00:00:09/00", 1);
@@ -1286,6 +1292,7 @@ timeline.addSyncPoint(vids.mark360Disembark, "00:03:35/03", vids.mark360Disembar
 timeline.addSyncPoint(vids.mark360Disembark, "00:05:40/01", vids.daveSunspots, "00:05:23/17");
 timeline.addSyncPoint(vids.mark360Disembark, "00:05:45/28", vids.mctoonDji14114921, "00:00:38.081");
 timeline.addSyncPoint(vids.daveSunspots, "00:06:24/16", vids.mctoonDji14142627, "00:01:06.910");
+timeline.addSyncPoint(vids.wallyGreenscreen, "00:00:11/23", vids.willNoGreenscreens, "00:06:27/09", 0.04);
 // Dave’s & Will’s 360° footage
 timeline.addSyncPoint(vids.will360Part1, "00:00:00/02", vids.austin24hPart1, "00:00:00/01");
 //timeline.addSyncPoint(vids.will360Part1, "00:53:49/25", vids.mctoonDji14190856, "00:09:26.123", 0.04); // TODO: Fix the 5 second inconsistency
@@ -1323,6 +1330,7 @@ timeline.addSyncPoint(vids.daveSunspots, "00:01:57/23", vids.will360Part2, "08:4
 timeline.addSyncPoint(vids.will360Part3, "03:58:28/11", vids.jonathanIRThermal, "00:00:26.485");
 timeline.addSyncPoint(vids.mctoonDji15194240, "00:27:32.360", vids.jeranLiveUG2, "00:05:22/11", 0.02);
 timeline.addSyncPoint(vids.mctoonDji15204825, "00:15:37.804", vids.willLiveAntarctica, "00:02:08/14", 0.1);
+timeline.addSyncPoint(vids.wallyJeranometer, "00:00:27.460", vids.will360Part2, "04:06:09/10", 0.3);
 // MCToon’s & Will’s 2nd 360° footage
 timeline.addSyncPoint(vids.mctoon360Part1, "00:08:39/12", vids.willLiveAntarctica, "00:05:15/04");
 timeline.addSyncPoint(vids.willMidnightAntarctica, "00:05:36/25", vids.daveVapegate, "00:01:32/17");
