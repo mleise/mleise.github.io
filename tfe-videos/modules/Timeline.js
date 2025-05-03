@@ -12,11 +12,11 @@ const MS_PER_HOUR = 60 * 60 * 1000;
 /** Milliseconds to a day. */
 const MS_PER_DAY = 24 * MS_PER_HOUR;
 /** Formats the day portion of {@link Date} in the Union Glacier time zone for a header. */
-const DATE_FORMAT_HEADER = new Intl.DateTimeFormat("en-US", { timeZone: "-03:00", dateStyle: "medium" });
+const DATE_FORMAT_HEADER = new Intl.DateTimeFormat("en-US", { timeZone: "Etc/GMT+3", dateStyle: "medium" });
 /** Formats a {@link Date} in the Union Glacier time zone for a tooltip. */
-export const DATE_FORMAT_UGC_TOOLTIP = new Intl.DateTimeFormat("en-US", { timeZone: "-03:00", dateStyle: "short", timeStyle: "medium" });
+export const DATE_FORMAT_UGC_TOOLTIP = new Intl.DateTimeFormat("en-US", { timeZone: "Etc/GMT+3", dateStyle: "short", timeStyle: "medium" });
 /** Formats a {@link Date} in the Union Glacier time zone for a detailed reading down to the millisecond. */
-export const DATE_FORMAT_UGC_DETAILED = new Intl.DateTimeFormat("en-US", { timeZone: "-03:00", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", second: "2-digit", fractionalSecondDigits: 3 });
+export const DATE_FORMAT_UGC_DETAILED = new Intl.DateTimeFormat("en-US", { timeZone: "Etc/GMT+3", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", second: "2-digit", fractionalSecondDigits: 3 });
 
 /**
  * The timeline is what all {@link Video} {@link Clip}s are placed on.
