@@ -344,11 +344,11 @@ export class Timeline {
 			const mouseTimeMs = event.offsetX * this.#zoom + this.#minTimeMs;
 			let scrollDelta = (mouseTimeMs - scrollTimeMs) / this.#zoom;
 			const oldSvg = this.#svg;
-			this.#zoom = Math.min(Math.max(this.#zoom * Math.pow(1.007, event.deltaY), 1000), (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth);
+			this.#zoom = Math.min(Math.max(this.#zoom * Math.pow(1.003, event.deltaY), 500), (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth);
 			scrollDelta *= this.#zoom;
 			const newSvg = this.produceSvg(parent);
 			parent.replaceChild(newSvg, oldSvg);
-			parent.scrollTo(mouseTimeMs - scrollDelta, 0);
+			parent.scrollLeft = ((mouseTimeMs - scrollDelta) - this.#minTimeMs) / this.#zoom;
 		};
 
 		const rowHeight = 1;
