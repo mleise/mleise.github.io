@@ -237,7 +237,7 @@ export class Video {
 				Clip.orderClips(lastClip, clip);
 			}
 		}
-		this.#timeline.addSegment(clip);
+		this.#timeline.addClip(clip);
 		this.#clips.push(clip);
 		return clip;
 	}

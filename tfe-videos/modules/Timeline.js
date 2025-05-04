@@ -75,7 +75,7 @@ export class Timeline {
 	 * Adds a video clip to the timeline.
 	 * @param {Clip} clip The video clip to be added.
 	 */
-	addSegment(clip) {
+	addClip(clip) {
 		this.#clips.push(clip);
 	}
 
