@@ -1,6 +1,6 @@
 // @ts-check
 
-import { clips, timeline } from "./data.js";
+import { timeline } from "./data.js";
 
 timeline.process();
 
@@ -55,3 +55,17 @@ function stopVideo() {
 	player.stopVideo();
 }
 */
+
+export function closePopupWindow() {
+	const popup = document.getElementById("popup-background");
+	if (popup) popup.style.display = "none";
+}
+
+export function showClipInfo() {
+	const popup = document.getElementById("popup-background");
+	if (popup) popup.style.display = "block";
+}
+
+export function openClipLink() {
+	window.open(timeline.selectedClip.url);
+}

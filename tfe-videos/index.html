@@ -6,14 +6,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TFE Video Times</title>
   <link rel="stylesheet" href="style.css">
-  <script defer src="video_times.js" type="module"></script>
+  <script defer type="module">
+    import { closePopupWindow, showClipInfo, openClipLink } from "./video-times.js";
+    window.closePopupWindow = closePopupWindow;
+    window.showClipInfo = showClipInfo;
+    window.openClipLink = openClipLink;
+  </script>
 </head>
 
 <body>
-	<h1>TFE video times</h1>
+	<h1>Timeline of The Final Experiments</h1>
 	<div id="player1"></div>
 	<div id="timeline"></div>
 	<div id="svgContainer" class="timeline"></div>
+  <div class="hori-flex">
+    <div>Selected clip:&nbsp;</div>
+    <div id="clip-name" style="flex-grow: 1; text-overflow: ellipsis; overflow: hidden" width="100%">-</div>
+    <!--<button onclick="showClipInfo()">🎞️ Info</button>-->
+    <button onclick="openClipLink()">🔗 Open</button>
+  </div>
+  <div id="popup-background" onclick="closePopupWindow()">
+    <div id="popup-window" onclick="event.stopPropagation()">
+      <div id="popup-caption">
+        <div id="popup-title">Clip properties</div>
+        <a id="popup-close-button" role="button" href="javascript:closePopupWindow();">✖</a>
+      </div>
+      <table>
+        <tr>
+          <th>Video</th>
+          <td><a href="https://www.youtube.com/watch?v=Uo_kV3w5dCg" target="_blank">Timelapse of flight QF27 10-Dec-2024 en route to The Final Experiment Expedition</a></td>
+        </tr>
+        <tr>
+          <th>Segment</th>
+          <td>(Full video)</td>
+        </tr>
+        <tr>
+          <th>Confidence interval</th>
+          <td>±0.3 s</td>
+        </tr>
+        <tr>
+          <th>Properties</th>
+          <td>not live, timelapse</td>
+        </tr>
+      </table>
+    </div>
+  </div>
 </body>
 
 </html>

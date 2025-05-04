@@ -40,6 +40,8 @@ export class Timeline {
 	#rowsNeeded;
 	/** @type {SVGSVGElement} */
 	#svg;
+	/** @type {Clip} */
+	#selectedClip;
 
 	constructor() {
 		this.#videos     = [];
@@ -75,6 +77,13 @@ export class Timeline {
 	 */
 	addSegment(clip) {
 		this.#clips.push(clip);
+	}
+
+	/**
+	 * @returns The currently selected clip on the timeline.
+	 */
+	get selectedClip() {
+		return this.#selectedClip;
 	}
 
 	/**
@@ -387,9 +396,18 @@ export class Timeline {
 		}
 		for (const clip of this.#clips) {
 			if (clip.hasDefinedStartTimes) {
-				const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
-				a.setAttribute("href", clip.url);
 				const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+				rect.onclick = () => {
+					this.#selectedClip = clip;
+					const clipNameElement = document.getElementById("clip-name");
+					if (clipNameElement) clipNameElement.innerText = clip.toString();
+					const parent = this.#svg.parentElement;
+					if (parent) {
+						const oldSvg = this.#svg;
+						const newSvg = this.produceSvg(parent);
+						parent.replaceChild(newSvg, oldSvg);
+					}
+				};
 				const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
 				title.innerHTML = clip.tooltip;
 				rect.appendChild(title);
@@ -400,9 +418,13 @@ export class Timeline {
 				rect.setAttribute("y", `${y}em`);
 				rect.setAttribute("width", `${width}px`);
 				rect.setAttribute("height", `${rowHeight}em`);
-				rect.setAttribute("style", `fill:${clip.timelineColor};stroke-width:1px;stroke:black`);
-				a.appendChild(rect);
-				this.#svg.appendChild(a);
+				if (clip !== this.selectedClip) {
+					rect.setAttribute("style", `cursor:pointer;fill:${clip.timelineColor};stroke-width:1px;stroke:black`);
+				}
+				else {
+					rect.setAttribute("style", `cursor:pointer;fill:${clip.timelineColor};stroke-width:2px;stroke:yellow`);
+				}
+				this.#svg.appendChild(rect);
 			}
 		}
 
