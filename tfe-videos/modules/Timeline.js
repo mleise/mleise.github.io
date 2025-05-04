@@ -360,13 +360,13 @@ export class Timeline {
 			parent.scrollLeft = ((mouseTimeMs - scrollDelta) - this.#minTimeMs) / this.#zoom;
 		};
 
-		const rowHeight = 1;
+		// Error bars
+		const rowHeight = 15;
 		for (const clip of this.#clips) {
 			if (clip.hasDefinedStartTimes) {
 				const capA = document.createElementNS("http://www.w3.org/2000/svg", "line");
 				const capB = document.createElementNS("http://www.w3.org/2000/svg", "line");
 				const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-				const width = clip.realTimeDurationMs / this.#zoom;
 				const x1 = (clip.startTimeMinMs - this.#minTimeMs) / this.#zoom;
 				capA.setAttribute("x1", `${x1}px`);
 				capA.setAttribute("x2", `${x1}px`);
@@ -376,25 +376,28 @@ export class Timeline {
 				capB.setAttribute("x2", `${x2}px`);
 				line.setAttribute("x2", `${x2}px`);
 				const y = rowHeight * (3.5 + clip.timelineRow);
-				line.setAttribute("y1", `${y}em`);
-				line.setAttribute("y2", `${y}em`);
-				capA.setAttribute("y1", `${y - 0.3 * rowHeight}em`);
-				capB.setAttribute("y1", `${y - 0.3 * rowHeight}em`);
-				capA.setAttribute("y2", `${y + 0.3 * rowHeight}em`);
-				capB.setAttribute("y2", `${y + 0.3 * rowHeight}em`);
-				const dasharray = `${0.2 * rowHeight}em,${0.2 * rowHeight}em`;
+				line.setAttribute("y1", `${y}pt`);
+				line.setAttribute("y2", `${y}pt`);
+				capA.setAttribute("y1", `${y - 0.3 * rowHeight}pt`);
+				capB.setAttribute("y1", `${y - 0.3 * rowHeight}pt`);
+				capA.setAttribute("y2", `${y + 0.3 * rowHeight}pt`);
+				capB.setAttribute("y2", `${y + 0.3 * rowHeight}pt`);
+				const dasharray = `${0.2 * rowHeight}pt,${0.2 * rowHeight}pt`;
 				const color = "#101010";
 				line.setAttribute("stroke", color);
 				capA.setAttribute("stroke", color);
 				capB.setAttribute("stroke", color);
 				line.setAttribute("stroke-dasharray", dasharray);
-				line.setAttribute("stroke-dashoffset", `${0.1 * rowHeight}em`);
+				line.setAttribute("stroke-dashoffset", `${0.1 * rowHeight}pt`);
 				this.#svg.appendChild(line);
 				this.#svg.appendChild(capA);
 				this.#svg.appendChild(capB);
 			}
 		}
-		for (const clip of this.#clips) {
+
+		// Clips
+		for (let i = 0; i < this.#clips.length; i++) {
+			const clip = this.#clips[i];
 			if (clip.hasDefinedStartTimes) {
 				const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 				rect.onclick = () => {
@@ -415,9 +418,9 @@ export class Timeline {
 				const x = (clip.startTimeAvgMs - this.#minTimeMs) / this.#zoom;
 				const y = rowHeight * (3 + clip.timelineRow);
 				rect.setAttribute("x", `${x}px`);
-				rect.setAttribute("y", `${y}em`);
+				rect.setAttribute("y", `${y}pt`);
 				rect.setAttribute("width", `${width}px`);
-				rect.setAttribute("height", `${rowHeight}em`);
+				rect.setAttribute("height", `${rowHeight}pt`);
 				if (clip !== this.selectedClip) {
 					rect.setAttribute("style", `cursor:pointer;fill:${clip.timelineColor};stroke-width:1px;stroke:black`);
 				}
@@ -425,6 +428,54 @@ export class Timeline {
 					rect.setAttribute("style", `cursor:pointer;fill:${clip.timelineColor};stroke-width:2px;stroke:yellow`);
 				}
 				this.#svg.appendChild(rect);
+
+				// Clip rect
+				const clipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+				clipPath.id = `clipPath${i}`;
+				const clipRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+				clipRect.setAttribute("x", `${x + 1}px`);
+				clipRect.setAttribute("y", `${y}pt`);
+				clipRect.setAttribute("width", `${width - 2}px`);
+				clipRect.setAttribute("height", `${rowHeight}pt`);
+				clipPath.appendChild(clipRect);
+				this.#svg.appendChild(clipPath);
+
+				// LIVE badge
+				if (clip.video.isLive) {
+					const liveRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+					const x = (clip.startTimeAvgMs - this.#minTimeMs) / this.#zoom + 2;
+					const y = rowHeight * (3.39 + clip.timelineRow);
+					liveRect.setAttribute("x", `${x}px`);
+					liveRect.setAttribute("y", `${y}pt`);
+					liveRect.setAttribute("width", "23px");
+					liveRect.setAttribute("height", `${0.51 * rowHeight}pt`);
+					liveRect.setAttribute("style", "fill:red");
+					liveRect.style.clipPath = `url(#clipPath${i})`;
+					liveRect.style.pointerEvents = "none";
+					this.#svg.appendChild(liveRect);
+					const liveText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+					liveText.setAttribute("x", `${x + 0.5}px`);
+					liveText.setAttribute("y", `${y + 0.44 * rowHeight}pt`);
+					liveText.style.fill = "white";
+					liveText.style.fontFamily = "sans-serif";
+					liveText.style.fontSize = `${0.5 * rowHeight}pt`;
+					liveText.style.clipPath = `url(#clipPath${i})`;
+					liveText.style.pointerEvents = "none";
+					liveText.textContent = "LIVE";
+					this.#svg.appendChild(liveText);
+				}
+
+				// Timelapse badge
+				if (clip.timelapseRate !== 1) {
+					const timelapseText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+					timelapseText.setAttribute("x", `${x + 0.5}px`);
+					timelapseText.setAttribute("y", `${y + 0.8 * rowHeight}pt`);
+					timelapseText.style.fontSize = `${0.5 * rowHeight}pt`;
+					timelapseText.style.clipPath = `url(#clipPath${i})`;
+					timelapseText.style.pointerEvents = "none";
+					timelapseText.textContent = "🐇";
+					this.#svg.appendChild(timelapseText);
+				}
 			}
 		}
 
@@ -437,14 +488,14 @@ export class Timeline {
 			const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 			line.setAttribute("x1", `${x}px`);
 			line.setAttribute("x2", `${x}px`);
-			line.setAttribute("y1", "0em");
-			line.setAttribute("y2", `${(3 + this.#rowsNeeded) * rowHeight}em`);
+			line.setAttribute("y1", "0pt");
+			line.setAttribute("y2", `${(3 + this.#rowsNeeded) * rowHeight}pt`);
 			line.setAttribute("stroke", "white");
 			this.#svg.prepend(line);
 			const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			text.setAttribute("style", `font:italic ${rowHeight}em serif;fill:white`);
+			text.setAttribute("style", `font:italic ${rowHeight}pt serif;fill:white`);
 			text.setAttribute("x", `${x + 0.2}px`);
-			text.setAttribute("y", `${rowHeight * 0.85}em`);
+			text.setAttribute("y", `${rowHeight * 0.85}pt`);
 			text.setAttribute("cursor", "default");
 			text.innerHTML = DATE_FORMAT_HEADER.format(new Date(dayMs));
 			this.#svg.prepend(text);
@@ -460,7 +511,7 @@ export class Timeline {
 			text.setAttribute("font-size-adjust", "0.9");
 			text.setAttribute("text-anchor", "middle");
 			text.setAttribute("x", `${x}px`);
-			text.setAttribute("y", `${rowHeight * 2.6}em`);
+			text.setAttribute("y", `${rowHeight * 2.6}pt`);
 			text.setAttribute("cursor", "default");
 			text.innerHTML = event.symbol;
 			a.appendChild(text);
@@ -468,16 +519,16 @@ export class Timeline {
 			const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 			line.setAttribute("x1", `${x}px`);
 			line.setAttribute("x2", `${x}px`);
-			line.setAttribute("y1", `${3 * rowHeight}em`);
-			line.setAttribute("y2", `${(3 + this.#rowsNeeded) * rowHeight}em`);
+			line.setAttribute("y1", `${3 * rowHeight}pt`);
+			line.setAttribute("y2", `${(3 + this.#rowsNeeded) * rowHeight}pt`);
 			line.setAttribute("stroke", "grey");
-			line.setAttribute("stroke-dasharray", `${0.1 * rowHeight}em,${0.1 * rowHeight}em`);
-			line.setAttribute("stroke-dashoffset", `${0.05 * rowHeight}em`);
+			line.setAttribute("stroke-dasharray", `${0.1 * rowHeight}pt,${0.1 * rowHeight}pt`);
+			line.setAttribute("stroke-dashoffset", `${0.05 * rowHeight}pt`);
 			this.#svg.prepend(line);
 		}
 
 		this.#svg.setAttribute("width", `${(this.#maxTimeMs - this.#minTimeMs) / this.#zoom}px`);
-		this.#svg.setAttribute("height", `${rowHeight * (3 + this.#rowsNeeded) + 0.05}em`);
+		this.#svg.setAttribute("height", `${rowHeight * (3 + this.#rowsNeeded) + 0.05}pt`);
 		return this.#svg;
 	}
 }

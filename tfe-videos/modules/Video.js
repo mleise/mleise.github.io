@@ -95,6 +95,11 @@ export class Video {
 		return this.#publishTime;
 	}
 
+	/** @returns Whether this video was a live stream. */
+	get isLive() {
+		return false;
+	}
+
 	/**
 	 * Sets the timelapse rate for this entire video. Can be overridden by segments. An `undefined` value means that the
 	 * rate is to be determined automatically from two sync times with another video that plays at normal speed.
