@@ -249,7 +249,6 @@ export class Timeline {
 		unfixable.add("0:41.067 to 1:33.221 in tHere flafter mee ,a hhhomage tu meye bestee"); // MCFlatty drawing a passport (likely in the dining tent).
 		unfixable.add("0:13.367 to 1:16.633 in The Final Experiment: The Final Day"); // MCToon walking through Punta Arenas, talking about police and having a flashback.
 		unfixable.add("The Globe Predicts 24-Hour Sun AND 24-Hour Moon in Antarctica!"); // Will speaking about the 24h Moon the 1st time after his prerecorded video.
-		unfixable.add("10:55.767 to 11:05.868 in THE FINAL EXPERIMENTS - South Celestial Pole"); // MCToon’s star trail footage from Punta Arenas.
 		unfixable.add("11:10.667 to 11:18.267 in THE FINAL EXPERIMENTS - South Celestial Pole"); // Dave’s star trail footage from Punta Arenas.
 		unfixable.add("16:40.16 to 16:50.08 in THE FINAL EXPERIMENTS - Sunrise & Sunset Direction"); // Will’s drone in the afernoon/evening filming monument, sunny.
 		unfixable.add("16:56.08 to 17:04.4 in THE FINAL EXPERIMENTS - Sunrise & Sunset Direction"); // Will’s drone filming orange sculpture, overcast.

@@ -121,7 +121,7 @@ const cams = {
 	/** MCToon’s laptop. */
 	mctoonLaptop   : new Camera(peeps.mctoon  , true , "Unknown Laptop"),
 	/** MCToon’s camera. */
-	mctoonCam      : new Camera(peeps.mctoon  , true , "P1000"),
+	mctoonCam      : new Camera(peeps.mctoon  , false, "P1000"),
 	/** MCToon’s Insta360. */
 	mctoon360      : new Camera(peeps.mctoon  , false, "Insta360 camera"), // TODO: Was this another Insta360 X4?
 	/** WheresWally’s Jeranometer camera. */
@@ -427,6 +427,7 @@ const vids = {
 	will360Part2              : new YouTubeVideo(timeline, "0dC_06X8bto", "The Final Experiment", "World's First Non-Timelapse Video of the 24-Hour Sun in Antarctica! (Part 2)", 35970.261, NTSC30, cams.will360B, "2025-01-08T22:04:31Z"),
 	will360Part3              : new YouTubeVideo(timeline, "vzGvqEObA6c", "The Final Experiment", "World's First Non-Timelapse Video of the 24-Hour Sun in Antarctica! (Part 3)", 21559.061, NTSC30, cams.will360B, "2025-01-15T17:59:45Z"),
 	willStartrails            : new YouTubeVideo(timeline, "5Ih7NvUYg4g", "The Final Experiment", "THE FINAL EXPERIMENTS - South Celestial Pole", 1537.421, NTSC30, peeps.will, "2025-01-13T20:00:06Z")
+		.setClipsAreSequential(false)
 		.setTimelapseRate(undefined),
 	willSunriseSunsetPuntaArenas : new YouTubeVideo(timeline, "_2Wy2aTnTME", "The Final Experiment", "THE FINAL EXPERIMENTS - Sunrise & Sunset Direction", 1423.901, 25, peeps.will, "2025-01-20T20:00:06Z")
 		.setClipsAreSequential(false)
@@ -1219,7 +1220,8 @@ export const clips = {
 	will360Part3               : vids.will360Part3.createClip(),
 	willStartrailsA            : vids.willStartrails
 		.skipClip("00:10:55/23")
-		.createClip("00:11:05/26").setTimelapseRate(1), // TODO
+		.addAnchorTime("14T01:26:00-03", "00:10:55/23", ts.stars) // MCToon is talking about starting the timelapse in his live stream that night.
+		.createClip("00:11:05/26").setTimelapseRate(891.08910891089108910891089108911).setCamera(cams.mctoonCam), // MCToon said he recorded 150 minutes.
 	willStartrailsB            : vids.willStartrails
 		.skipClip("00:11:10/20")
 		.createClip("00:11:18/08").setTimelapseRate(1), // TODO
@@ -1251,6 +1253,7 @@ export const clips = {
 };
 
 // Order some clips to be sequential and non-overlapping.
+Clip.orderClips(clips.mctoonPuntaArenasLive3, clips.willStartrailsA);
 Clip.orderClips(clips.mctoonPuntaArenasLive3, clips.mctoon0ToGo);
 Clip.orderClips(clips.mctoonLiveBack, clips.mctoonFinalDayA, clips.mctoonFinalDayB, clips.mctoonFinalDayC, clips.mctoonFinalDayFlashback, clips.willFinalDayLive);
 Clip.orderClips(clips.austin24hPart1, clips.austin24hPart2, clips.austin24hPart3);

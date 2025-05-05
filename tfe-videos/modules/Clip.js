@@ -112,6 +112,16 @@ export class Clip {
 		return this.#camera ?? this.#video.camera;
 	}
 
+	/**
+	 * Sets the camera that this clip was recorded on.
+	 * @param {Camera} camera The new camera.
+	 */
+	setCamera(camera) {
+		this.#camera = camera;
+		this.#owner = camera.owner;
+		return this;
+	}
+
 	/** @returns The owner of the camera/device/channel that recorded this clip. */
 	get owner() {
 		return this.#owner;
