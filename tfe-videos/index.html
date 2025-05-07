@@ -16,15 +16,21 @@
 
 <body>
 	<h1>Timeline of The Final Experiments</h1>
-	<div id="player1"></div>
 	<div id="timeline"></div>
-	<div id="svgContainer" class="timeline"></div>
+  <div id="svgContainer" class="timeline"></div>
   <div class="hori-flex">
     <div>Selected clip:&nbsp;</div>
     <div id="clip-name" style="flex-grow: 1; text-overflow: ellipsis; overflow: hidden" width="100%">-</div>
     <!--<button onclick="showClipInfo()">🎞️ Info</button>-->
     <button onclick="openClipLink()">🔗 Open</button>
   </div>
+  <br/>
+  Notes:
+  <ul>
+    <li>Video times are taken publically available sources, from frame times in uploaded raw files to the hour chime of a church clock.</li>
+    <li>Videos, especially long recordings, are subject to <a href="https://protyposis.net/files/mmm2015-timedrift-cameraready.pdf" target="_blank">clock drift</a>, causing audio and video to go out of sync.</li>
+  </ul> 
+	
   <div id="popup-background" onclick="closePopupWindow()">
     <div id="popup-window" onclick="event.stopPropagation()">
       <div id="popup-caption">

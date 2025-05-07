@@ -12,7 +12,7 @@ export const timeline = new Timeline();
 
 /** Various time sources. */
 const ts = {
-	digitalRead : new TimeSource("read off a digital clock with NTP or GPS source"          , -1020, 61*1000-1 + 553),
+	digitalRead : new TimeSource("a read off a digital clock with NTP or GPS source"        , -1020, 61*1000-1 + 553),
 	compromised : new TimeSource("a digital clock that is off by a known number of minutes" , -20-60*1000, 120*1000-1 + 553),
 	/** A digital clock updated from NTP or GPS. */
 	digital     : new TimeSource("a digital clock with NTP or GPS source"                   , -1020, 61*1000-1 + 53),
@@ -444,8 +444,8 @@ const vids = {
 /** List of clips created from the videos. */
 export const clips = {
 	// Austin Whitsitt / videos
-	austin24hPart1             : vids.austin24hPart1.createClip(),
-	austin24hPart2             : vids.austin24hPart2.createClip(),
+	austin24hPart1             : vids.austin24hPart1.createClip().enableAutoDuration(),
+	austin24hPart2             : vids.austin24hPart2.createClip().enableAutoDuration(),
 	austin24hPart3             : vids.austin24hPart3.createClip(),
 	austin24hTl                : vids.austin24hTl.createClip(),
 	// Austin Whitsitt / streams
@@ -1274,7 +1274,6 @@ timeline.addSyncPoint(vids.daveSunspots, "00:17:24/17", vids.daveSunspots, "00:1
 timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:47", vids.mctoon1ToGo, "00:06:55/25", 43); // Cloud paterns
 timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:30", vids.mctoon1ToGo, "00:06:56/10", 1); // Lisbeth filming to the left and Jonathan approaching Austin
 // Flight to Union Glacier
-vids.austin24hPart1.concat(vids.austin24hPart2);
 timeline.addSyncPoint(vids.criticalFlight2Tl, "00:00:32/16", vids.daveToUGTl, "00:00:09/00", 1);
 timeline.addSyncPoint(vids.criticalFlight2Tl, "00:08:18/05", vids.criticalFlight2Landing, "00:03:02/29"); // ident
 timeline.addSyncPoint(vids.mctoonDji14085536, "00:35:04.951", vids.markQA2, "00:07:28/12", 11);
@@ -1297,25 +1296,27 @@ timeline.addSyncPoint(vids.mark360Disembark, "00:05:45/28", vids.mctoonDji141149
 timeline.addSyncPoint(vids.daveSunspots, "00:06:24/16", vids.mctoonDji14142627, "00:01:06.910");
 timeline.addSyncPoint(vids.wallyGreenscreen, "00:00:11/23", vids.willNoGreenscreens, "00:06:27/09", 0.04);
 // Dave’s & Will’s 360° footage
-timeline.addSyncPoint(vids.will360Part1, "00:00:00/02", vids.austin24hPart1, "00:00:00/01");
+timeline.addSyncPoint(vids.will360Part1, "00:00:00/02", vids.austin24hPart1, "00:00:00/01", 0);
+timeline.addSyncPoint(vids.will360Part1, "09:00:19/03", vids.austin24hPart2, "00:30:33/27", 0);
+timeline.addSyncPoint(vids.will360Part2, "00:08:03/18", vids.austin24hPart2, "01:38:18/12", 0);
+timeline.addSyncPoint(vids.will360Part2, "07:29:00/02", vids.austin24hPart3, "00:29:29/20", 0);
+timeline.addSyncPoint(vids.will360Part3, "00:40:44/08", vids.austin24hPart3, "03:10:39/27", 0);
 //timeline.addSyncPoint(vids.will360Part1, "00:53:49/25", vids.mctoonDji14190856, "00:09:26.123", 0.04); // TODO: Fix the 5 second inconsistency
 timeline.addSyncPoint(vids.mctoonDji14215156, "00:16:05.082", vids.criticalMike, "00:02:50/02", 0.04);
-//timeline.addSyncPoint(vids.mctoonDji14230216, "00:02:29.770", vids.mctoonLive100Percent, "00:03:04/07", 0.04);
+timeline.addSyncPoint(vids.mctoonDji14230216, "00:01:48.764", vids.mctoonLive100Percent, "00:02:23/08", 0.04);
 timeline.addSyncPoint(vids.will360Part1, "00:55:39/00", vids.daveSolarPhotography, "00:05:48/15"); // TODO: could be aligned more precisely. Maybe when I have YT embeds.
 timeline.addSyncPoint(vids.will360Part2, "02:13:35/13", vids.austin24hTl, "00:35:10/22");
 timeline.addSyncPoint(vids.will360Part1, "06:33:19/07", vids.mctoonLive100Percent, "01:56:07/23", 0.04);
 timeline.addSyncPoint(vids.will360Part1, "09:01:43/02", vids.daveVapegate, "00:09:57/10"); // roundabout
 timeline.addSyncPoint(vids.will360Part1, "09:01:54/17", vids.daveSolarPhotography, "00:03:31/19");
-timeline.addSyncPoint(vids.will360Part2, "07:16:01/20", vids.austin24hPart3, "00:16:31/07"); // ident
 timeline.addSyncPoint(vids.will360Part2, "07:32:56/10", vids.willNoGreenscreens, "00:05:38/24");
 timeline.addSyncPoint(vids.markBehindScenes, "00:04:08/21", vids.willNoGreenscreens, "00:06:00/27");
 timeline.establishTimelapseRate(vids.daveTl360, "00:09:32/24", "00:18:10/06", vids.will360Part2, "00:16:37/29", "09:00:18/25");
 timeline.addSyncPoint(vids.willNoGreenscreens, "00:06:16/10", vids.daveExcuses, "00:04:34/12");
 timeline.addSyncPoint(vids.will360Part2, "08:24:33/21", vids.daveExcuses, "00:03:31/05"); // roundabout
 timeline.addSyncPoint(vids.willNoGreenscreens, "00:06:57/18", vids.daveExcuses, "00:07:20/08");
-timeline.addSyncPoint(vids.will360Part3, "00:03:49/24", vids.austin24hPart3, "02:33:45/13"); // ident
 timeline.establishTimelapseRate(vids.daveTl, "00:00:36/07", "00:00:45/27", vids.will360Part3, "00:40:02/05", "05:52:21/18");
-timeline.addSyncPoint(vids.will360Part3, "00:40:38/16", vids.mctoonOakley, "00:04:54/11", 0.04);
+timeline.addSyncPoint(vids.will360Part3, "00:40:42/18", vids.mctoonOakley, "00:04:58/13", 0.04);
 timeline.addSyncPoint(vids.daveTl, "00:00:36/08", vids.mctoonOakley, "00:05:22/22", 40);
 timeline.addSyncPoint(vids.daveTl360, "00:01:27/00", vids.daveSolarPhotography, "00:06:09/21");
 timeline.addSyncPoint(vids.daveTl360, "00:08:17/15", vids.daveSolarPhotography, "00:03:14/20");
@@ -1382,6 +1383,5 @@ timeline.addEvent("17T14:27:44.5-03:00", "Solar noon", "🌞");
 timeline.addEvent(vids.criticalFlight3Tl.videoToRealTime("00:00:22/15"), "Departure from Union Glacier", "🛫");
 
 // 13th 00:36-03 - trundle wheel measurement happened earlier
-// 14th 14:33-03 - landing at UG
 // 15th 03:12-03 - after MCToon's Live: trundle wheel
 // 17th 11:06-00 - moving to the plane to leave Antarctica

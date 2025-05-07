@@ -582,13 +582,13 @@ export class MCToonDjiUpload extends Video {
 		const firstActualStart = new Date("2024-12-09T23:43:00Z");
 		const firstCameraStart = new Date("2024-12-09T00:00:00-06:00").valueOf() + (1903093 + 11907) * 1001000 / 30000;
 		const firstDeltaMs = firstCameraStart.valueOf() - firstActualStart.valueOf();
-		const addedDriftPerDay = 112.054;
+		const addedDriftPerDay = 118;
 		const framesPerDayNom = 24 * 3600 * 30000;
 		const framesPerDayDen = 1001;
 		const driftFactor = (framesPerDayNom + addedDriftPerDay * framesPerDayDen) / framesPerDayNom;
 		const driftFraction = (addedDriftPerDay * framesPerDayDen) / framesPerDayNom;
 		const startDate = new Date(firstActualStart.valueOf() - firstDeltaMs / driftFraction);
-		const djiTimeSource = new TimeSource("the daily frame counter in MCToon's chest cam (compensated for clock drift)", -100, +100);
+		const djiTimeSource = new TimeSource("the daily frame counter in MCToon's chest cam (compensated for clock drift)", -1000, +1000);
 		let lastActualStart;
 		for (let i = this.#allClips.length - 1; i >= 0; i--) {
 			const clip = this.#allClips[i];

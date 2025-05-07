@@ -40,6 +40,12 @@ export class Timeline {
 	#rowsNeeded;
 	/** @type {SVGSVGElement} */
 	#svg;
+	/** @type {SVGGElement} */
+	#tracker;
+	/** @type {number} */
+	#trackerMs;
+	/** @type {boolean} */
+	#trackerDragging;
 	/** @type {Clip} */
 	#selectedClip;
 
@@ -52,6 +58,8 @@ export class Timeline {
 		this.#minTimeMs  = +Infinity;
 		this.#maxTimeMs  = -Infinity;
 		this.#rowsNeeded = 0;
+		this.#trackerMs  = 0;
+		this.#trackerDragging = false;
 	}
 
 	/**
@@ -279,6 +287,7 @@ export class Timeline {
 		if (this.#minTimeMs === +Infinity || this.#maxTimeMs === -Infinity) {
 			throw new Error("Could not determine a time frame for the trip for rendering the SVG timeline");
 		}
+		this.#trackerMs = this.#minTimeMs;
 
 		/** @type {Map<Person,Map<Camera?,Clip[][]>>} */
 		const clipsByOwner = new Map();
@@ -472,12 +481,13 @@ export class Timeline {
 					timelapseText.style.fontSize = `${0.5 * rowHeight}pt`;
 					timelapseText.style.clipPath = `url(#clipPath${i})`;
 					timelapseText.style.pointerEvents = "none";
-					timelapseText.textContent = "🐇";
+					timelapseText.textContent = "⌚";
 					this.#svg.appendChild(timelapseText);
 				}
 			}
 		}
 
+		// Day lines
 		const offsetMs = -3 * MS_PER_HOUR;
 		const firstDayMarkerMs = Math.ceil((this.#minTimeMs + offsetMs) / MS_PER_DAY) * MS_PER_DAY - offsetMs;
 		const numDayMarkers = Math.floor((this.#maxTimeMs + offsetMs) / MS_PER_DAY) - Math.ceil((this.#minTimeMs + offsetMs) / MS_PER_DAY) + 1;
@@ -487,9 +497,10 @@ export class Timeline {
 			const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 			line.setAttribute("x1", `${x}px`);
 			line.setAttribute("x2", `${x}px`);
-			line.setAttribute("y1", "0pt");
+			line.setAttribute("y1", "20pt");
 			line.setAttribute("y2", `${(3 + this.#rowsNeeded) * rowHeight}pt`);
-			line.setAttribute("stroke", "white");
+			line.setAttribute("stroke", "silver");
+			line.style.strokeDasharray = "10px 10px 5px 10px";
 			this.#svg.prepend(line);
 			const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 			text.setAttribute("style", `font:italic ${rowHeight}pt serif;fill:white`);
@@ -526,8 +537,66 @@ export class Timeline {
 			this.#svg.prepend(line);
 		}
 
+		const svgHeight = rowHeight * (3 + this.#rowsNeeded) + 0.05;
+
+		this.#tracker = document.createElementNS("http://www.w3.org/2000/svg", "g");
+		const handle = document.createElementNS("http://www.w3.org/2000/svg", "path");
+		handle.setAttribute("d", "M 1 30 L +10 20 L +10 2 L -10 2 L -10 20 Z");
+		handle.style.fill = "silver";
+		handle.style.strokeWidth = "0px";
+		handle.style.strokeLinejoin = "round";
+		handle.style.cursor = "grab";
+		handle.onmousedown = () => {
+			this.#trackerDragging = true;
+		};
+		this.#svg.ownerDocument.addEventListener("mouseup", () => {
+			this.#trackerDragging = false;
+		});
+		this.#svg.ownerDocument.addEventListener("mousemove", (event) => {
+			if (this.#trackerDragging) {
+				const parent = this.#svg.parentElement;
+				if (parent) {
+					this.#trackerMs = Math.min(Math.max(this.#XToMs(event.x + parent.scrollLeft + 0.5), this.#minTimeMs), this.#maxTimeMs);
+					this.#updateTracker();
+				}
+			}
+		});
+		this.#tracker.appendChild(handle);
+		for (let i = -1; i <= +1; i++) {
+			const stripe = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			stripe.setAttribute("x1", `${5 * i}px`);
+			stripe.setAttribute("x2", `${5 * i}px`);
+			stripe.setAttribute("y1", "6px");
+			stripe.setAttribute("y2", `${23 - 4 * Math.abs(i)}px`);
+			stripe.style.stroke = "black";
+			stripe.style.strokeWidth = "1px";
+			stripe.style.pointerEvents = "none";
+			this.#tracker.appendChild(stripe);
+		}
+		const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+		line.setAttribute("y1", "30px");
+		line.setAttribute("y2", `${svgHeight}pt`);
+		line.style.stroke = "white";
+		line.style.strokeWidth = "1px";
+		line.style.pointerEvents = "none";
+		this.#tracker.appendChild(line);
+		this.#svg.appendChild(this.#tracker);
+		this.#updateTracker();
+
 		this.#svg.setAttribute("width", `${(this.#maxTimeMs - this.#minTimeMs) / this.#zoom}px`);
 		this.#svg.setAttribute("height", `${rowHeight * (3 + this.#rowsNeeded) + 0.05}pt`);
 		return this.#svg;
+	}
+
+	#updateTracker() {
+		this.#tracker.setAttribute("transform", `translate(${this.#msToX(this.#trackerMs)}, 0)`);
+	}
+
+	#XToMs(x) {
+		return x * this.#zoom + this.#minTimeMs;
+	}
+
+	#msToX(ms) {
+		return (ms - this.#minTimeMs) / this.#zoom;
 	}
 }
