@@ -2,7 +2,7 @@
 
 import { Camera } from "./Camera.js";
 import { Clip } from "./Clip.js";
-import { EmbeddedHtmlVideoPlayer, EmbeddedPlayer } from "./EmbeddedPlayer.js";
+import { EmbeddedPlayer } from "./EmbeddedPlayer.js";
 import { Person } from "./Person.js";
 import { SyncPoint } from "./SyncPoint.js";
 import { TimelineEvent } from "./TimelineEvent.js";
@@ -372,8 +372,74 @@ export class Timeline {
 			parent.scrollLeft = ((mouseTimeMs - scrollDelta) - this.#minTimeMs) / this.#zoom;
 		};
 
-		// Error bars
+		const trackBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		trackBar.onclick = (event) => {
+			this.trackerMs = this.#XToMs(event.offsetX + 0.5);
+		};
+		const trackBarTitle = document.createElementNS("http://www.w3.org/2000/svg", "title");
+		trackBar.appendChild(trackBarTitle);
+		trackBar.onmousemove = (event) => {
+			trackBarTitle.innerHTML = "Jump to " + DATE_FORMAT_UGC_DETAILED.format(new Date(this.#XToMs(event.offsetX)));
+		}
+		trackBar.setAttribute("width", `${(this.#maxTimeMs - this.#minTimeMs) / this.#zoom}px`);
+		trackBar.setAttribute("height", "16pt");
+		trackBar.style.fill = "#4A4A4A";
+		this.#svg.appendChild(trackBar);
+		
+		// Day lines/labels
 		const rowHeight = 15;
+		const offsetMs = -3 * MS_PER_HOUR;
+		const firstDayMarkerMs = Math.ceil((this.#minTimeMs + offsetMs) / MS_PER_DAY) * MS_PER_DAY - offsetMs;
+		const numDayMarkers = Math.floor((this.#maxTimeMs + offsetMs) / MS_PER_DAY) - Math.ceil((this.#minTimeMs + offsetMs) / MS_PER_DAY) + 1;
+		for (let i = 0; i < numDayMarkers; i++) {
+			const dayMs = firstDayMarkerMs + i * MS_PER_DAY;
+			const x = (dayMs - this.#minTimeMs) / this.#zoom;
+			const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			line.setAttribute("x1", `${x}px`);
+			line.setAttribute("x2", `${x}px`);
+			line.setAttribute("y1", "20pt");
+			line.setAttribute("y2", `${(3 + this.#rowsNeeded) * rowHeight}pt`);
+			line.setAttribute("stroke", "silver");
+			line.style.strokeDasharray = "10px 10px 5px 10px";
+			this.#svg.appendChild(line);
+			const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+			text.setAttribute("style", `font:italic ${rowHeight}pt serif;fill:white`);
+			text.setAttribute("x", `${x + 0.2}px`);
+			text.setAttribute("y", `${rowHeight * 0.85}pt`);
+			text.setAttribute("cursor", "default");
+			text.style.pointerEvents = "none";
+			text.innerHTML = DATE_FORMAT_HEADER.format(new Date(dayMs));
+			this.#svg.appendChild(text);
+		}
+
+		// Events
+		for (const event of this.#events) {
+			const x = (event.date.valueOf() - this.#minTimeMs) / this.#zoom;
+			const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
+			const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+			title.innerHTML = event.name + "\n" + DATE_FORMAT_UGC_TOOLTIP.format(event.date);
+			a.appendChild(title);
+			const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+			text.setAttribute("font-size-adjust", "0.9");
+			text.setAttribute("text-anchor", "middle");
+			text.setAttribute("x", `${x}px`);
+			text.setAttribute("y", `${rowHeight * 2.6}pt`);
+			text.setAttribute("cursor", "default");
+			text.innerHTML = event.symbol;
+			a.appendChild(text);
+			this.#svg.appendChild(a);
+			const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+			line.setAttribute("x1", `${x}px`);
+			line.setAttribute("x2", `${x}px`);
+			line.setAttribute("y1", `${3 * rowHeight}pt`);
+			line.setAttribute("y2", `${(3 + this.#rowsNeeded) * rowHeight}pt`);
+			line.setAttribute("stroke", "grey");
+			line.setAttribute("stroke-dasharray", `${0.1 * rowHeight}pt,${0.1 * rowHeight}pt`);
+			line.setAttribute("stroke-dashoffset", `${0.05 * rowHeight}pt`);
+			this.#svg.appendChild(line);
+		}
+
+		// Error bars
 		for (const clip of this.#clips) {
 			if (clip.hasDefinedStartTimes) {
 				const capA = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -421,6 +487,9 @@ export class Timeline {
 						const oldSvg = this.#svg;
 						const newSvg = this.produceSvg(parent);
 						parent.replaceChild(newSvg, oldSvg);
+					}
+					if (this.#trackerMs < clip.startTimeAvgMs || this.#trackerMs >= clip.endTimeAvgMs) {
+						this.trackerMs = clip.startTimeAvgMs;
 					}
 				};
 				const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
@@ -491,56 +560,6 @@ export class Timeline {
 			}
 		}
 
-		// Day lines
-		const offsetMs = -3 * MS_PER_HOUR;
-		const firstDayMarkerMs = Math.ceil((this.#minTimeMs + offsetMs) / MS_PER_DAY) * MS_PER_DAY - offsetMs;
-		const numDayMarkers = Math.floor((this.#maxTimeMs + offsetMs) / MS_PER_DAY) - Math.ceil((this.#minTimeMs + offsetMs) / MS_PER_DAY) + 1;
-		for (let i = 0; i < numDayMarkers; i++) {
-			const dayMs = firstDayMarkerMs + i * MS_PER_DAY;
-			const x = (dayMs - this.#minTimeMs) / this.#zoom;
-			const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-			line.setAttribute("x1", `${x}px`);
-			line.setAttribute("x2", `${x}px`);
-			line.setAttribute("y1", "20pt");
-			line.setAttribute("y2", `${(3 + this.#rowsNeeded) * rowHeight}pt`);
-			line.setAttribute("stroke", "silver");
-			line.style.strokeDasharray = "10px 10px 5px 10px";
-			this.#svg.prepend(line);
-			const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			text.setAttribute("style", `font:italic ${rowHeight}pt serif;fill:white`);
-			text.setAttribute("x", `${x + 0.2}px`);
-			text.setAttribute("y", `${rowHeight * 0.85}pt`);
-			text.setAttribute("cursor", "default");
-			text.innerHTML = DATE_FORMAT_HEADER.format(new Date(dayMs));
-			this.#svg.prepend(text);
-		}
-
-		for (const event of this.#events) {
-			const x = (event.date.valueOf() - this.#minTimeMs) / this.#zoom;
-			const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
-			const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
-			title.innerHTML = event.name + "\n" + DATE_FORMAT_UGC_TOOLTIP.format(event.date);
-			a.appendChild(title);
-			const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			text.setAttribute("font-size-adjust", "0.9");
-			text.setAttribute("text-anchor", "middle");
-			text.setAttribute("x", `${x}px`);
-			text.setAttribute("y", `${rowHeight * 2.6}pt`);
-			text.setAttribute("cursor", "default");
-			text.innerHTML = event.symbol;
-			a.appendChild(text);
-			this.#svg.appendChild(a);
-			const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-			line.setAttribute("x1", `${x}px`);
-			line.setAttribute("x2", `${x}px`);
-			line.setAttribute("y1", `${3 * rowHeight}pt`);
-			line.setAttribute("y2", `${(3 + this.#rowsNeeded) * rowHeight}pt`);
-			line.setAttribute("stroke", "grey");
-			line.setAttribute("stroke-dasharray", `${0.1 * rowHeight}pt,${0.1 * rowHeight}pt`);
-			line.setAttribute("stroke-dashoffset", `${0.05 * rowHeight}pt`);
-			this.#svg.prepend(line);
-		}
-
 		const svgHeight = rowHeight * (3 + this.#rowsNeeded) + 0.05;
 
 		this.#tracker = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -561,8 +580,7 @@ export class Timeline {
 			if (this.#trackerDragging) {
 				const parent = this.#svg.parentElement;
 				if (parent) {
-					this.#trackerMs = Math.min(Math.max(this.#XToMs(event.x + parent.scrollLeft + 0.5), this.#minTimeMs), this.#maxTimeMs);
-					this.#updateTracker();
+					this.trackerMs = Math.min(Math.max(this.#XToMs(event.offsetX + 0.5), this.#minTimeMs), this.#maxTimeMs);
 				}
 			}
 		});
@@ -609,6 +627,15 @@ export class Timeline {
 	 */
 	#msToX(ms) {
 		return (ms - this.#minTimeMs) / this.#zoom;
+	}
+
+	/**
+	 * Sets the tracker position and loads corresponding videos.
+	 * @param {number} ms The tracker position in milliseconds.
+	 */
+	set trackerMs(ms) {
+		this.#trackerMs = ms;
+		this.#updateTracker();
 	}
 
 	/**
