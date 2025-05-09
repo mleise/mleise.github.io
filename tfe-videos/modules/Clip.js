@@ -443,6 +443,15 @@ export class Clip {
 		return this.#owner.color;
 	}
 
+	/**
+	 * Spawns an embedded player for this Clip at the given time inside the clip.
+	 * @param {number} videoTime The second within the clip’s video at which the desired position in the clip is found.
+	 * @returns An embedded player for the clip.
+	 */
+	spawnEmbeddedPlayer(videoTime) {
+		return this.#video.spawnEmbededPlayer(videoTime);
+	}
+
 	toString() {
 		return this.#duration === this.#video.duration ? this.#video.toString() : `${Video.formatVideoTime(this.#start)} to ${Video.formatVideoTime(this.#start + this.#duration)} in ${this.#video}`;
 	}

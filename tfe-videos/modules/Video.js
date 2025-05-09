@@ -3,6 +3,7 @@
 import { AnchorTime } from "./AnchorTime.js";
 import { Camera, NTSC30 } from "./Camera.js";
 import { Clip } from "./Clip.js";
+import { EmbeddedHtmlVideoPlayer, EmbeddedPlayer } from "./EmbeddedPlayer.js";
 import { Person } from "./Person.js";
 import { Timeline } from "./Timeline.js";
 import { TimeSource } from "./TimeSource.js";
@@ -324,6 +325,15 @@ export class Video {
 		throw new Error("not implemented");
 	}
 
+	/**
+	 * Spawns an embedded video player for this video.
+	 * @param {number} videoTime Time in the video in seconds, for which to spawn a player. The video is seeked to that position.
+	 * @returns {EmbeddedPlayer|undefined}
+	 */
+	spawnEmbededPlayer(videoTime) {
+		return undefined;
+	}
+
 	toString() {
 		return this.#title;
 	}
@@ -420,6 +430,10 @@ export class YouTubeVideo extends Video {
 		return `https://www.youtube.com/watch?v=${this.#id}&t=${Math.ceil(seconds)}s`;
 	}
 
+	/**
+	 * Goes through all YouTube live streams and compares their stream times as returned by YouTube’s API
+	 * with other time sources for these videos to determine the accuracy of these stream times.
+	 */
 	static calculateStreamTimes() {
 		let startLowerToleranceMs = +Infinity, endLowerToleranceMs = +Infinity;
 		let startUpperToleranceMs = -Infinity, endUpperToleranceMs = -Infinity;
@@ -613,5 +627,10 @@ export class MCToonDjiUpload extends Video {
 	 */
 	getUrlForTime(seconds, duration) {
 		return `https://archive.org/details/${this.title}`;
+	}
+
+	/** @inheritdoc */
+	spawnEmbededPlayer(videoTime) {
+		return new EmbeddedHtmlVideoPlayer(this, videoTime, `https://archive.org/download/${this.title}/${this.#fileName}.mp4`);
 	}
 }

@@ -2,6 +2,7 @@
 
 import { Camera } from "./Camera.js";
 import { Clip } from "./Clip.js";
+import { EmbeddedHtmlVideoPlayer, EmbeddedPlayer } from "./EmbeddedPlayer.js";
 import { Person } from "./Person.js";
 import { SyncPoint } from "./SyncPoint.js";
 import { TimelineEvent } from "./TimelineEvent.js";
@@ -46,20 +47,23 @@ export class Timeline {
 	#trackerMs;
 	/** @type {boolean} */
 	#trackerDragging;
+	/** @type {Map<Clip, EmbeddedPlayer>} */
+	#clipPlayers;
 	/** @type {Clip} */
 	#selectedClip;
 
 	constructor() {
-		this.#videos     = [];
-		this.#clips      = [];
-		this.#syncPoints = [];
-		this.#events     = [];
-		this.#zoom       = NaN;
-		this.#minTimeMs  = +Infinity;
-		this.#maxTimeMs  = -Infinity;
-		this.#rowsNeeded = 0;
-		this.#trackerMs  = 0;
+		this.#videos     	  = [];
+		this.#clips      	  = [];
+		this.#syncPoints 	  = [];
+		this.#events     	  = [];
+		this.#zoom       	  = NaN;
+		this.#minTimeMs  	  = +Infinity;
+		this.#maxTimeMs  	  = -Infinity;
+		this.#rowsNeeded 	  = 0;
+		this.#trackerMs  	  = 0;
 		this.#trackerDragging = false;
+		this.#clipPlayers     = new Map();
 	}
 
 	/**
@@ -541,9 +545,10 @@ export class Timeline {
 
 		this.#tracker = document.createElementNS("http://www.w3.org/2000/svg", "g");
 		const handle = document.createElementNS("http://www.w3.org/2000/svg", "path");
-		handle.setAttribute("d", "M 1 30 L +10 20 L +10 2 L -10 2 L -10 20 Z");
+		handle.setAttribute("d", "M 1 30 L +10 20 L +10 1 L -10 1 L -10 20 Z");
 		handle.style.fill = "silver";
-		handle.style.strokeWidth = "0px";
+		handle.style.stroke = "black";
+		handle.style.strokeWidth = "1px";
 		handle.style.strokeLinejoin = "round";
 		handle.style.cursor = "grab";
 		handle.onmousedown = () => {
@@ -588,15 +593,57 @@ export class Timeline {
 		return this.#svg;
 	}
 
-	#updateTracker() {
-		this.#tracker.setAttribute("transform", `translate(${this.#msToX(this.#trackerMs)}, 0)`);
-	}
-
+	/**
+	 * Converts an X-coordinate on the timeline into a time in milliseconds.
+	 * @param {number} x The X-coordinate in pixels.
+	 * @returns The date in milliseconds since 1970.
+	 */
 	#XToMs(x) {
 		return x * this.#zoom + this.#minTimeMs;
 	}
 
+	/**
+	 * Converts a time in milliseconds into an X-coordinate on the timeline.
+	 * @param {number} ms The date in milliseconds since 1970.
+	 * @returns The X-coordinate of that time on the timeline in pixels.
+	 */
 	#msToX(ms) {
 		return (ms - this.#minTimeMs) / this.#zoom;
+	}
+
+	/**
+	 * Updates the position of the tracker in the SVG and spawns video previews for that point in time.
+	 */
+	#updateTracker() {
+		this.#tracker.setAttribute("transform", `translate(${this.#msToX(this.#trackerMs)}, 0)`);
+		const videoPreviewDiv = document.getElementById("video-previews");
+		if (videoPreviewDiv) {
+			const playersToRemove = new Set(this.#clipPlayers.keys());
+			for (const clip of this.#clips) {
+				if (clip.hasDefinedStartTimes && clip.startTimeAvgMs <= this.#trackerMs && clip.endTimeAvgMs > this.#trackerMs) {
+					const clipTimeMs = clip.start + (this.#trackerMs - clip.startTimeAvgMs) / (1000 * (clip.timelapseRate || 1));
+					let player = this.#clipPlayers.get(clip);
+					if (player) {
+						playersToRemove.delete(clip);
+						player.seek(clipTimeMs);
+					}
+					else {
+						player = clip.spawnEmbeddedPlayer(clipTimeMs);
+						if (player) {
+							videoPreviewDiv.appendChild(player.element);
+							this.#clipPlayers.set(clip, player);
+						}
+					}
+				}
+			}
+			for (const clip of playersToRemove) {
+				const player = this.#clipPlayers.get(clip);
+				this.#clipPlayers.delete(clip);
+				if (player) {
+					videoPreviewDiv.removeChild(player.element);
+					player.close();
+				}
+			}
+		}
 	}
 }

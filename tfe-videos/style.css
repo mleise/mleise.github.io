@@ -102,3 +102,7 @@ tr:nth-child(even) th {
 	align-items: baseline;
 	white-space: nowrap;
 }
+
+#video-preview {
+	display: flex;
+}
