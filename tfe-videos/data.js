@@ -144,8 +144,6 @@ const vids = {
 	austin24hPart1            : new YouTubeVideo(timeline, "Aq2hZzHHxew", "Witsit Gets It", "24 Hour Antarctic Sun (Part 1)", 30585.241, NTSC30, cams.will360B, "2025-01-07T18:33:58Z"),
 	austin24hPart2            : new YouTubeVideo(timeline, "cMaRvYt1--A", "Witsit Gets It", "24 Hour Antarctic Sun (Part 2)", 30585.241, NTSC30, cams.will360B, "2025-01-07T18:34:02Z"),
 	austin24hPart3            : new YouTubeVideo(timeline, "WUFpxzCPuyU", "Witsit Gets It", "24 Hour Antarctic Sun (Part 3)", 30554.721, NTSC30, cams.will360B, "2025-01-07T18:34:04Z"),
-	austin24hTl               : new YouTubeVideo(timeline, "MhmpLVbo4jU", "Witsit Gets It", "24 Hour Sun in Antarctica (360 Degrees Time-Lapse)", 4407.661, NTSC30, cams.will360B, "2025-01-07T18:41:35Z")
-		.setTimelapseRate(20),
 	// Austin Whitsitt / streams
 	austinLive                : new YouTubeVideo(timeline, "xFxzu2reS_o", "Witsit Gets It", "Live from Antarctica - One Small Step for Man, One Giant Leap for Flat Earth", 2918.001, 30, peeps.austin, "2024-12-15T19:42:11Z", "2024-12-15T20:30:40Z"),
 
@@ -447,7 +445,6 @@ export const clips = {
 	austin24hPart1             : vids.austin24hPart1.createClip().enableAutoDuration(),
 	austin24hPart2             : vids.austin24hPart2.createClip().enableAutoDuration(),
 	austin24hPart3             : vids.austin24hPart3.createClip(),
-	austin24hTl                : vids.austin24hTl.createClip(),
 	// Austin Whitsitt / streams
 	austinLive                 : vids.austinLive
 		.skipClip("00:03:30/08")
@@ -927,8 +924,8 @@ export const clips = {
 	jeranFlightCQ              : vids.jeranFlight
 		.createClip("03:00:01/28"),
 	jeranFlightCR              : vids.jeranFlight
-		.addAnchorTime("16T07:04-03", "03:02:17/28", ts.digital)
-		.addAnchorTime("16T07:04-03", "03:02:28/13", ts.digital)
+		.addAnchorTime("16T19:04-03", "03:02:17/28", ts.digital)
+		.addAnchorTime("16T19:04-03", "03:02:28/13", ts.digital)
 		.createClip("03:02:53/21"),
 	jeranFlightCS              : vids.jeranFlight
 		.addAnchorTime("16T19:44:07-03", "03:03:03/20", ts.diningClock)
@@ -1273,6 +1270,7 @@ timeline.addSyncPoint(vids.daveSunspots, "00:17:24/17", vids.daveSunspots, "00:1
 //timeline.addSyncPoint(vids.daveSunspots, "00:17:24/24", vids.daveSunspots, "00:17:45/12"); // TODO: Do not uncomment, just for the timelapse calculation.
 timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:47", vids.mctoon1ToGo, "00:06:55/25", 43); // Cloud paterns
 timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:30", vids.mctoon1ToGo, "00:06:56/10", 1); // Lisbeth filming to the left and Jonathan approaching Austin
+timeline.addSyncPoint(vids.criticalLivePuntaArenas, "00:09:44/29", vids.mctoonDji11113557, "00:23:17.040", 0.04);
 // Flight to Union Glacier
 timeline.addSyncPoint(vids.criticalFlight2Tl, "00:00:32/16", vids.daveToUGTl, "00:00:09/00", 1);
 timeline.addSyncPoint(vids.criticalFlight2Tl, "00:08:18/05", vids.criticalFlight2Landing, "00:03:02/29"); // ident
@@ -1305,7 +1303,6 @@ timeline.addSyncPoint(vids.will360Part3, "00:40:44/08", vids.austin24hPart3, "03
 timeline.addSyncPoint(vids.mctoonDji14215156, "00:16:05.082", vids.criticalMike, "00:02:50/02", 0.04);
 timeline.addSyncPoint(vids.mctoonDji14230216, "00:01:48.764", vids.mctoonLive100Percent, "00:02:23/08", 0.04);
 timeline.addSyncPoint(vids.will360Part1, "00:55:39/00", vids.daveSolarPhotography, "00:05:48/15"); // TODO: could be aligned more precisely. Maybe when I have YT embeds.
-timeline.addSyncPoint(vids.will360Part2, "02:13:35/13", vids.austin24hTl, "00:35:10/22");
 timeline.addSyncPoint(vids.will360Part1, "06:33:19/07", vids.mctoonLive100Percent, "01:56:07/23", 0.04);
 timeline.addSyncPoint(vids.will360Part1, "09:01:43/02", vids.daveVapegate, "00:09:57/10"); // roundabout
 timeline.addSyncPoint(vids.will360Part1, "09:01:54/17", vids.daveSolarPhotography, "00:03:31/19");
@@ -1335,18 +1332,19 @@ timeline.addSyncPoint(vids.will360Part3, "03:58:28/11", vids.jonathanIRThermal, 
 timeline.addSyncPoint(vids.mctoonDji15194240, "00:27:32.360", vids.jeranLiveUG2, "00:05:22/11", 0.02);
 timeline.addSyncPoint(vids.mctoonDji15204825, "00:15:37.804", vids.willLiveAntarctica, "00:02:08/14", 0.1);
 timeline.addSyncPoint(vids.wallyJeranometer, "00:00:27.460", vids.will360Part2, "04:06:09/10", 0.3);
-// MCToon’s & Will’s 2nd 360° footage
+timeline.addSyncPoint(vids.will360Part3, "01:57:50", vids.jonathanIce, "00:00:00", 150); // roundabout
+timeline.addSyncPoint(vids.will360Part3, "01:59:10", vids.jonathanSnowcat, "00:00:00", 80); // roundabout
 timeline.addSyncPoint(vids.mctoon360Part1, "00:08:39/12", vids.willLiveAntarctica, "00:05:15/04");
+// MCToon’s & Will’s 2nd 360° footage
 timeline.addSyncPoint(vids.willMidnightAntarctica, "00:05:36/25", vids.daveVapegate, "00:01:32/17");
 timeline.addSyncPoint(vids.willSecond360, "00:03:10/24", vids.daveExcuses, "00:08:43");
 timeline.addSyncPoint(vids.willSecond360, "00:10:33/21", vids.willObservationArmy, "00:00:32/30", 10);
 timeline.addSyncPoint(vids.willSecond360, "00:11:49/10", vids.jeranLiveSunspots, "00:05:20", 20);
+timeline.addSyncPoint(vids.willSecond360, "00:16:04/29", vids.jeranFlight, "02:58:22", 150);
 timeline.addSyncPoint(vids.willSecond360, "00:17:54/28", vids.mctoon360Part2, "08:05:23/26", 150);
 timeline.addSyncPoint(vids.willSecond360, "00:24:15/24", vids.daveSolarPhotography, "00:04:20/10", 150); // TODO: What's broken?
 timeline.addSyncPoint(vids.willSecond360, "00:24:18/06", vids.daveSolarPhotography, "00:04:48", 150);
 timeline.addSyncPoint(vids.willSecond360, "00:21:59/26", vids.mctoon360Part3, "00:13:01/03", 150);
-timeline.addSyncPoint(vids.will360Part3, "01:57:50", vids.jonathanIce, "00:00:00", 150); // roundabout
-timeline.addSyncPoint(vids.will360Part3, "01:59:10", vids.jonathanSnowcat, "00:00:00", 80); // roundabout
 timeline.addSyncPoint(vids.willSecond360, "00:30:25/16", vids.jonathanShort, "00:00:11/16"); // roundabout
 timeline.addSyncPoint(vids.willSecond360, "00:30:27/14", vids.jonathanDistanceA, "00:00:25"); // roundabout
 timeline.addSyncPoint(vids.willSecond360, "00:31:31/18", vids.jonathanToilet, "00:00:54.6"); // roundabout
