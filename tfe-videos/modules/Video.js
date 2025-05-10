@@ -3,7 +3,7 @@
 import { AnchorTime } from "./AnchorTime.js";
 import { Camera, NTSC30 } from "./Camera.js";
 import { Clip } from "./Clip.js";
-import { EmbeddedHtmlVideoPlayer, EmbeddedPlayer } from "./EmbeddedPlayer.js";
+import { EmbeddedHtmlVideoPlayer, EmbeddedPlayer, EmbeddedTikTokPlayer, EmbeddedYouTubePlayer } from "./EmbeddedPlayer.js";
 import { Person } from "./Person.js";
 import { Timeline } from "./Timeline.js";
 import { TimeSource } from "./TimeSource.js";
@@ -489,6 +489,11 @@ export class YouTubeVideo extends Video {
 			}
 		}
 	}
+
+	/** @inheritdoc */
+	spawnEmbededPlayer(videoTime) {
+		return new EmbeddedYouTubePlayer(this, videoTime, this.#id);
+	}
 }
 
 /**
@@ -525,6 +530,11 @@ export class TikTokVideo extends Video {
 	 */
 	getUrlForTime(seconds, duration) {
 		return `https://www.tiktok.com/@${this.#channelId}/video/${this.#videoId}`;
+	}
+
+	/** @inheritdoc */
+	spawnEmbededPlayer(videoTime) {
+		return new EmbeddedTikTokPlayer(this, videoTime, this.#channelId, this.#videoId);
 	}
 }
 

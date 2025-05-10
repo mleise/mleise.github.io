@@ -7,6 +7,15 @@
   <title>TFE Video Times</title>
   <link rel="stylesheet" href="style.css">
   <script defer type="module">
+    import { EmbeddedYouTubePlayer } from "./modules/EmbeddedPlayer.js";
+    window.onYouTubeIframeAPIReady = function() {
+	    EmbeddedYouTubePlayer.apiReady();
+    };
+    var scriptTag = document.createElement('script');
+    scriptTag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(scriptTag, firstScriptTag);
+
     import { closePopupWindow, showClipInfo, openClipLink } from "./video-times.js";
     window.closePopupWindow = closePopupWindow;
     window.showClipInfo = showClipInfo;
