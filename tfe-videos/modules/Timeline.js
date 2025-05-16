@@ -370,6 +370,7 @@ export class Timeline {
 			const newSvg = this.produceSvg(parent);
 			parent.replaceChild(newSvg, oldSvg);
 			parent.scrollLeft = ((mouseTimeMs - scrollDelta) - this.#minTimeMs) / this.#zoom;
+			return false;
 		};
 
 		const trackBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
