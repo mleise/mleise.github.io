@@ -598,9 +598,11 @@ export class MCToonDjiUpload extends Video {
 		const days = Math.round((fileNameDate.valueOf() - msSinceMidnight) / (1000 * 3600 * 24)) * 1000 * 3600 * 24;
 		this.#frameTimer = new Date(days + msSinceMidnight + 6 * 3600000);
 		// Create single clip
-		const clip = this.createClip().enableAutoDuration();
+		const clip = this.createClip();
 		if (MCToonDjiUpload.#allClips.length > 0) {
-			Clip.orderClips(MCToonDjiUpload.#allClips[MCToonDjiUpload.#allClips.length - 1], clip);
+			const lastClip = MCToonDjiUpload.#allClips[MCToonDjiUpload.#allClips.length - 1];
+			lastClip.enableAutoDuration(clip);
+			Clip.orderClips(lastClip, clip);
 		}
 		MCToonDjiUpload.#allClips.push(clip);
 	}
