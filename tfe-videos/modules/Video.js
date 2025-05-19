@@ -3,7 +3,7 @@
 import { AnchorTime } from "./AnchorTime.js";
 import { Camera, NTSC30 } from "./Camera.js";
 import { Clip } from "./Clip.js";
-import { EmbeddedHtmlVideoPlayer, EmbeddedPlayer, EmbeddedTikTokPlayer, EmbeddedYouTubePlayer } from "./EmbeddedPlayer.js";
+import { EmbeddedHtmlVideoPlayer, EmbeddedTikTokPlayer, EmbeddedYouTubePlayer } from "./EmbeddedPlayer.js";
 import { Person } from "./Person.js";
 import { Timeline } from "./Timeline.js";
 import { TimeSource } from "./TimeSource.js";
@@ -73,6 +73,11 @@ export class Video {
 	/** @returns The video duration in seconds. Note that if this video is a single full length {@link Clip}, the duration of that clip can be shorter if {@link Clip.autoDuration} is enabled for the clip. */
 	get duration() {
 		return this.#duration;
+	}
+
+	/** @returns The frame rate of this video. */
+	get fps() {
+		return this.#fps;
 	}
 
 	/**
@@ -326,12 +331,10 @@ export class Video {
 	}
 
 	/**
-	 * Spawns an embedded video player for this video.
-	 * @param {number} videoTime Time in the video in seconds, for which to spawn a player. The video is seeked to that position.
-	 * @returns {EmbeddedPlayer|undefined}
+	 * @returns {typeof EmbeddedHtmlVideoPlayer | typeof EmbeddedTikTokPlayer | typeof EmbeddedYouTubePlayer} The class to be used for HTML embedded players of this video type.
 	 */
-	spawnEmbededPlayer(videoTime) {
-		return undefined;
+	get embeddedPlayerClass() {
+		throw new Error("Not implemented!");
 	}
 
 	toString() {
@@ -491,8 +494,8 @@ export class YouTubeVideo extends Video {
 	}
 
 	/** @inheritdoc */
-	spawnEmbededPlayer(videoTime) {
-		return new EmbeddedYouTubePlayer(this, videoTime, this.#id);
+	get embeddedPlayerClass() {
+		return EmbeddedYouTubePlayer;
 	}
 }
 
@@ -503,24 +506,34 @@ export class TikTokVideo extends Video {
 	/** The TikTok channel this video was posted on. */
 	#channelId;
 	/** The TikTok video ID within the channel. */
-	#videoId;
+	#id;
 
 	/**
 	 * Creates a new TikTok video on a timeline.
 	 * @param {Timeline} timeline The timeline this video will be added to.
 	 * @param {string} channelId TikTok channel ID.
-	 * @param {string} videoId TikTok video ID.
+	 * @param {string} id TikTok video ID.
 	 * @param {string} title TikTok video title.
 	 * @param {number} duration Video duration in seconds.
 	 * @param {number} fps Video frame rate.
 	 * @param {Camera|Person} cameraOrOwner Camera used to film this video or owner of the camera if unknown, if a single camera was used to film all of it.
 	 * @param {string} publishTime Publish date of this video.
 	 */
-	constructor(timeline, channelId, videoId, title, duration, fps, cameraOrOwner, publishTime) {
+	constructor(timeline, channelId, id, title, duration, fps, cameraOrOwner, publishTime) {
 		super(timeline, title, duration, fps, cameraOrOwner);
 		this.#channelId = channelId;
-		this.#videoId = videoId;
+		this.#id = id;
 		super.publishTime = publishTime;
+	}
+
+	/** @returns The channel name under which the video was posted. */
+	get channelId() {
+		return this.#channelId;
+	}
+
+	/** @returns The video ID that uniquely identifies this video on TikTok. */
+	get id() {
+		return this.#id;
 	}
 
 	/**
@@ -529,12 +542,12 @@ export class TikTokVideo extends Video {
 	 * @returns A URL that opens the video in TikTok.
 	 */
 	getUrlForTime(seconds, duration) {
-		return `https://www.tiktok.com/@${this.#channelId}/video/${this.#videoId}`;
+		return `https://www.tiktok.com/@${this.#channelId}/video/${this.#id}`;
 	}
 
 	/** @inheritdoc */
-	spawnEmbededPlayer(videoTime) {
-		return new EmbeddedTikTokPlayer(this, videoTime, this.#channelId, this.#videoId);
+	get embeddedPlayerClass() {
+		return EmbeddedTikTokPlayer;
 	}
 }
 
@@ -630,6 +643,11 @@ export class MCToonDjiUpload extends Video {
 		}
 	}
 
+	/** @returns The Archive.org URL of the H.264 preview video. */
+	get url() {
+		return `https://archive.org/download/${this.title}/${this.#fileName}.mp4`;
+	}
+
 	/**
 	 * @param {number} seconds Seconds into the video. (Ignored by Archive.org.)
 	 * @param {number} duration Duration of the segment to be played back in seconds. (Ignored by Archive.org.)
@@ -640,7 +658,7 @@ export class MCToonDjiUpload extends Video {
 	}
 
 	/** @inheritdoc */
-	spawnEmbededPlayer(videoTime) {
-		return new EmbeddedHtmlVideoPlayer(this, videoTime, `https://archive.org/download/${this.title}/${this.#fileName}.mp4`);
+	get embeddedPlayerClass() {
+		return EmbeddedHtmlVideoPlayer;
 	}
 }

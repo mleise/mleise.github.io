@@ -2,11 +2,11 @@
 
 import { Camera } from "./Camera.js";
 import { Clip } from "./Clip.js";
-import { EmbeddedPlayer } from "./EmbeddedPlayer.js";
+import { EmbeddedHtmlVideoPlayer, EmbeddedVideoPlayer, EmbeddedTikTokPlayer, EmbeddedYouTubePlayer } from "./EmbeddedPlayer.js";
 import { Person } from "./Person.js";
 import { SyncPoint } from "./SyncPoint.js";
 import { TimelineEvent } from "./TimelineEvent.js";
-import { MCToonDjiUpload, Video, YouTubeVideo } from "./Video.js";
+import { MCToonDjiUpload, TikTokVideo, Video, YouTubeVideo } from "./Video.js";
 
 /** Milliseconds to an hour. */
 const MS_PER_HOUR = 60 * 60 * 1000;
@@ -23,6 +23,12 @@ export const DATE_FORMAT_UGC_DETAILED = new Intl.DateTimeFormat("en-US", { timeZ
  * The timeline is what all {@link Video} {@link Clip}s are placed on.
  */
 export class Timeline {
+	/** Cache of once added, but now hidden YouTube players for faster loads and less ads. @type {Array<EmbeddedYouTubePlayer>} */
+	static #embeddedYouTubePlayerPool = [];
+	/** Cache of once added, but now hidden TikTok players. @type {Array<EmbeddedTikTokPlayer>} */
+	static #embeddedTikTokPlayerPool = [];
+	/** Cache of once added, but now hidden HTML video players. @type {Array<EmbeddedHtmlVideoPlayer>} */
+	static #embeddedHtmlVideoPlayerPool = [];
 	/** All videos created for this timeline. @type {Video[]} */
 	#videos;
 	/** All clips placed on this timeline. @type {Clip[]} */
@@ -47,9 +53,9 @@ export class Timeline {
 	#trackerMs;
 	/** @type {boolean} */
 	#trackerDragging;
-	/** @type {Map<Clip, EmbeddedPlayer>} */
+	/** Embedded video players for clips at the currently selected time. @type {Map<Clip, EmbeddedVideoPlayer>} */
 	#clipPlayers;
-	/** @type {Clip} */
+	/** The currently selected clip. @type {Clip} */
 	#selectedClip;
 
 	constructor() {
@@ -646,30 +652,121 @@ export class Timeline {
 		this.#tracker.setAttribute("transform", `translate(${this.#msToX(this.#trackerMs)}, 0)`);
 		const videoPreviewDiv = document.getElementById("video-previews");
 		if (videoPreviewDiv) {
-			const playersToRemove = new Set(this.#clipPlayers.keys());
+			/** Clips that should now show on the preview panel. @type {Map<Clip, number[]>}*/
+			const newClips = new Map();
 			for (const clip of this.#clips) {
 				if (clip.hasDefinedStartTimes && clip.startTimeAvgMs <= this.#trackerMs && clip.endTimeAvgMs > this.#trackerMs) {
-					const clipTimeMs = clip.start + (this.#trackerMs - clip.startTimeAvgMs) / (1000 * (clip.timelapseRate || 1));
-					let player = this.#clipPlayers.get(clip);
+					const start = clip.start + 0.3 / clip.video.fps;
+					const end = clip.start + clip.duration - 0.6 / clip.video.fps;
+					const position = Math.max(start, Math.min(end, clip.start + (this.#trackerMs - clip.startTimeAvgMs) / (1000 * (clip.timelapseRate || 1)) + 0.3 / clip.video.fps));
+					newClips.set(clip, [start, end, position]);
+				}
+			}
+			// Clips that remain on the panel, but have their playhead changed.
+			const oldClips = new Set(this.#clipPlayers.keys());
+			for (const newClip of newClips.keys()) {
+				if (oldClips.has(newClip)) {
+					this.#clipPlayers.get(newClip)?.seekTo(newClips.get(newClip)?.at(2) || 0);
+					newClips.delete(newClip);
+					oldClips.delete(newClip);
+				}
+			}
+			// A different clip from the same video is played. We update the player and seek to the new position.
+			for (const newClip of newClips.keys()) {
+				for (const oldClip of oldClips) {
+					if (oldClip.video === newClip.video) {
+						const player = this.#clipPlayers.get(oldClip);
 					if (player) {
-						playersToRemove.delete(clip);
-						player.seek(clipTimeMs);
+							const times = newClips.get(newClip) || [0, 0, 0];
+							player.updateLimits(times[0], times[1], times[2]);
+							newClips.delete(newClip);
+							oldClips.delete(oldClip);
+							this.#clipPlayers.delete(oldClip);
+							this.#clipPlayers.set(newClip, player);
 					}
-					else {
-						player = clip.spawnEmbeddedPlayer(clipTimeMs);
-						if (player) {
-							videoPreviewDiv.appendChild(player.element);
-							this.#clipPlayers.set(clip, player);
-						}
+						break;
 					}
 				}
 			}
-			for (const clip of playersToRemove) {
-				const player = this.#clipPlayers.get(clip);
-				this.#clipPlayers.delete(clip);
+			// A compatible player for a different video is required.
+			for (const newClip of newClips.keys()) {
+				for (const oldClip of oldClips) {
+					if (oldClip.video.constructor === newClip.video.constructor) {
+						const player = this.#clipPlayers.get(oldClip);
+						const times = newClips.get(newClip) || [0, 0, 0];
+						if (player) {
+							if (newClip.video instanceof YouTubeVideo && player instanceof EmbeddedYouTubePlayer) {
+								player.open(times[0], times[1], times[2], newClip.video.id);
+							}
+							else if (newClip.video instanceof TikTokVideo && player instanceof EmbeddedTikTokPlayer) {
+								player.open(times[0], times[1], times[2], newClip.video.id);
+							}
+							else if (newClip.video instanceof MCToonDjiUpload && player instanceof EmbeddedHtmlVideoPlayer) {
+								player.open(times[0], times[1], times[2], newClip.video.url);
+							}
+							newClips.delete(newClip);
+							oldClips.delete(oldClip);
+							this.#clipPlayers.delete(oldClip);
+							this.#clipPlayers.set(newClip, player);
+						}
+						break;
+					}
+				}
+			}
+			// Remove players that are no longer in use.
+			for (const oldClip of oldClips) {
+				const player = this.#clipPlayers.get(oldClip);
+				player?.hide();
+				this.#clipPlayers.delete(oldClip);
+				if (player instanceof EmbeddedYouTubePlayer) {
+					Timeline.#embeddedYouTubePlayerPool.push(player);
+				}
+				else if (player instanceof EmbeddedTikTokPlayer) {
+					Timeline.#embeddedTikTokPlayerPool.push(player);
+				}
+				else if (player instanceof EmbeddedHtmlVideoPlayer) {
+					Timeline.#embeddedHtmlVideoPlayerPool.push(player);
+				}
+			}
+			// Add players for new clips.
+			for (const newClip of newClips.keys()) {
+				let player;
+				const times = newClips.get(newClip) || [0, 0, 0];
+				if (newClip.video instanceof YouTubeVideo) {
+					player = Timeline.#embeddedYouTubePlayerPool.pop();
+				}
+				else if (newClip.video instanceof TikTokVideo) {
+					player = Timeline.#embeddedTikTokPlayerPool.pop();
+				}
+				else if (newClip.video instanceof MCToonDjiUpload) {
+					player = Timeline.#embeddedHtmlVideoPlayerPool.pop();
+				}
 				if (player) {
-					videoPreviewDiv.removeChild(player.element);
-					player.close();
+					this.#clipPlayers.set(newClip, player);
+					player.show();
+					if (newClip.video instanceof YouTubeVideo) {
+						player.open(times[0], times[1], times[2], newClip.video.id)
+					}
+					else if (newClip.video instanceof TikTokVideo) {
+						player.open(times[0], times[1], times[2], newClip.video.id)
+					}
+					else if (newClip.video instanceof MCToonDjiUpload) {
+						player.open(times[0], times[1], times[2], newClip.video.url)
+					}
+					continue;
+				}
+				if (newClip.video instanceof YouTubeVideo) {
+					player = new EmbeddedYouTubePlayer(times[0], times[1], times[2], newClip.video.id);
+				}
+				else if (newClip.video instanceof TikTokVideo) {
+					player = new EmbeddedTikTokPlayer(times[0], times[1], times[2], newClip.video.id);
+				}
+				else if (newClip.video instanceof MCToonDjiUpload) {
+					player = new EmbeddedHtmlVideoPlayer(times[0], times[1], times[2], newClip.video.url);
+				}
+				if (player) {
+					this.#clipPlayers.set(newClip, player);
+					videoPreviewDiv.appendChild(player.element);
 				}
 			}
 		}
