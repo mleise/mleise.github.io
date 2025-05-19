@@ -211,6 +211,31 @@ export class Clip {
 	}
 
 	/**
+	 * Anchors the start of the clip manually.
+	 * @param {string|Date} minStart Last possible date this clip could end.
+	 * @param {string} reasoning The explanation for why we think the dates are correct.
+	 * @returns {Clip} This clip.
+	 */
+	setStartTimeManually(minStart, reasoning) {
+		minStart = minStart instanceof Date ? minStart : new Date("2024-12-" + minStart + ":00");
+		this.#timeInterval.raiseLower(minStart.valueOf(), reasoning);
+		return this;
+	}
+
+	/**
+	 * Anchors the start of the clip manually given its end time.
+	 * @param {string|Date} maxEnd Last possible date this clip could end.
+	 * @param {string} reasoning The explanation for why we think the dates are correct.
+	 * @returns {Clip} This clip.
+	 */
+	setEndTimeManually(maxEnd, reasoning) {
+		maxEnd = maxEnd instanceof Date ? maxEnd : new Date("2024-12-" + maxEnd + ":00");
+		const maxStart = new Date(maxEnd.valueOf() - this.realTimeDurationMs);
+		this.#timeInterval.lowerUpper(maxStart.valueOf(), reasoning);
+		return this;
+	}
+
+	/**
 	 * Appends a clip to this clip.
 	 * @param {Clip} other The clip to be appended.
 	 * @returns {Clip} The appended clip.
