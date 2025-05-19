@@ -351,11 +351,12 @@ export class Timeline {
 	}
 
 	/**
-	 * 
+	 * Produces an SVG from this timeline. It also finds videos to preview.
 	 * @param {HTMLElement} parent The HTML element that is serving as the parent node for the SVG.
-	 * @returns 
+	 * @param {boolean} zooming Set to `true` if the method has been called just to zoom in or out. In that case the video previews wont be touched.
+	 * @returns The produced SVG element.
 	 */
-	produceSvg(parent) {
+	produceSvg(parent, zooming) {
 		if (!(this.#minTimeMs < this.#maxTimeMs)) {
 			throw new Error("Before rendering the timeline, the start and end date need to be determined.");
 		}
@@ -373,7 +374,7 @@ export class Timeline {
 			const oldSvg = this.#svg;
 			this.#zoom = Math.min(Math.max(this.#zoom * Math.pow(1.003, event.deltaY), 500), (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth);
 			scrollDelta *= this.#zoom;
-			const newSvg = this.produceSvg(parent);
+			const newSvg = this.produceSvg(parent, true);
 			parent.replaceChild(newSvg, oldSvg);
 			parent.scrollLeft = ((mouseTimeMs - scrollDelta) - this.#minTimeMs) / this.#zoom;
 			return false;
@@ -492,7 +493,7 @@ export class Timeline {
 					const parent = this.#svg.parentElement;
 					if (parent) {
 						const oldSvg = this.#svg;
-						const newSvg = this.produceSvg(parent);
+						const newSvg = this.produceSvg(parent, true);
 						parent.replaceChild(newSvg, oldSvg);
 					}
 					if (this.#trackerMs < clip.startTimeAvgMs || this.#trackerMs >= clip.endTimeAvgMs) {
@@ -613,7 +614,7 @@ export class Timeline {
 		line.style.pointerEvents = "none";
 		this.#tracker.appendChild(line);
 		this.#svg.appendChild(this.#tracker);
-		this.#updateTracker();
+		this.#updateTracker(zooming);
 
 		this.#svg.setAttribute("width", `${(this.#maxTimeMs - this.#minTimeMs) / this.#zoom}px`);
 		this.#svg.setAttribute("height", `${rowHeight * (3 + this.#rowsNeeded) + 0.05}pt`);
@@ -644,16 +645,17 @@ export class Timeline {
 	 */
 	set trackerMs(ms) {
 		this.#trackerMs = ms;
-		this.#updateTracker();
+		this.#updateTracker(false);
 	}
 
 	/**
 	 * Updates the position of the tracker in the SVG and spawns video previews for that point in time.
+	 * @param {boolean} zooming Set to `true` if the method has been called just to zoom in or out. In that case the video previews wont be touched.
 	 */
-	#updateTracker() {
+	#updateTracker(zooming) {
 		this.#tracker.setAttribute("transform", `translate(${this.#msToX(this.#trackerMs)}, 0)`);
 		const videoPreviewDiv = document.getElementById("video-previews");
-		if (videoPreviewDiv) {
+		if (videoPreviewDiv && !zooming) {
 			/** Clips that should now show on the preview panel. @type {Map<Clip, number[]>}*/
 			const newClips = new Map();
 			for (const clip of this.#clips) {
@@ -678,14 +680,14 @@ export class Timeline {
 				for (const oldClip of oldClips) {
 					if (oldClip.video === newClip.video) {
 						const player = this.#clipPlayers.get(oldClip);
-					if (player) {
+						if (player) {
 							const times = newClips.get(newClip) || [0, 0, 0];
 							player.updateLimits(times[0], times[1], times[2]);
 							newClips.delete(newClip);
 							oldClips.delete(oldClip);
 							this.#clipPlayers.delete(oldClip);
 							this.#clipPlayers.set(newClip, player);
-					}
+						}
 						break;
 					}
 				}
