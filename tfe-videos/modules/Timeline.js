@@ -517,52 +517,54 @@ export class Timeline {
 				}
 				this.#svg.appendChild(rect);
 
-				// Clip rect
-				const clipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
-				clipPath.id = `clipPath${i}`;
-				const clipRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-				clipRect.setAttribute("x", `${x + 1}px`);
-				clipRect.setAttribute("y", `${y}pt`);
-				clipRect.setAttribute("width", `${width - 2}px`);
-				clipRect.setAttribute("height", `${rowHeight}pt`);
-				clipPath.appendChild(clipRect);
-				this.#svg.appendChild(clipPath);
+				if (width > 2) {
+					// Clip rect
+					const clipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+					clipPath.id = `clipPath${i}`;
+					const clipRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+					clipRect.setAttribute("x", `${x + 1}px`);
+					clipRect.setAttribute("y", `${y}pt`);
+					clipRect.setAttribute("width", `${width - 2}px`);
+					clipRect.setAttribute("height", `${rowHeight}pt`);
+					clipPath.appendChild(clipRect);
+					this.#svg.appendChild(clipPath);
 
-				// LIVE badge
-				if (clip.video.isLive) {
-					const liveRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-					const x = (clip.startTimeAvgMs - this.#minTimeMs) / this.#zoom + 2;
-					const y = rowHeight * (3.39 + clip.timelineRow);
-					liveRect.setAttribute("x", `${x}px`);
-					liveRect.setAttribute("y", `${y}pt`);
-					liveRect.setAttribute("width", "23px");
-					liveRect.setAttribute("height", `${0.51 * rowHeight}pt`);
-					liveRect.setAttribute("style", "fill:red");
-					liveRect.style.clipPath = `url(#clipPath${i})`;
-					liveRect.style.pointerEvents = "none";
-					this.#svg.appendChild(liveRect);
-					const liveText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-					liveText.setAttribute("x", `${x + 0.5}px`);
-					liveText.setAttribute("y", `${y + 0.44 * rowHeight}pt`);
-					liveText.style.fill = "white";
-					liveText.style.fontFamily = "sans-serif";
-					liveText.style.fontSize = `${0.5 * rowHeight}pt`;
-					liveText.style.clipPath = `url(#clipPath${i})`;
-					liveText.style.pointerEvents = "none";
-					liveText.textContent = "LIVE";
-					this.#svg.appendChild(liveText);
-				}
+					// LIVE badge
+					if (clip.video.isLive) {
+						const liveRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+						const x = (clip.startTimeAvgMs - this.#minTimeMs) / this.#zoom + 2;
+						const y = rowHeight * (3.39 + clip.timelineRow);
+						liveRect.setAttribute("x", `${x}px`);
+						liveRect.setAttribute("y", `${y}pt`);
+						liveRect.setAttribute("width", "23px");
+						liveRect.setAttribute("height", `${0.51 * rowHeight}pt`);
+						liveRect.setAttribute("style", "fill:red");
+						liveRect.style.clipPath = `url(#clipPath${i})`;
+						liveRect.style.pointerEvents = "none";
+						this.#svg.appendChild(liveRect);
+						const liveText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+						liveText.setAttribute("x", `${x + 0.5}px`);
+						liveText.setAttribute("y", `${y + 0.44 * rowHeight}pt`);
+						liveText.style.fill = "white";
+						liveText.style.fontFamily = "sans-serif";
+						liveText.style.fontSize = `${0.5 * rowHeight}pt`;
+						liveText.style.clipPath = `url(#clipPath${i})`;
+						liveText.style.pointerEvents = "none";
+						liveText.textContent = "LIVE";
+						this.#svg.appendChild(liveText);
+					}
 
-				// Timelapse badge
-				if (clip.timelapseRate !== 1) {
-					const timelapseText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-					timelapseText.setAttribute("x", `${x + 0.5}px`);
-					timelapseText.setAttribute("y", `${y + 0.8 * rowHeight}pt`);
-					timelapseText.style.fontSize = `${0.5 * rowHeight}pt`;
-					timelapseText.style.clipPath = `url(#clipPath${i})`;
-					timelapseText.style.pointerEvents = "none";
-					timelapseText.textContent = "⌚";
-					this.#svg.appendChild(timelapseText);
+					// Timelapse badge
+					if (clip.timelapseRate !== 1) {
+						const timelapseText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+						timelapseText.setAttribute("x", `${x + 0.5}px`);
+						timelapseText.setAttribute("y", `${y + 0.8 * rowHeight}pt`);
+						timelapseText.style.fontSize = `${0.5 * rowHeight}pt`;
+						timelapseText.style.clipPath = `url(#clipPath${i})`;
+						timelapseText.style.pointerEvents = "none";
+						timelapseText.textContent = "⌚";
+						this.#svg.appendChild(timelapseText);
+					}
 				}
 			}
 		}
