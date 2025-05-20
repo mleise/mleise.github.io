@@ -109,8 +109,9 @@ export class EmbeddedVideoPlayer {
 		const coa = new CourseOfActions(group, actions);
 		if (group !== undefined) {
 			for (let i = 1; i < this.#coas.length; i++) {
-				if (coa.group == group) {
+				if (this.#coas[i].group == coa.group) {
 					this.#coas.splice(i, 1);
+					break;
 				}
 			}
 		}
@@ -297,7 +298,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 		this.iframe.style.height = "270px";
 		this.#id = id;
 		this.#serial = EmbeddedYouTubePlayer.#nextSerial++;
-		this.courseOfActions(undefined, [
+		this.courseOfActions(2, [
 			// Load IFrame
 			()        => { this.iframe.src = `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=0&rel=0&origin=${origin}`; },
 			(success) => { this.element.onload = () => { this.element.onload = null; success(true); } },
@@ -331,7 +332,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 		}
 		else {
 			this.#id = id;
-			this.courseOfActions(undefined, [
+			this.courseOfActions(2, [
 				// Load new video
 				()        => {
 					this.#postMessage({ event: "command", func: "mute" });
@@ -545,7 +546,7 @@ export class EmbeddedTikTokPlayer extends EmbeddedIframePlayer {
 		super(start, end, position, `https://www.tiktok.com`);
 		this.resize(576, 768)
 		this.#id = id;
-		this.courseOfActions(undefined, this.#commonOpenActions());
+		this.courseOfActions(2, this.#commonOpenActions());
 	}
 
 	/**
@@ -563,7 +564,7 @@ export class EmbeddedTikTokPlayer extends EmbeddedIframePlayer {
 			this.#id = id;
 			super.updateLimits(start, end);
 			super.seekTo(position);
-			this.courseOfActions(undefined, this.#commonOpenActions());
+			this.courseOfActions(2, this.#commonOpenActions());
 		}
 	}
 
@@ -704,7 +705,7 @@ export class EmbeddedHtmlVideoPlayer extends EmbeddedVideoPlayer {
 		videoElement.preload = "metadata";
 		super(start, end, position, videoElement);
 		this.#url = url;
-		this.courseOfActions(undefined, this.#commonOpenActions());
+		this.courseOfActions(2, this.#commonOpenActions());
 	}
 
 	/** @returns {HTMLVideoElement} The player HTMLVideoElement */
@@ -730,7 +731,7 @@ export class EmbeddedHtmlVideoPlayer extends EmbeddedVideoPlayer {
 			super.updateLimits(start, end);
 			super.seekTo(position);
 			this.#url = url;
-			this.courseOfActions(undefined, this.#commonOpenActions());
+			this.courseOfActions(2, this.#commonOpenActions());
 		}
 	}
 
