@@ -24,7 +24,7 @@ const ts = {
 	/** A video aligned via wall clock +/-60 secs. */
 	analog      : new TimeSource("wall clock reading"                                       , -60*1000, +60*1000),
 	/** The dining hall clock at Union Glacier camp, corrected from other Will’s phone and MCToon’s phone and DJI camera. */
-	diningClock : new TimeSource("the dining hall clock at Union Glacier (ahead by 17:23)"  , -1044*1000, -1042*1000),
+	diningClock : new TimeSource("the dining hall clock at Union Glacier (ahead by 2:23)"   , -144000, -142000),
 	/** Can be 4 minutes too early or 14 minutes too late. */
 	roundabout  : new TimeSource("someone saying the time without checking any time piece"  , -4*60*1000, +14*60*1000),
 	/** Can be 4 minutes too early or 1 second to late. */
@@ -194,7 +194,7 @@ const vids = {
 	daveLive                  : new YouTubeVideo(timeline, "iOYpeysawuw", "Dave McKeegan", "The 24 hour sun has been captured in Antarctica!", 9834.461, 30, cams.daveLaptop, "2024-12-16T00:01:40Z", "2024-12-16T02:45:31Z"),
 
 	// Jeran Campanella / videos
-	jeranFlight               : new YouTubeVideo(timeline, "zMGeIDli4MA", "jeranism", "jeranism Antarctica GoPro Chest Cam Footage Full HD Flight & Landing - Union Glacier Camp - 12/2024", 18930.021, 30, cams.jeranAction, "2025-01-05T21:40:06Z"),
+	jeranChestCam               : new YouTubeVideo(timeline, "zMGeIDli4MA", "jeranism", "jeranism Antarctica GoPro Chest Cam Footage Full HD Flight & Landing - Union Glacier Camp - 12/2024", 18930.021, 30, cams.jeranAction, "2025-01-05T21:40:06Z"),
 	// Jeran Campanella / streams
 	jeranPuntaArenas1         : new YouTubeVideo(timeline, "EebhVG-5uFc", "jeranism", "LIVE from Punta Arenas. Checking in Looking South", 2299.901, 30, cams.jeranPhone, "2024-12-12T02:56:54Z", "2024-12-12T03:35:05Z"),
 	jeranPuntaArenas2         : new YouTubeVideo(timeline, "AHRblqgWkwg", "jeranism", "LIVE from Punta Arenas Again 12-12-24 Lisbeth, Austin and Jeran", 2295.041, 30, cams.jeranPhone, "2024-12-13T02:29:49Z", "2024-12-13T03:07:50Z"),
@@ -354,7 +354,7 @@ const vids = {
 	mctoonDji14114112         : new MCToonDjiUpload(timeline, "DJI_20241214114112_0013_D", "11:41:49;17",   29.729, "MCToon-TFEAntarctica-20241214114112"),
 	mctoonDji14114921         : new MCToonDjiUpload(timeline, "DJI_20241214114921_0014_D", "11:50:00;09",  788.287, "MCToon-TFEAntarctica-20241214114921"),
 	mctoonDji14120616         : new MCToonDjiUpload(timeline, "DJI_20241214120616_0015_D", "12:06:55;01", 1452.017, "MCToon-TFEAntarctica-20241214120616")
-	.addAnchorTime("14T15:40:35-03", "00:18:32.029", ts.diningClock)
+	.addAnchorTime("14T15:25:35-03", "00:18:32.018", ts.diningClock)
 	.addAnchorTime("14T15:27-03", "00:22:40.633", ts.digital),
 	mctoonDji14125732         : new MCToonDjiUpload(timeline, "DJI_20241214125732_0016_D", "12:58:10;10", 1177.009, "MCToon-TFEAntarctica-20241214125732")
 	.addAnchorTime("14T16:09-03", "00:13:43", ts.digitalRead)
@@ -442,8 +442,8 @@ const vids = {
 /** List of clips created from the videos. */
 export const clips = {
 	// Austin Whitsitt / videos
-	austin24hPart1             : vids.austin24hPart1.createClip().enableAutoDuration(),
-	austin24hPart2             : vids.austin24hPart2.createClip().enableAutoDuration(),
+	austin24hPart1             : vids.austin24hPart1.createClip(),
+	austin24hPart2             : vids.austin24hPart2.createClip(),
 	austin24hPart3             : vids.austin24hPart3.createClip(),
 	// Austin Whitsitt / streams
 	austinLive                 : vids.austinLive
@@ -750,277 +750,279 @@ export const clips = {
 		.createClip(), // TODO: At 4:02 Will Duffy insta360 A read 23h 42m recording time as a potential sync point.
 
 	// Jeran Campanella / videos
-	jeranFlightAA              : vids.jeranFlight
+	jeranChestCamAA              : vids.jeranChestCam
 		.skipClip("00:00:39/25") // Intro
 		.addAnchorTime("10T07:36-08", "00:01:54/09", ts.digitalFlip)
 		.createClip("00:03:33/26"), // Driving to the airport in San José
-	jeranFlightAB              : vids.jeranFlight
-		.createClip("00:05:26/12"), // Standing at the gate, departure at 9:33am
-	jeranFlightAC              : vids.jeranFlight
+	jeranChestCamAB              : vids.jeranChestCam
+		.createClip("00:05:26/12").setStartTimeManually("10T09:15-08", "the plane was scheduled for departure at 9:15 am"),
+	jeranChestCamAC              : vids.jeranChestCam
 		.addAnchorTime("10T09:25:05-08", "00:05:55/08", ts.sun)
 		.addAnchorTime("10T09:37:35-08", "00:06:20/08", ts.sun)
 		.createClip("00:07:32/07"), // Plane taxiing
-	jeranFlightAD              : vids.jeranFlight
+	jeranChestCamAD              : vids.jeranChestCam
 		.addAnchorTime("10T09:31:19-08", "00:07:37/04", ts.sun)
 		.createClip("00:08:51/19"), // Plane taking off
-	jeranFlightAE              : vids.jeranFlight
-		.addAnchorTime("10T15:17-08", "00:08:51/19", ts.takeoff)
+	jeranChestCamAE              : vids.jeranChestCam
+		.addAnchorTime("10T15:17-08", "00:08:51/20", ts.takeoff)
 		.createClip("00:10:08/23"), // Plane: CC-BBG, Flight: LA603, Departure: 10 Dec 15:17, Arrival: 11 Dec 06:15
-	jeranFlightAF              : vids.jeranFlight
+	jeranChestCamAF              : vids.jeranChestCam
 		.addAnchorTime("14T09:30-03", "00:10:22/23", ts.digitalFlip)
-		.createClip("00:15:12/24"), // Punta Arenas airport
-	jeranFlightAG              : vids.jeranFlight
+		.createClip("00:15:11/24"), // Punta Arenas airport
+	jeranChestCamAG              : vids.jeranChestCam
 		//.addAnchorTime("14T12:58-00", "00:15:12/24"); // based on GPS from Critical Think
 		.createClip("00:15:58/06"), // leaving airport building
-	jeranFlightAH              : vids.jeranFlight
+	jeranChestCamAH              : vids.jeranChestCam
 		//.addAnchorTime("14T13:00-00", "00:15:58/06"); // based on GPS from Critical Think
 		.createClip("00:16:10/21"), // stuffing bags
-	jeranFlightAI              : vids.jeranFlight
+	jeranChestCamAI              : vids.jeranChestCam
 		//.addAnchorTime("14T13:26-00", "00:16:10/21"); // based on GPS from Critical Think
 		.createClip("00:16:49/11"), // tarmac
-	jeranFlightAJ              : vids.jeranFlight
+	jeranChestCamAJ              : vids.jeranChestCam
 		//.addAnchorTime("14T13:33-00", "00:16:49/11"); // based on GPS from Critical Think
-		.createClip("00:17:55/08"), // boarding
-	jeranFlightAK              : vids.jeranFlight
+		.createClip("00:17:55/28"), // boarding
+	jeranChestCamAK              : vids.jeranChestCam
 		.createClip("00:19:20/16"), // announcement
-	jeranFlightAL              : vids.jeranFlight
+	jeranChestCamAL              : vids.jeranChestCam
 		//.addAnchorTime("14T13:43:51-00", "00:19:34/27", 0); // based on GPS from Critical Think
-		.createClip("00:21:30/24"), // take-off
-	jeranFlightAM              : vids.jeranFlight
+		.createClip("00:21:23/24"), // take-off
+	jeranChestCamAM              : vids.jeranChestCam
 		.createClip("00:22:16/23"),
-	jeranFlightAN              : vids.jeranFlight
+	jeranChestCamAN              : vids.jeranChestCam
 		.createClip("00:23:04/02"),
-	jeranFlightAO              : vids.jeranFlight
+	jeranChestCamAO              : vids.jeranChestCam
 		.createClip("00:23:52/09"),
-	jeranFlightAP              : vids.jeranFlight
+	jeranChestCamAP              : vids.jeranChestCam
 		.createClip("00:25:05/16"),
-	jeranFlightAQ              : vids.jeranFlight
+	jeranChestCamAQ              : vids.jeranChestCam
 		.addAnchorTime("14T11:08-03", "00:25:05/16", ts.digital)
 		.addAnchorTime("14T11:08-03", "00:25:10/03", ts.digital)
 		.createClip("00:25:30/15"),
-	jeranFlightAR              : vids.jeranFlight
+	jeranChestCamAR              : vids.jeranChestCam
 		.addAnchorTime("14T11:10-03", "00:25:46/29", ts.digital)
 		.addAnchorTime("14T11:10-03", "00:25:57/02", ts.digital)
 		.createClip("00:26:03/05"),
-	jeranFlightAS              : vids.jeranFlight
+	jeranChestCamAS              : vids.jeranChestCam // TODO: Contains Lisbeth’s gyroscope recording
 		.addAnchorTime("14T11:26-03", "00:26:05/20", ts.digital)
 		.addAnchorTime("14T11:27-03", "00:26:20/11", ts.digital)
 		.createClip("00:28:11/02"),
-	jeranFlightAT              : vids.jeranFlight
+	jeranChestCamAT              : vids.jeranChestCam
 		.addAnchorTime("14T12:10-03", "00:29:25/12", ts.digital)
 		.addAnchorTime("14T12:11-03", "00:30:03/13", ts.digital)
 		.createClip("00:30:05/25"),
-	jeranFlightAU              : vids.jeranFlight
+	jeranChestCamAU              : vids.jeranChestCam
 		.addAnchorTime("14T12:42-03", "00:30:41/22", ts.digital)
 		.addAnchorTime("14T12:42-03", "00:30:46/02", ts.digital) // display shows ETA 1:42
 		.createClip("00:33:57/08"),
-	jeranFlightAV              : vids.jeranFlight
+	jeranChestCamAV              : vids.jeranChestCam
 		.createClip("00:34:13/18"),
-	jeranFlightAW              : vids.jeranFlight
+	jeranChestCamAW              : vids.jeranChestCam
 		.createClip("00:34:43/11"),
-	jeranFlightAX              : vids.jeranFlight
+	jeranChestCamAX              : vids.jeranChestCam
 		.createClip("00:35:32/08"),
-	jeranFlightAY              : vids.jeranFlight
+	jeranChestCamAY              : vids.jeranChestCam
 		.createClip("00:35:43/10"),
-	jeranFlightAZ              : vids.jeranFlight
+	jeranChestCamAZ              : vids.jeranChestCam
 		.createClip("00:36:10/09"),
-	jeranFlightBA              : vids.jeranFlight
+	jeranChestCamBA              : vids.jeranChestCam
 		.createClip("00:36:27/01"),
-	jeranFlightBB              : vids.jeranFlight
+	jeranChestCamBB              : vids.jeranChestCam
 		.addAnchorTime("14T13:25-03", "00:43:16/24", ts.eta) // display shows ETA 0:59, so 43m later
 		.createClip("00:43:32/28"),
-	jeranFlightBC              : vids.jeranFlight
+	jeranChestCamBC              : vids.jeranChestCam
 		.addAnchorTime("14T13:27-03", "00:43:53/04", ts.eta) // display shows ETA 0:57, so 45m later
 		.createClip("00:43:57/03"),
-	jeranFlightBD              : vids.jeranFlight
+	jeranChestCamBD              : vids.jeranChestCam
 		.addAnchorTime("14T13:30-03", "00:44:10/10", ts.digital)
 		.addAnchorTime("14T13:30-03", "00:44:22/17", ts.digital)
 		.createClip("00:44:24/19"),
-	jeranFlightBE              : vids.jeranFlight
+	jeranChestCamBE              : vids.jeranChestCam
 		.addAnchorTime("14T13:34-03", "00:44:33/24", ts.digital)
 		.addAnchorTime("14T13:35-03", "00:44:51/07", ts.digital)
 		.createClip("00:44:54/06"),
-	jeranFlightBF              : vids.jeranFlight
+	jeranChestCamBF              : vids.jeranChestCam
 		.createClip("00:45:55/15"),
-	jeranFlightBG              : vids.jeranFlight
+	jeranChestCamBG              : vids.jeranChestCam
 		.createClip("00:49:46/12"), // starts with "landing in 15 min"
-	jeranFlightBH              : vids.jeranFlight
+	jeranChestCamBH              : vids.jeranChestCam
 		.addAnchorTime("14T14:18-03", "00:49:55/10", ts.digital)
 		.addAnchorTime("14T14:20-03", "00:51:02/07", ts.digital)
 		.createClip("00:51:30/24"),
-	jeranFlightBI              : vids.jeranFlight
-		.createClip("00:52:01/08"),
-	jeranFlightBJ              : vids.jeranFlight
+	jeranChestCamBI              : vids.jeranChestCam
+		.createClip("00:52:01/18"),
+	jeranChestCamBJ              : vids.jeranChestCam
 		.addAnchorTime("14T14:23-03", "00:52:09/19", ts.digital)
 		.addAnchorTime("14T14:23-03", "00:52:15/11", ts.digital)
 		.createClip("00:54:22/04"),
-	jeranFlightBK              : vids.jeranFlight
+	jeranChestCamBK              : vids.jeranChestCam
 		//.addAnchorTime("14T17:32:36-00", "00:57:42/00") // based on GPS from Critical Think
 		.createClip("00:59:36/29"),
-	jeranFlightBL              : vids.jeranFlight
+	jeranChestCamBL              : vids.jeranChestCam
 		//.addAnchorTime("14T17:37:24-00", "01:03:55/00") // based on GPS from Critical Think
 		.createClip("01:16:19/03"),
-	jeranFlightBM              : vids.jeranFlight
+	jeranChestCamBM              : vids.jeranChestCam
 		.createClip("01:17:12/20"),
-	jeranFlightBN              : vids.jeranFlight
+	jeranChestCamBN              : vids.jeranChestCam
 		.createClip("01:23:27/00"),
-	jeranFlightBO              : vids.jeranFlight
+	jeranChestCamBO              : vids.jeranChestCam
 		//.addAnchorTime("14T15:29-03", "01:29:12/09") // based on wall clock
 		.createClip("01:29:14/27"),
-	jeranFlightBP              : vids.jeranFlight
-		.createClip("01:31:08/17"), // happens before diner at 7pm
-	jeranFlightBQ              : vids.jeranFlight
+	jeranChestCamBP              : vids.jeranChestCam
+		.createClip("01:31:08/17").setEndTimeManually("14T19:00:00-03", "Jeran said he would go to dinner at 7 pm"),
+	jeranChestCamBQ              : vids.jeranChestCam
 		.createClip("01:31:29/26"),
-	jeranFlightBR              : vids.jeranFlight
-		.createClip("01:33:28/15"), // SYNC with live stream
-	jeranFlightBS              : vids.jeranFlight
-		.createClip("01:34:01/05"),
-	jeranFlightBT              : vids.jeranFlight
-		.createClip("01:36:35/24"),
-	jeranFlightBU              : vids.jeranFlight
+	jeranChestCamBR              : vids.jeranChestCam
+		.createClip("01:33:28/15"),
+	jeranChestCamBS              : vids.jeranChestCam
+		.createClip("01:34:01/05").setStartTimeManually("15T04:24:45-03", "Jeran heads to the toilet at that point in time"),
+	jeranChestCamBT              : vids.jeranChestCam
+		.createClip("01:36:35/06"),
+	jeranChestCamBU              : vids.jeranChestCam
 		.createClip("01:49:58/03"),
-	jeranFlightBV              : vids.jeranFlight
+	jeranChestCamBV              : vids.jeranChestCam
 		.createClip("01:50:02/09"),
-	jeranFlightBW              : vids.jeranFlight
+	jeranChestCamBW              : vids.jeranChestCam
+		.addAnchorTime("15T13:30-03", "01:50:31", ts.roundabout)
 		.createClip("01:53:21/06"),
-	jeranFlightBX              : vids.jeranFlight
+	jeranChestCamBX              : vids.jeranChestCam
 		.createClip("01:53:40/06"),
-	jeranFlightBY              : vids.jeranFlight
+	jeranChestCamBY              : vids.jeranChestCam
 		.createClip("01:55:43/19"),
-	jeranFlightBZ              : vids.jeranFlight
+	jeranChestCamBZ              : vids.jeranChestCam
 		.createClip("01:59:38/24"),
-	jeranFlightCA              : vids.jeranFlight
+	jeranChestCamCA              : vids.jeranChestCam
 		.createClip("02:05:27/25"),
-	jeranFlightCB              : vids.jeranFlight
+	jeranChestCamCB              : vids.jeranChestCam
 		.createClip("02:06:29/13"),
-	jeranFlightCC              : vids.jeranFlight
+	jeranChestCamCC              : vids.jeranChestCam
 		.createClip("02:07:06/00"),
-	jeranFlightCD              : vids.jeranFlight
+	jeranChestCamCD              : vids.jeranChestCam
 		.createClip("02:08:48/22"),
-	jeranFlightCE              : vids.jeranFlight
+	jeranChestCamCE              : vids.jeranChestCam
 		.createClip("02:10:30/23"),
-	jeranFlightCF              : vids.jeranFlight
+	jeranChestCamCF              : vids.jeranChestCam
 		.createClip("02:26:04/19"),
-	jeranFlightCG              : vids.jeranFlight
+	jeranChestCamCG              : vids.jeranChestCam
 		.createClip("02:28:06/09"),
-	jeranFlightCH              : vids.jeranFlight
+	jeranChestCamCH              : vids.jeranChestCam
 		.createClip("02:30:13/16"),
-	jeranFlightCI              : vids.jeranFlight
+	jeranChestCamCI              : vids.jeranChestCam
 		.createClip("02:30:56/01"),
-	jeranFlightCJ              : vids.jeranFlight
+	jeranChestCamCJ              : vids.jeranChestCam
 		.createClip("02:31:37/20"),
-	jeranFlightCK              : vids.jeranFlight
+	jeranChestCamCK              : vids.jeranChestCam
 		.createClip("02:33:14/18"),
-	jeranFlightCL              : vids.jeranFlight
+	jeranChestCamCL              : vids.jeranChestCam
 		.createClip("02:33:36/16"),
-	jeranFlightCM              : vids.jeranFlight
+	jeranChestCamCM              : vids.jeranChestCam
 		.createClip("02:34:40/19"),
-	jeranFlightCN              : vids.jeranFlight
+	jeranChestCamCN              : vids.jeranChestCam
 		.createClip("02:35:06/05"),
-	jeranFlightCO              : vids.jeranFlight
+	jeranChestCamCO              : vids.jeranChestCam
 		.createClip("02:57:55/13"),
-	jeranFlightCP              : vids.jeranFlight
+	jeranChestCamCP              : vids.jeranChestCam
 		.createClip("02:58:12/26"),
-	jeranFlightCQ              : vids.jeranFlight
+	jeranChestCamCQ              : vids.jeranChestCam
 		.createClip("03:00:01/28"),
-	jeranFlightCR              : vids.jeranFlight
+	jeranChestCamCR              : vids.jeranChestCam
 		.addAnchorTime("16T19:04-03", "03:02:17/28", ts.digital)
 		.addAnchorTime("16T19:04-03", "03:02:28/13", ts.digital)
 		.createClip("03:02:53/21"),
-	jeranFlightCS              : vids.jeranFlight
+	jeranChestCamCS              : vids.jeranChestCam
 		.addAnchorTime("16T19:44:07-03", "03:03:03/20", ts.diningClock)
 		.createClip("03:05:26/01"),
-	jeranFlightCT              : vids.jeranFlight
+	jeranChestCamCT              : vids.jeranChestCam
 		.createClip("03:31:04/02"),
-	jeranFlightCU              : vids.jeranFlight
+	jeranChestCamCU              : vids.jeranChestCam
 		.createClip("03:39:26/09"),
-	jeranFlightCV              : vids.jeranFlight
+	jeranChestCamCV              : vids.jeranChestCam
 		.createClip("03:48:05/01"),
-	jeranFlightCW              : vids.jeranFlight
+	jeranChestCamCW              : vids.jeranChestCam
 		.createClip("03:48:44/18"),
-	jeranFlightCX              : vids.jeranFlight
+	jeranChestCamCX              : vids.jeranChestCam
 		.createClip("03:55:13/29"),
-	jeranFlightCY              : vids.jeranFlight
+	jeranChestCamCY              : vids.jeranChestCam
 		.createClip("03:59:05/19"),
-	jeranFlightCZ              : vids.jeranFlight
+	jeranChestCamCZ              : vids.jeranChestCam
 		.createClip("04:03:31/07"),
-	jeranFlightDA              : vids.jeranFlight
+	jeranChestCamDA              : vids.jeranChestCam
 		.createClip("04:07:36/28"),
-	jeranFlightDB              : vids.jeranFlight
+	jeranChestCamDB              : vids.jeranChestCam
 		.createClip("04:10:53/24"),
-	jeranFlightDC              : vids.jeranFlight
+	jeranChestCamDC              : vids.jeranChestCam
+		.addAnchorTime("16T23:48:11-03", "04:24:27/03", ts.diningClock)
 		.createClip("04:24:31/27"),
-	jeranFlightDD              : vids.jeranFlight
+	jeranChestCamDD              : vids.jeranChestCam
 		.createClip("04:27:18/01"),
-	jeranFlightDE              : vids.jeranFlight
+	jeranChestCamDE              : vids.jeranChestCam
 		.createClip("04:31:14/07"),
-	jeranFlightDF              : vids.jeranFlight
+	jeranChestCamDF              : vids.jeranChestCam
 		.createClip("04:36:30/13"),
-	jeranFlightDG              : vids.jeranFlight
+	jeranChestCamDG              : vids.jeranChestCam
 		.addAnchorTime("17T12:44:55-03", "04:37:01/00", ts.diningClock)
 		.createClip("04:39:12/17"),
-	jeranFlightDH              : vids.jeranFlight
+	jeranChestCamDH              : vids.jeranChestCam
 		.addAnchorTime("17T13:30:00-03", "04:43:58", ts.roundabout)
 		.createClip("04:45:24/01"),
-	jeranFlightDI              : vids.jeranFlight
+	jeranChestCamDI              : vids.jeranChestCam
 		.createClip("04:46:55/16"),
-	jeranFlightDJ              : vids.jeranFlight
+	jeranChestCamDJ              : vids.jeranChestCam
 		.createClip("04:48:08/01"),
-	jeranFlightDK              : vids.jeranFlight
+	jeranChestCamDK              : vids.jeranChestCam
 		.createClip("04:48:39/19"),
-	jeranFlightDL              : vids.jeranFlight
+	jeranChestCamDL              : vids.jeranChestCam
 		.createClip("04:49:47/20"),
-	jeranFlightDM              : vids.jeranFlight
+	jeranChestCamDM              : vids.jeranChestCam
 		.createClip("04:50:09/20"),
-	jeranFlightDN              : vids.jeranFlight
+	jeranChestCamDN              : vids.jeranChestCam
 		.addAnchorTime("17T14:45-03", "04:55:36/16", ts.digital)
 		.addAnchorTime("17T14:45-03", "04:56:13/04", ts.digital)
 		.createClip("04:56:58/19"),
-	jeranFlightDO              : vids.jeranFlight
+	jeranChestCamDO              : vids.jeranChestCam
 		.createClip("04:57:45/29"),
-	jeranFlightDP              : vids.jeranFlight
+	jeranChestCamDP              : vids.jeranChestCam
 		.createClip("04:59:55/17"),
-	jeranFlightDQ              : vids.jeranFlight
+	jeranChestCamDQ              : vids.jeranChestCam
 		.createClip("05:01:30/12"),
-	jeranFlightDR              : vids.jeranFlight
+	jeranChestCamDR              : vids.jeranChestCam
 		.createClip("05:02:18/10"),
-	jeranFlightDS              : vids.jeranFlight
+	jeranChestCamDS              : vids.jeranChestCam
 		.addAnchorTime("17T18:18:45-00", "05:02:42/16", ts.gps60)
 		.addAnchorTime("17T15:18-03", "05:02:49/14", ts.digital)
 		.addAnchorTime("17T15:18-03", "05:03:08/25", ts.digital)
 		.createClip("05:03:24/00"),
-	jeranFlightDT              : vids.jeranFlight
+	jeranChestCamDT              : vids.jeranChestCam
 		.addAnchorTime("17T15:35-03", "05:03:31/16", ts.digital)
 		.addAnchorTime("17T15:35-03", "05:03:32/25", ts.digital)
 		.createClip("05:03:43/17"),
-	jeranFlightDU              : vids.jeranFlight
+	jeranChestCamDU              : vids.jeranChestCam
 		.addAnchorTime("17T15:40-03", "05:03:44/09", ts.digital)
 		.addAnchorTime("17T15:40-03", "05:04:02/24", ts.digital)
 		.createClip("05:04:02/25"),
-	jeranFlightDV              : vids.jeranFlight
+	jeranChestCamDV              : vids.jeranChestCam
 		.addAnchorTime("17T16:19-03", "05:04:07/18", ts.digital)
 		.addAnchorTime("17T16:20-03", "05:04:25/03", ts.digital)
 		.createClip("05:04:59/25"),
-	jeranFlightDW              : vids.jeranFlight
+	jeranChestCamDW              : vids.jeranChestCam
 		.createClip("05:05:23/15"),
-	jeranFlightDX              : vids.jeranFlight
+	jeranChestCamDX              : vids.jeranChestCam
 		.createClip("05:08:27/11"),
-	jeranFlightDY              : vids.jeranFlight
+	jeranChestCamDY              : vids.jeranChestCam
 		.addAnchorTime("17T19:34:20-00", "05:08:39/08", ts.gps60)
 		.createClip("05:09:32/11"),
-	jeranFlightDZ              : vids.jeranFlight
+	jeranChestCamDZ              : vids.jeranChestCam
 		.createClip("05:10:40/25"),
-	jeranFlightEA              : vids.jeranFlight
+	jeranChestCamEA              : vids.jeranChestCam
 		.addAnchorTime("17T18:31-03", "05:10:40/25", ts.digital)
 		.addAnchorTime("17T18:31-03", "05:11:23/07", ts.digital)
 		.createClip("05:12:30/11"),
-	jeranFlightEB              : vids.jeranFlight
+	jeranChestCamEB              : vids.jeranChestCam
 		.createClip("05:13:19/02"),
-	jeranFlightEC              : vids.jeranFlight
+	jeranChestCamEC              : vids.jeranChestCam
 		.createClip("05:13:47/28"),
-	jeranFlightED              : vids.jeranFlight
+	jeranChestCamED              : vids.jeranChestCam
 		.createClip("05:14:35/12"),
-	jeranFlightEE              : vids.jeranFlight
+	jeranChestCamEE              : vids.jeranChestCam
 		.addAnchorTime("17T22:03:43-00", "05:14:35/12", ts.gps90)
 		.createClip("05:14:45/07"),
 	// Jeran Campanella / streams
@@ -1110,7 +1112,7 @@ export const clips = {
 	mark360Disembark           : vids.mark360Disembark.createClip(),
 	mark360DisembarkPhone      : vids.mark360DisembarkPhone.createClip(),
 	mark360CampTour            : vids.mark360CampTour
-		.addAnchorTime("14T15:23:00-03", "00:13:32/00", ts.diningClock)
+		.addAnchorTime("14T15:24:00-03", "00:13:32/00", ts.diningClock)
 		.createClip(),
 	markQA2                    : vids.markQA2
 		.skipClip("00:06:58/10")
@@ -1212,8 +1214,8 @@ export const clips = {
 		// TODO: This morning the sun rise drone footage was recorded after 4:45 AM.
 		// TODO: Video hints at Will having filmed the Southern celestial pole last night.
 	willObservationArmy        : vids.willObservationArmy.createClip(), // TODO: After "2 full days", so 16th afternoon.
-	will360Part1               : vids.will360Part1.createClip().enableAutoDuration(),
-	will360Part2               : vids.will360Part2.createClip().enableAutoDuration(),
+	will360Part1               : vids.will360Part1.createClip(),
+	will360Part2               : vids.will360Part2.createClip(),
 	will360Part3               : vids.will360Part3.createClip(),
 	willStartrailsA            : vids.willStartrails
 		.skipClip("00:10:55/23")
@@ -1250,6 +1252,10 @@ export const clips = {
 };
 
 // Order some clips to be sequential and non-overlapping.
+clips.austin24hPart1.enableAutoDuration(clips.austin24hPart2);
+clips.austin24hPart2.enableAutoDuration(clips.austin24hPart3);
+clips.will360Part1.enableAutoDuration(clips.will360Part2);
+clips.will360Part2.enableAutoDuration(clips.will360Part3);
 Clip.orderClips(clips.mctoonPuntaArenasLive3, clips.willStartrailsA);
 Clip.orderClips(clips.mctoonPuntaArenasLive3, clips.mctoon0ToGo);
 Clip.orderClips(clips.mctoonLiveBack, clips.mctoonFinalDayA, clips.mctoonFinalDayB, clips.mctoonFinalDayC, clips.mctoonFinalDayFlashback, clips.willFinalDayLive);
@@ -1257,6 +1263,9 @@ Clip.orderClips(clips.austin24hPart1, clips.austin24hPart2, clips.austin24hPart3
 Clip.orderClips(clips.mctoon360Part1A, clips.mctoon360Part1B, clips.mctoon360Part2, clips.mctoon360Part3);
 Clip.orderClips(clips.will360Part1, clips.will360Part2, clips.will360Part3);
 Clip.orderClips(clips.daveSunspotsP, clips.daveSunspotsH, clips.daveSunspotsI); // First sunspot photo tests.
+Clip.orderClips(vids.mctoonDji14142627.getClipAtTime(0), clips.jeranChestCamBP);
+Clip.orderClips(vids.mctoonDji14172419.getClipAtTime(0), clips.jeranChestCamBQ, vids.mctoonDji14174459.getClipAtTime(0));
+Clip.orderClips(vids.mctoonDji15105216.getClipAtTime(0), clips.jeranChestCamBX); // MCToon passes Austin still at his tent, then Jeran and Austin walk to the "skidoo".
 clips.mctoonFinalDayA.concat(clips.mctoonFinalDayB);
 
 // Videos that recorded hours or days apart, but have a common clock allowing us to space them out correctly relative to each other.
@@ -1264,6 +1273,7 @@ timeline.chronology(vids.criticalFlight1Tl, "00:13:38/08", vids.criticalFlight2T
 timeline.chronology(vids.criticalFlight2Tl, "00:05:10/11", vids.criticalFlight3Tl, "00:00:05/02", 3, 2, 0, 0);
 
 // Punta Arenas
+timeline.addSyncPoint(vids.mctoonPuntaArenasLive1, "00:04:19/19", vids.mctoonDji10140047, "00:15:30.886");
 timeline.addSyncPoint(vids.daveSunspots, "00:17:25/17", vids.daveSunspots, "00:17:34/18");
 //timeline.addSyncPoint(vids.daveSunspots, "00:17:33/18", vids.daveSunspots, "00:17:38/15"); // TODO: Do not uncomment, just for the timelapse calculation. +8.040s / +3.880s
 timeline.addSyncPoint(vids.daveSunspots, "00:17:24/17", vids.daveSunspots, "00:17:40/04"); // ident
@@ -1272,11 +1282,34 @@ timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:47", vids.mctoon1ToGo, "00:
 timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:30", vids.mctoon1ToGo, "00:06:56/10", 1); // Lisbeth filming to the left and Jonathan approaching Austin
 timeline.addSyncPoint(vids.criticalLivePuntaArenas, "00:09:44/29", vids.mctoonDji11113557, "00:23:17.040", 0.04);
 // Flight to Union Glacier
+timeline.addSyncPoint(vids.mctoonDji14065900, "00:01:07.683", vids.jeranChestCam, "00:15:57/04", 0.04);
+timeline.addSyncPoint(vids.mctoonDji14065900, "00:01:51.019", vids.jeranChestCam, "00:16:03/09", 0.04);
+timeline.addSyncPoint(vids.mctoonDji14065900, "00:16:32.560", vids.jeranChestCam, "00:16:22/27", 0.04);
+timeline.addSyncPoint(vids.mctoonDji14065900, "00:22:45.028", vids.jeranChestCam, "00:16:55/03", 0.1);
+timeline.addSyncPoint(vids.mctoonDji14065900, "00:25:48.331", vids.jeranChestCam, "00:17:57/29", 0.1);
+timeline.addSyncPoint(vids.mctoonDji14072709, "00:18:09.322", vids.jeranChestCam, "00:19:27/16", 0.1);
+timeline.addSyncPoint(vids.mctoonDji14072709, "00:25:57.087", vids.jeranChestCam, "00:21:29/06", 1.2);
+timeline.addSyncPoint(vids.mctoonDji14072709, "00:28:29.626", vids.jeranChestCam, "00:22:40/14", 1.3);
+timeline.addSyncPoint(vids.mctoonDji14080646, "00:03:30.924", vids.jeranChestCam, "00:23:33/21", 80/*0.7*/);
+timeline.addSyncPoint(vids.mctoonDji14080646, "00:05:38.500", vids.jeranChestCam, "00:24:33/14", 150/*9.5*/);
+timeline.addSyncPoint(vids.mctoonDji14080646, "00:08:36.846", vids.jeranChestCam, "00:25:24/25", 270/*1*/);
+timeline.addSyncPoint(vids.mctoonDji14080646, "00:09:51.784", vids.jeranChestCam, "00:25:41/16", 260/*2.5*/);
+timeline.addSyncPoint(vids.daveToUGTl, "00:01:59.35", vids.markQA2, "00:07:26/14", 2);
+timeline.addSyncPoint(vids.mctoonDji14094952, "00:06:14.632", vids.jeranChestCam, "00:34:04/13", 1.6);
 timeline.addSyncPoint(vids.criticalFlight2Tl, "00:00:32/16", vids.daveToUGTl, "00:00:09/00", 1);
+timeline.addSyncPoint(vids.criticalFlight2Tl, "00:05:08/04", vids.jeranChestCam, "00:34:37", 20);
+timeline.addSyncPoint(vids.criticalFlight2Tl, "00:05:11/23", vids.jeranChestCam, "00:34:46", 20);
+timeline.addSyncPoint(vids.criticalFlight2Tl, "00:05:18/16", vids.jeranChestCam, "00:35:34", 20);
+timeline.addSyncPoint(vids.criticalFlight2Tl, "00:05:55/13", vids.jeranChestCam, "00:36:19", 3);
+timeline.addSyncPoint(vids.criticalFlight2Tl, "00:06:06/17", vids.jeranChestCam, "00:36:36", 320/*17*/);
+timeline.addSyncPoint(vids.daveToUGTl, "00:02:54/06", vids.daveSolarPhotography, "00:14:23/01", 2);
+timeline.addSyncPoint(vids.daveToUGTl, "00:03:01/10", vids.jeranChestCam, "00:43:51", 250/*3*/);
+timeline.addSyncPoint(vids.daveToUGTl, "00:03:37/25", vids.jeranChestCam, "00:49:14", 20);
+timeline.addSyncPoint(vids.daveToUGTl, "00:03:55/03", vids.jeranChestCam, "00:51:53", 170/*2*/);
+timeline.addSyncPoint(vids.daveToUGTl, "00:03:59/29", vids.jeranChestCam, "00:55:53/21", 0.2);
+timeline.addSyncPoint(vids.mark360Disembark, "00:01:36/06", vids.jeranChestCam, "01:03:01/01", 0.04);
 timeline.addSyncPoint(vids.criticalFlight2Tl, "00:08:18/05", vids.criticalFlight2Landing, "00:03:02/29"); // ident
-timeline.addSyncPoint(vids.mctoonDji14085536, "00:35:04.951", vids.markQA2, "00:07:28/12", 11);
 timeline.addSyncPoint(vids.mctoonDji14103903, "01:00:29.475", vids.criticalFlight2Landing, "00:10:29/03", 0.15);
-timeline.addSyncPoint(vids.daveSolarPhotography, "00:14:22/18", vids.daveToUGTl, "00:02:56/09");
 timeline.addSyncPoint(vids.mctoonDji14103903, "00:54:12.307", vids.daveToUGTl, "00:04:00/05", 0.25);
 timeline.addSyncPoint(vids.daveVapegate, "00:11:53/14", vids.daveVapegate, "00:12:06/18");
 timeline.addSyncPoint(vids.daveVapegate, "00:11:56/07", vids.daveVapegate, "00:12:09/24");
@@ -1286,14 +1319,22 @@ timeline.addSyncPoint(vids.mark360Disembark, "00:05:05/25", vids.daveVapegate, "
 timeline.addSyncPoint(vids.daveToUGTl, "00:02:25/02", vids.daveExcuses, "00:15:18"); // roundabout
 timeline.addSyncPoint(vids.daveVapegate, "00:12:03/16", vids.daveExcuses, "00:22:37/17");
 timeline.addSyncPoint(vids.daveVapegate, "00:12:07/05", vids.daveExcuses, "00:22:45/13");
-timeline.addSyncPoint(vids.mark360CampTour, "00:08:21/07", vids.daveSunspots, "00:05:03/07");
-timeline.addSyncPoint(vids.mark360CampTour, "00:08:46/06", vids.daveSunspots, "00:05:06/04");
 timeline.addSyncPoint(vids.mark360Disembark, "00:03:35/03", vids.mark360DisembarkPhone, "00:00:03/26");
 timeline.addSyncPoint(vids.mark360Disembark, "00:05:40/01", vids.daveSunspots, "00:05:23/17");
 timeline.addSyncPoint(vids.mark360Disembark, "00:05:45/28", vids.mctoonDji14114921, "00:00:38.081");
+timeline.addSyncPoint(vids.mctoonDji14114921, "00:11:28.386", vids.jeranChestCam, "01:16:34/07", 0.1);
+timeline.addSyncPoint(vids.mctoonDji14120616, "00:21:07.842", vids.jeranChestCam, "01:28:54/19", 0.04);
+timeline.addSyncPoint(vids.mark360CampTour, "00:01:01/15", vids.jeranChestCam, "01:17:27/26", 0.04);
+timeline.addSyncPoint(vids.mark360CampTour, "00:08:21/07", vids.daveSunspots, "00:05:03/07");
+timeline.addSyncPoint(vids.mark360CampTour, "00:08:46/06", vids.daveSunspots, "00:05:06/04");
+timeline.addSyncPoint(vids.mark360CampTour, "00:13:42/16", vids.mctoonDji14120616, "00:17:07.860", 0.04);
 timeline.addSyncPoint(vids.daveSunspots, "00:06:24/16", vids.mctoonDji14142627, "00:01:06.910");
 timeline.addSyncPoint(vids.wallyGreenscreen, "00:00:11/23", vids.willNoGreenscreens, "00:06:27/09", 0.04);
 // Dave’s & Will’s 360° footage
+timeline.addSyncPoint(vids.mctoonDji14230216, "00:01:06.769", vids.jeranChestCam, "01:31:54/29", 0.04);
+timeline.addSyncPoint(vids.mctoonDji15010905, "00:21:12.477", vids.jeranChestCam, "01:35:27/08", 0.04);
+timeline.addSyncPoint(vids.jeranChestCam, "01:53:54/22", vids.will360Part3, "01:40:23/28", 0.04);
+timeline.addSyncPoint(vids.jeranChestCam, "01:59:43/02", vids.daveLive, "00:38:07/00", 0.04);
 timeline.addSyncPoint(vids.will360Part1, "00:00:00/02", vids.austin24hPart1, "00:00:00/01", 0);
 timeline.addSyncPoint(vids.will360Part1, "09:00:19/03", vids.austin24hPart2, "00:30:33/27", 0);
 timeline.addSyncPoint(vids.will360Part2, "00:08:03/18", vids.austin24hPart2, "01:38:18/12", 0);
@@ -1335,12 +1376,38 @@ timeline.addSyncPoint(vids.wallyJeranometer, "00:00:27.460", vids.will360Part2, 
 timeline.addSyncPoint(vids.will360Part3, "01:57:50", vids.jonathanIce, "00:00:00", 150); // roundabout
 timeline.addSyncPoint(vids.will360Part3, "01:59:10", vids.jonathanSnowcat, "00:00:00", 80); // roundabout
 timeline.addSyncPoint(vids.mctoon360Part1, "00:08:39/12", vids.willLiveAntarctica, "00:05:15/04");
+timeline.addSyncPoint(vids.jeranChestCam, "01:37:33/24", vids.will360Part1, "08:26:13/05", 0.04);
+timeline.addSyncPoint(vids.jeranChestCam, "01:51:21", vids.daveTl, "00:00:28.883", 450);
+timeline.addSyncPoint(vids.jeranChestCam, "01:51:04", vids.daveTl360, "00:15:19/24", 272);
+timeline.addSyncPoint(vids.jeranChestCam, "01:53:38", vids.daveTl360, "00:15:40/15", 210);
+timeline.addSyncPoint(vids.jeranChestCam, "01:58:02", vids.daveTl360, "00:20:52/22", 60);
 // MCToon’s & Will’s 2nd 360° footage
+timeline.addSyncPoint(vids.jeranChestCam, "02:05:39", vids.willSecond360, "00:09:22/14", 4);
+timeline.addSyncPoint(vids.jeranChestCam, "02:06:57/27", vids.willSecond360, "00:09:24/20", 20);
+timeline.addSyncPoint(vids.jeranChestCam, "02:07:38", vids.willSecond360, "00:10:38/26", 4);
+timeline.addSyncPoint(vids.jeranChestCam, "02:10:05", vids.willSecond360, "00:11:18/19", 4);
+timeline.addSyncPoint(vids.jeranChestCam, "02:11:22", vids.willSecond360, "00:12:03/07", 4);
+timeline.addSyncPoint(vids.jeranChestCam, "02:30:52", vids.mctoon360Part2, "02:38:30", 276);
+timeline.addSyncPoint(vids.jeranChestCam, "02:31:34", vids.willSecond360, "00:12:31/05", 6);
+timeline.addSyncPoint(vids.jeranChestCam, "02:31:42/20", vids.willSecond360, "00:12:38/28", 24);
+timeline.addSyncPoint(vids.jeranChestCam, "02:33:18/27", vids.willSecond360, "00:12:41.617", 7);
+timeline.addSyncPoint(vids.jeranChestCam, "02:33:52", vids.willSecond360, "00:15:15/28", 54);
+timeline.addSyncPoint(vids.jeranChestCam, "02:34:52", vids.willSecond360, "00:15:19/03", 272);
+timeline.addSyncPoint(vids.jeranChestCam, "02:36:04", vids.willSecond360, "00:15:26.867", 52);
+timeline.addSyncPoint(vids.jeranChestCam, "02:57:58/07", vids.willSecond360, "00:16:04.55", 47);
 timeline.addSyncPoint(vids.willMidnightAntarctica, "00:05:36/25", vids.daveVapegate, "00:01:32/17");
 timeline.addSyncPoint(vids.willSecond360, "00:03:10/24", vids.daveExcuses, "00:08:43");
 timeline.addSyncPoint(vids.willSecond360, "00:10:33/21", vids.willObservationArmy, "00:00:32/30", 10);
 timeline.addSyncPoint(vids.willSecond360, "00:11:49/10", vids.jeranLiveSunspots, "00:05:20", 20);
-timeline.addSyncPoint(vids.willSecond360, "00:16:04/29", vids.jeranFlight, "02:58:22", 150);
+timeline.addSyncPoint(vids.willSecond360, "00:16:04/29", vids.jeranChestCam, "02:58:22", 150);
+timeline.addSyncPoint(vids.jeranChestCam, "03:40:20", vids.willSecond360, "00:20:41/16", 4);
+timeline.addSyncPoint(vids.jeranChestCam, "03:48:05/01", vids.willSecond360, "00:20:50/09", 8);
+timeline.addSyncPoint(vids.jeranChestCam, "03:54:59/17", vids.willSecond360, "00:20:58/02", 4);
+timeline.addSyncPoint(vids.jeranChestCam, "03:57:57/12", vids.willSecond360, "00:21:01/04", 2);
+timeline.addSyncPoint(vids.jeranChestCam, "04:00:23", vids.willSecond360, "00:21:03/29", 2);
+timeline.addSyncPoint(vids.jeranChestCam, "04:24:31/27", vids.willSecond360, "00:21:56/06", 12); // TODO: Jeran’s midnight fire
+timeline.addSyncPoint(vids.jeranChestCam, "04:27:35", vids.willSecond360, "00:32:22/28", 46); // TODO: MCToon explains his sun dial
+timeline.addSyncPoint(vids.jeranChestCam, "04:33:53", vids.willSecond360, "00:32:56/17", 12);
 timeline.addSyncPoint(vids.willSecond360, "00:17:54/28", vids.mctoon360Part2, "08:05:23/26", 150);
 timeline.addSyncPoint(vids.willSecond360, "00:24:15/24", vids.daveSolarPhotography, "00:04:20/10", 150); // TODO: What's broken?
 timeline.addSyncPoint(vids.willSecond360, "00:24:18/06", vids.daveSolarPhotography, "00:04:48", 150);
@@ -1356,6 +1423,9 @@ timeline.addSyncPoint(vids.willSecond360, "00:32:45", vids.flatty24Suns, "00:01:
 timeline.addSyncPoint(vids.willSecond360, "00:32:49.6", vids.flattyEscape, "00:01:05/20", 300); // roundabout
 timeline.addSyncPoint(vids.willSecond360, "00:32:55.4", vids.flattyFiguredItOut, "00:00:02/15", 10); // roundabout
 timeline.addSyncPoint(vids.willSecond360, "00:35:44.7", vids.flattyIRThermometer, "00:00:30", 60); // roundabout
+
+// Semi-manually assigned times
+clips.jeranChestCamBV.setEndTimeManually(vids.daveTl360.videoToRealTime("00:09:35/05"), "At the start of the clip, the door is closing after someone left. This is the last time that happened, before Jeran leaves the shed and everyone drives to main camp. When they return, the Sun is no longer shining through the windows.");
 
 // (Solar events based on Stellarium.)
 timeline.addEvent("10T22:02:28-03:00", "Sunset", "🌇");
@@ -1382,4 +1452,5 @@ timeline.addEvent(vids.criticalFlight3Tl.videoToRealTime("00:00:22/15"), "Depart
 
 // 13th 00:36-03 - trundle wheel measurement happened earlier
 // 15th 03:12-03 - after MCToon's Live: trundle wheel
+// 16th 18:05-03 - Jeran starts fire
 // 17th 11:06-00 - moving to the plane to leave Antarctica
