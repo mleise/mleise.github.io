@@ -51,8 +51,10 @@ export class Timeline {
 	#tracker;
 	/** @type {number} */
 	#trackerMs;
-	/** @type {boolean} */
-	#trackerDragging;
+	/** @type {number|undefined} */
+	#trackerDragStartX = undefined;
+	/** @type {number} */
+	#trackerDragStartMs = 0;
 	/** Embedded video players for clips at the currently selected time. @type {Map<Clip, EmbeddedVideoPlayer>} */
 	#clipPlayers;
 	/** The currently selected clip. @type {Clip} */
@@ -68,7 +70,6 @@ export class Timeline {
 		this.#maxTimeMs  	  = -Infinity;
 		this.#rowsNeeded 	  = 0;
 		this.#trackerMs  	  = 0;
-		this.#trackerDragging = false;
 		this.#clipPlayers     = new Map();
 	}
 
@@ -416,6 +417,7 @@ export class Timeline {
 			text.setAttribute("y", `${rowHeight * 0.85}pt`);
 			text.setAttribute("cursor", "default");
 			text.style.pointerEvents = "none";
+			text.style.userSelect = "none";
 			text.innerHTML = DATE_FORMAT_HEADER.format(new Date(dayMs));
 			this.#svg.appendChild(text);
 		}
@@ -433,6 +435,7 @@ export class Timeline {
 			text.setAttribute("x", `${x}px`);
 			text.setAttribute("y", `${rowHeight * 2.6}pt`);
 			text.setAttribute("cursor", "default");
+			text.style.userSelect = "none";
 			text.innerHTML = event.symbol;
 			a.appendChild(text);
 			this.#svg.appendChild(a);
@@ -551,6 +554,7 @@ export class Timeline {
 						liveText.style.fontSize = `${0.5 * rowHeight}pt`;
 						liveText.style.clipPath = `url(#clipPath${i})`;
 						liveText.style.pointerEvents = "none";
+						liveText.style.userSelect = "none";
 						liveText.textContent = "LIVE";
 						this.#svg.appendChild(liveText);
 					}
@@ -563,6 +567,7 @@ export class Timeline {
 						timelapseText.style.fontSize = `${0.5 * rowHeight}pt`;
 						timelapseText.style.clipPath = `url(#clipPath${i})`;
 						timelapseText.style.pointerEvents = "none";
+						timelapseText.style.userSelect = "none";
 						timelapseText.textContent = "⌚";
 						this.#svg.appendChild(timelapseText);
 					}
@@ -580,17 +585,19 @@ export class Timeline {
 		handle.style.strokeWidth = "1px";
 		handle.style.strokeLinejoin = "round";
 		handle.style.cursor = "grab";
-		handle.onmousedown = () => {
-			this.#trackerDragging = true;
+		handle.onmousedown = (event) => {
+			this.#trackerDragStartX = event.screenX;
+			this.#trackerDragStartMs = this.#trackerMs;
 		};
 		this.#svg.ownerDocument.addEventListener("mouseup", () => {
-			this.#trackerDragging = false;
+			this.#trackerDragStartX = undefined;
 		});
 		this.#svg.ownerDocument.addEventListener("mousemove", (event) => {
-			if (this.#trackerDragging) {
+			if (this.#trackerDragStartX !== undefined) {
 				const parent = this.#svg.parentElement;
 				if (parent) {
-					this.trackerMs = Math.min(Math.max(this.#XToMs(event.offsetX + 0.5), this.#minTimeMs), this.#maxTimeMs);
+					const delta = event.screenX - this.#trackerDragStartX;
+					this.trackerMs = this.#trackerDragStartMs + delta * this.#zoom;
 				}
 			}
 		});
@@ -644,7 +651,7 @@ export class Timeline {
 	 * @param {number} ms The tracker position in milliseconds.
 	 */
 	set trackerMs(ms) {
-		this.#trackerMs = ms;
+		this.#trackerMs = Math.min(Math.max(ms, this.#minTimeMs), this.#maxTimeMs);
 		this.#updateTracker(false);
 	}
 
