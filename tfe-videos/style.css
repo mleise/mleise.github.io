@@ -1,6 +1,8 @@
 * {
 	font-size: 14pt;
 	font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+	color: #dddddd;
+	background-color: #333333;
 }
 
 body {
@@ -103,6 +105,25 @@ tr:nth-child(even) th {
 	white-space: nowrap;
 }
 
-#video-preview {
-	display: flex;
+#video-previews {
+	width: 100%;
+	display: grid;
+	justify-content: center;
+	grid-template-columns: repeat(auto-fit, 30px);
+	grid-template-rows: repeat(auto-fit, 30px);
+	grid-auto-flow: row dense;
+}
+
+a:visited {
+	color: silver;
+}
+
+a:hover {
+	color: yellowgreen;
+}
+
+button {
+	cursor: pointer;
+	color: initial;
+	background-color: silver;
 }

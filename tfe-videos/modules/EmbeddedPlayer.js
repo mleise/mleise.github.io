@@ -76,6 +76,7 @@ export class EmbeddedVideoPlayer {
 		this.#end = end;
 		this.#position = position;
 		this.#element = element;
+		this.element.style.gridArea = `auto / auto / span 9 / span 16`;
 		this.#coas = [];
 	}
 
@@ -190,6 +191,15 @@ export class EmbeddedVideoPlayer {
 	seekTo(position) {
 		this.#position = position;
 	}
+
+	resize(w, h) {
+		const zoom = 480 / Math.max(w, h);
+		w *= zoom;
+		h *= zoom;
+		this.element.style.width = `${w}px`;
+		this.element.style.height = `${h}px`;
+		this.element.style.gridArea = `auto / auto / span ${h / 30} / span ${w / 30}`;
+	}
 }
 
 /**
@@ -207,9 +217,9 @@ class EmbeddedIframePlayer extends EmbeddedVideoPlayer {
 	 */
 	constructor(start, end, position, targetOrigin) {
 		const iframe = document.createElement("iframe");
+		iframe.loading = "eager";
 		iframe.allowFullscreen = true;
-		iframe.width = "640px";
-		iframe.height = "360px";
+		iframe.style.border = "0";
 		super(start, end, position, iframe);
 		this.#targetOrigin = targetOrigin;
 		knownIframePlayers.add(this);
@@ -283,6 +293,8 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 		let origin = document.baseURI;
 		origin = origin.substring(0, origin.indexOf("/", 8));
 		super(start, end, position, "https://www.youtube.com");
+		this.iframe.style.width = "480px";
+		this.iframe.style.height = "270px";
 		this.#id = id;
 		this.#serial = EmbeddedYouTubePlayer.#nextSerial++;
 		this.courseOfActions(undefined, [
@@ -346,6 +358,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 				this.#messageHandler = (message) => {
 					const ps = message.info.playerState;
 					if (message.event == "infoDelivery" && (ps == 0 || ps == 1)) {
+						this.resize(message.info.videoContentRect.width, message.info.videoContentRect.height);
 						success(true);
 					}
 				};
@@ -530,6 +543,7 @@ export class EmbeddedTikTokPlayer extends EmbeddedIframePlayer {
 	 */
 	constructor(start, end, position, id) {
 		super(start, end, position, `https://www.tiktok.com`);
+		this.resize(576, 768)
 		this.#id = id;
 		this.courseOfActions(undefined, this.#commonOpenActions());
 	}
@@ -683,8 +697,8 @@ export class EmbeddedHtmlVideoPlayer extends EmbeddedVideoPlayer {
 	 */
 	constructor(start, end, position, url) {
 		const videoElement = document.createElement("video");
-		videoElement.width = 640;
-		videoElement.height = 360;
+		videoElement.width = 480;
+		videoElement.height = 270;
 		videoElement.preservesPitch = true;
 		videoElement.controls = true;
 		videoElement.preload = "metadata";
@@ -739,6 +753,7 @@ export class EmbeddedHtmlVideoPlayer extends EmbeddedVideoPlayer {
 					this.#videoElement.onloadedmetadata = () => {
 						this.#videoElement.onerror = null;
 						this.#videoElement.onloadedmetadata = null;
+						this.resize(this.#videoElement.videoWidth, this.#videoElement.videoHeight);
 						success(true);
 					}
 				}
