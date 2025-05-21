@@ -1266,6 +1266,7 @@ Clip.orderClips(clips.daveSunspotsP, clips.daveSunspotsH, clips.daveSunspotsI); 
 Clip.orderClips(vids.mctoonDji14142627.getClipAtTime(0), clips.jeranChestCamBP);
 Clip.orderClips(vids.mctoonDji14172419.getClipAtTime(0), clips.jeranChestCamBQ, vids.mctoonDji14174459.getClipAtTime(0));
 Clip.orderClips(vids.mctoonDji15105216.getClipAtTime(0), clips.jeranChestCamBX); // MCToon passes Austin still at his tent, then Jeran and Austin walk to the "skidoo".
+Clip.orderClips(clips.willSecond360, clips.jeranChestCamDI);
 clips.mctoonFinalDayA.concat(clips.mctoonFinalDayB);
 
 // Videos that recorded hours or days apart, but have a common clock allowing us to space them out correctly relative to each other.
@@ -1408,6 +1409,7 @@ timeline.addSyncPoint(vids.jeranChestCam, "04:00:23", vids.willSecond360, "00:21
 timeline.addSyncPoint(vids.jeranChestCam, "04:24:31/27", vids.willSecond360, "00:21:56/06", 12); // TODO: Jeran’s midnight fire
 timeline.addSyncPoint(vids.jeranChestCam, "04:27:35", vids.willSecond360, "00:32:22/28", 46); // TODO: MCToon explains his sun dial
 timeline.addSyncPoint(vids.jeranChestCam, "04:33:53", vids.willSecond360, "00:32:56/17", 12);
+timeline.addSyncPoint(vids.jeranChestCam, "04:39:24", vids.willSecond360, "00:35:13/02", 44);
 timeline.addSyncPoint(vids.willSecond360, "00:17:54/28", vids.mctoon360Part2, "08:05:23/26", 150);
 timeline.addSyncPoint(vids.willSecond360, "00:24:15/24", vids.daveSolarPhotography, "00:04:20/10", 150); // TODO: What's broken?
 timeline.addSyncPoint(vids.willSecond360, "00:24:18/06", vids.daveSolarPhotography, "00:04:48", 150);
@@ -1417,15 +1419,21 @@ timeline.addSyncPoint(vids.willSecond360, "00:30:27/14", vids.jonathanDistanceA,
 timeline.addSyncPoint(vids.willSecond360, "00:31:31/18", vids.jonathanToilet, "00:00:54.6"); // roundabout
 timeline.addSyncPoint(vids.willSecond360, "00:32:06/23", vids.jonathanSnowblindness, "00:00:26"); // roundabout
 timeline.addSyncPoint(vids.willSecond360, "00:32:09/08", vids.jonathanWelcome, "00:00:03.5"); // roundabout
-timeline.addSyncPoint(vids.willSecond360, "00:32:11.5", vids.jonathanCrunch, "00:00:24.68", 150); // roundabout
-timeline.addSyncPoint(vids.willSecond360, "00:32:47/10", vids.flattyHome, "00:00:17/22", 300); // roundabout
-timeline.addSyncPoint(vids.willSecond360, "00:32:45", vids.flatty24Suns, "00:01:24.746", 50); // roundabout
-timeline.addSyncPoint(vids.willSecond360, "00:32:49.6", vids.flattyEscape, "00:01:05/20", 300); // roundabout
-timeline.addSyncPoint(vids.willSecond360, "00:32:55.4", vids.flattyFiguredItOut, "00:00:02/15", 10); // roundabout
-timeline.addSyncPoint(vids.willSecond360, "00:35:44.7", vids.flattyIRThermometer, "00:00:30", 60); // roundabout
+timeline.addSyncPoint(vids.willSecond360, "00:32:11.5", vids.jonathanCrunch, "00:00:24.68", 150);
+timeline.addSyncPoint(vids.willSecond360, "00:32:47/10", vids.flattyHome, "00:00:17/22", 300);
+timeline.addSyncPoint(vids.willSecond360, "00:32:45", vids.flatty24Suns, "00:01:24.746", 50);
+timeline.addSyncPoint(vids.willSecond360, "00:32:49.6", vids.flattyEscape, "00:01:05/20", 300);
+timeline.addSyncPoint(vids.willSecond360, "00:32:55.4", vids.flattyFiguredItOut, "00:00:02/15", 10);
+timeline.addSyncPoint(vids.willSecond360, "00:35:44.7", vids.flattyIRThermometer, "00:00:30", 60);
+// Return
+timeline.addSyncPoint(vids.criticalFlight3Tl, "00:07:55/16", vids.jeranChestCam, "05:14:18/03", 2);
 
 // Semi-manually assigned times
 clips.jeranChestCamBV.setEndTimeManually(vids.daveTl360.videoToRealTime("00:09:35/05"), "At the start of the clip, the door is closing after someone left. This is the last time that happened, before Jeran leaves the shed and everyone drives to main camp. When they return, the Sun is no longer shining through the windows.");
+clips.jeranChestCamCT.setStartTimeManually(vids.willSecond360.videoToRealTime("00:17:57/03"), "That’s when we can see a lot of people enter the library tent.");
+clips.jeranChestCamCU.setEndTimeManually(vids.willSecond360.videoToRealTime("00:19:45/16"), "A group of people leaves the library tent, one of whom end up at Jeran & Austin’s tent.");
+clips.jeranChestCamDO.setStartTimeManually(vids.criticalFlight3Tl.videoToRealTime("00:00:26/25"), "In Critical Think’s timelapse we see the plane turns into the direction it is heading on Jeran’s video.");
+clips.jeranChestCamEE.setStartTimeManually(vids.criticalFlight3Tl.videoToRealTime("00:08:16/10"), "In Jeran’s clip the plane is standin. This is the first time it stops in Critical Think’s timelapse.");
 
 // (Solar events based on Stellarium.)
 timeline.addEvent("10T22:02:28-03:00", "Sunset", "🌇");
