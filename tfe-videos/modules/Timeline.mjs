@@ -349,6 +349,47 @@ export class Timeline {
 				}
 			}
 		}
+
+		// Quick fix, to compress the rows a bit, if they are from the same person.
+		/** @type Clip[] */
+		let nextRow = [];
+		for (let row = this.#rowsNeeded - 1; row >= 0; row--) {
+			/** @type Clip[] */
+			let prevRow = [];
+			for (const clip of this.#clips) {
+				if (clip.timelineRow == row) {
+					prevRow.push(clip);
+				}
+			}
+			if (nextRow.length) {
+				let conflicts = false;
+				for (const clipA of prevRow) {
+					for (const clipB of nextRow) {
+						if (clipA.owner !== clipB.owner || clipA.camera?.isPersonal !== clipA.camera?.isPersonal) {
+							conflicts = true;
+							break;
+						}
+						if (clipA.endTimeAvgMs > clipB.startTimeAvgMs && clipA.startTimeAvgMs < clipB.endTimeAvgMs) {
+							conflicts = true;
+							break;
+						}
+					}
+					if (conflicts) {
+						break;
+					}
+				}
+				if (!conflicts) {
+					for (const clip of this.#clips) {
+						if (clip.timelineRow > row) {
+							clip.timelineRow--;
+						}
+					}
+					prevRow = prevRow.concat(nextRow);
+					this.#rowsNeeded--;
+				}
+			}
+			nextRow = prevRow;
+		}
 	}
 
 	/**
