@@ -173,7 +173,7 @@ export class Clip {
 
 	applyPublishTime() {
 		if ((this.#timelapseRate !== undefined || this.#autoDurationClip !== null) && this.#video.publishTime !== undefined) {
-			this.lowerStartTimeMaxMs(this.#video.publishTime.valueOf() - (this.#autoDurationClip !== null ? 0 : this.realTimeDurationMs), `the video was uploaded ${DATE_FORMAT_UGC_DETAILED.format(this.#video.publishTime)}`);
+			this.lowerStartTimeMaxMs(this.#video.publishTime.valueOf() - (this.#autoDurationClip === null ? this.getRealTimeDurationMs(false) : 0), `the video was uploaded ${DATE_FORMAT_UGC_DETAILED.format(this.#video.publishTime)}`);
 		}
 	}
 
@@ -199,7 +199,7 @@ export class Clip {
 	setTimesManually(minStart, maxEnd, reasoning) {
 		minStart = minStart instanceof Date ? minStart : new Date("2024-12-" + minStart + ":00");
 		maxEnd = maxEnd instanceof Date ? maxEnd : new Date("2024-12-" + maxEnd + ":00");
-		const maxStart = new Date(maxEnd.valueOf() - this.realTimeDurationMs);
+		const maxStart = new Date(maxEnd.valueOf() - this.getRealTimeDurationMs(true));
 		if (minStart > maxStart) {
 			throw new Error("First date lies after second date.");
 		}
@@ -230,7 +230,7 @@ export class Clip {
 	 */
 	setEndTimeManually(maxEnd, reasoning) {
 		maxEnd = maxEnd instanceof Date ? maxEnd : new Date("2024-12-" + maxEnd + ":00");
-		this.lowerStartTimeMaxMs(maxEnd.valueOf() - this.realTimeDurationMs, reasoning);
+		this.lowerStartTimeMaxMs(maxEnd.valueOf() - this.getRealTimeDurationMs(true), reasoning);
 		return this;
 	}
 
@@ -244,13 +244,16 @@ export class Clip {
 		return other;
 	}
 	
-	/** @returns The real time duration of this clip in milliseconds. */
-	get realTimeDurationMs() {
+	/**
+	 * @param {boolean} autoDuration If `true` and an auto-duration clip is set, the clipped duration will be returned, otherwise the natural play time.
+	 * @returns The real time duration of this clip in milliseconds.
+	 */
+	getRealTimeDurationMs(autoDuration) {
 		if (!this.#timelapseRate) {
 			throw new Error("Time-lapse rate has not yet been determined.");
 		}
 		let durationLimitMs = +Infinity;
-		if (this.#autoDurationClip?.hasDefinedStartTimes && this.hasDefinedStartTimes) {
+		if (autoDuration && this.#autoDurationClip?.hasDefinedStartTimes && this.hasDefinedStartTimes) {
 			durationLimitMs = this.#autoDurationClip.startTimeAvgMs - this.startTimeAvgMs;
 		}
 		return Math.min(1000 * this.duration * this.#timelapseRate, durationLimitMs);
@@ -289,7 +292,7 @@ export class Clip {
 
 	/** @returns The lower bound for the end time of this clip. Auto-duration is applied here. */
 	get endTimeMinMs() {
-		const naturalEndMs = this.#timeInterval.lowerTimeMs + this.realTimeDurationMs;
+		const naturalEndMs = this.#timeInterval.lowerTimeMs + this.getRealTimeDurationMs(false);
 		if (this.#autoDurationClip && this.#autoDurationClip.startTimeMinMs < naturalEndMs) {
 			return this.#autoDurationClip.startTimeMinMs;
 		}
@@ -298,20 +301,26 @@ export class Clip {
 
 	/** @returns The upper bound for the end time of this clip. Auto-duration is applied here. */
 	get endTimeMaxMs() {
-		const naturalEndMs = this.#timeInterval.upperTimeMs + this.realTimeDurationMs;
+		const naturalEndMs = this.#timeInterval.upperTimeMs + this.getRealTimeDurationMs(false);
 		if (this.#autoDurationClip && this.#autoDurationClip.startTimeMaxMs < naturalEndMs) {
 			return this.#autoDurationClip.startTimeMaxMs;
 		}
 		return naturalEndMs;
 	}
 
-	/** @returns The average of lower and upper bound for the end time of this clip. */
+	/**
+	 * @returns The average of lower and upper bound for the end time of this clip.
+	 * Note that this function is supposed to be used for the final output and will perform additional clipping to any succeeding clips’ start time averages.
+	 */
 	get endTimeAvgMs() {
-		const naturalEndMs = this.startTimeAvgMs + this.realTimeDurationMs;
-		if (this.#autoDurationClip && this.#autoDurationClip.startTimeAvgMs < naturalEndMs) {
-			return this.#autoDurationClip.startTimeAvgMs;
+		let endMs = this.startTimeAvgMs + this.getRealTimeDurationMs(true);
+		for (const clip of this.#succeedingClips) {
+			if (endMs > clip.startTimeAvgMs + 0.01) {
+				throw new Error("Unexpectedly large error in clip end time.");
+			}
+			endMs = Math.min(endMs, clip.startTimeAvgMs);
 		}
-		return naturalEndMs;
+		return endMs;
 	}
 
 	/** @returns The confidence interval (the delta between upper and lower start time) in milliseconds. */
@@ -333,8 +342,8 @@ export class Clip {
 	raiseStartTimeMinMs(timeMs, source) {
 		const ourSource = `the clip cannot start earlier than ${DATE_FORMAT_UGC_DETAILED.format(timeMs)}, because ${source}`;
 		if (this.#timeInterval.raiseLower(timeMs, ourSource) && this.#timelapseRate !== undefined) {
-			const earliestMs = this.#timeInterval.lowerTimeMs + this.realTimeDurationMs;
-			const theirSource = `a preceeding clip from "${this.video}" runs to that point, because ${source}`;
+			const earliestMs = this.#timeInterval.lowerTimeMs + this.getRealTimeDurationMs(false);			
+			const theirSource = `a preceding clip from "${this.video}" runs to that point, because ${source}`;
 			for (const clip of this.#succeedingClips) {
 				if (clip !== this.#autoDurationClip) {
 					clip.raiseStartTimeMinMs(earliestMs, theirSource);
@@ -357,7 +366,7 @@ export class Clip {
 		if (this.#timeInterval.lowerUpper(timeMs, ourSource)) {
 			for (const clip of this.#precedingClips) {
 				if (clip.#autoDurationClip !== this) {
-					const lastMs = timeMs - clip.realTimeDurationMs;
+					const lastMs = timeMs - clip.getRealTimeDurationMs(false);
 					const theirSource = `otherwise it would run into a succeeding clip, which starts no later than ${DATE_FORMAT_UGC_DETAILED.format(timeMs)}, because ${source}`;
 					clip.lowerStartTimeMaxMs(lastMs, theirSource);
 				}
@@ -379,13 +388,13 @@ export class Clip {
 				succeeding.#precedingClips.push(preceding);
 				preceding.#succeedingClips.push(succeeding);
 				if (succeeding.startTimeMaxMs !== +Infinity) {
-					const lastMs = succeeding.startTimeMaxMs - (preceding.#autoDurationClip ? 0 : preceding.realTimeDurationMs);
+					const lastMs = succeeding.startTimeMaxMs - (preceding.#autoDurationClip === succeeding ? 0 : preceding.getRealTimeDurationMs(false));
 					const theirSource = `otherwise it would run into a succeeding clip from "${succeeding.video}", which starts no later than ${DATE_FORMAT_UGC_DETAILED.format(succeeding.startTimeMaxMs)}, because ${succeeding.startTimeMaxReason}`;
 					preceding.lowerStartTimeMaxMs(lastMs, theirSource);
 				}
 				if (preceding.startTimeMinMs !== -Infinity) {
-					const earliestMs = preceding.startTimeMinMs + (preceding.#autoDurationClip ? 0 : preceding.realTimeDurationMs);
-					const theirSource = `a preceeding clip from "${preceding.#video}" runs to that point, because ${preceding.startTimeMinReason}`;
+					const earliestMs = preceding.startTimeMinMs + (preceding.#autoDurationClip === succeeding ? 0 : preceding.getRealTimeDurationMs(false));
+					const theirSource = `a preceding clip from "${preceding.#video}" runs to that point, because ${preceding.startTimeMinReason}`;
 					succeeding.raiseStartTimeMinMs(earliestMs, theirSource);
 				}
 			}
@@ -445,7 +454,7 @@ export class Clip {
 		return `Source: ${this.#video}\n` +
 		`Timecode:\t${Video.formatVideoTime(this.#start)} to ${Video.formatVideoTime(this.#start + this.#duration)}\n` +
 		`Start time:\t${DATE_FORMAT_UGC_TOOLTIP.format(new Date((this.startTimeAvgMs)))}\n` +
-		`End time:\t${DATE_FORMAT_UGC_TOOLTIP.format(new Date((this.endTimeAvgMs)))} (Duration: ${Video.formatVideoTime(this.realTimeDurationMs / 1000)})\n` +
+		`End time:\t${DATE_FORMAT_UGC_TOOLTIP.format(new Date((this.endTimeAvgMs)))} (Duration: ${Video.formatVideoTime(this.getRealTimeDurationMs(true) / 1000)})\n` +
 		`Confidence Interval:\t${this.confidenceIntervalStr}`;
 	}
 

@@ -460,7 +460,7 @@ export class Timeline {
 				capA.setAttribute("x1", `${x1}px`);
 				capA.setAttribute("x2", `${x1}px`);
 				line.setAttribute("x1", `${x1}px`);
-				const x2 = (clip.startTimeMaxMs + clip.realTimeDurationMs - this.#minTimeMs) / this.#zoom;
+				const x2 = (clip.startTimeMaxMs + clip.getRealTimeDurationMs(true) - this.#minTimeMs) / this.#zoom;
 				capB.setAttribute("x1", `${x2}px`);
 				capB.setAttribute("x2", `${x2}px`);
 				line.setAttribute("x2", `${x2}px`);
@@ -506,7 +506,7 @@ export class Timeline {
 				const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
 				title.innerHTML = clip.tooltip;
 				rect.appendChild(title);
-				const width = clip.realTimeDurationMs / this.#zoom;
+				const width = clip.getRealTimeDurationMs(true) / this.#zoom;
 				const x = (clip.startTimeAvgMs - this.#minTimeMs) / this.#zoom;
 				const y = rowHeight * (3 + clip.timelineRow);
 				rect.setAttribute("x", `${x}px`);
