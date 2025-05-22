@@ -1,12 +1,12 @@
 // @ts-check
 
-import { Camera } from "./Camera.js";
-import { Clip } from "./Clip.js";
-import { EmbeddedHtmlVideoPlayer, EmbeddedVideoPlayer, EmbeddedTikTokPlayer, EmbeddedYouTubePlayer } from "./EmbeddedPlayer.js";
-import { Person } from "./Person.js";
-import { SyncPoint } from "./SyncPoint.js";
-import { TimelineEvent } from "./TimelineEvent.js";
-import { MCToonDjiUpload, TikTokVideo, Video, YouTubeVideo } from "./Video.js";
+import { Camera } from "./Camera.mjs";
+import { Clip } from "./Clip.mjs";
+import { EmbeddedHtmlVideoPlayer, EmbeddedVideoPlayer, EmbeddedTikTokPlayer, EmbeddedYouTubePlayer } from "../../modules/EmbeddedVideoPlayer.mjs";
+import { Person } from "./Person.mjs";
+import { SyncPoint } from "./SyncPoint.mjs";
+import { TimelineEvent } from "./TimelineEvent.mjs";
+import { MCToonDjiUpload, TikTokVideo, Video, YouTubeVideo } from "./Video.mjs";
 
 /** Milliseconds to an hour. */
 const MS_PER_HOUR = 60 * 60 * 1000;

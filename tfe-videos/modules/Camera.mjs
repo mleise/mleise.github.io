@@ -1,6 +1,6 @@
 // @ts-check
 
-import { Person } from "./Person.js";
+import { Person } from "./Person.mjs";
 
 export const NTSC24 = 24000 / 1001;
 export const NTSC30 = 30000 / 1001;

@@ -1,6 +1,6 @@
 // @ts-check
 
-import { Video } from "./Video.js";
+import { Video } from "./Video.mjs";
 
 /**
  * A point in time that is shared between two {@link Video} {@link Clip}s and creates a link between them.

@@ -1,12 +1,12 @@
 // @ts-check
 
-import { AnchorTime } from "./AnchorTime.js";
-import { Camera, NTSC30 } from "./Camera.js";
-import { Clip } from "./Clip.js";
-import { EmbeddedHtmlVideoPlayer, EmbeddedTikTokPlayer, EmbeddedYouTubePlayer } from "./EmbeddedPlayer.js";
-import { Person } from "./Person.js";
-import { Timeline } from "./Timeline.js";
-import { TimeSource } from "./TimeSource.js";
+import { AnchorTime } from "./AnchorTime.mjs";
+import { Camera, NTSC30 } from "./Camera.mjs";
+import { Clip } from "./Clip.mjs";
+import { EmbeddedHtmlVideoPlayer, EmbeddedTikTokPlayer, EmbeddedYouTubePlayer } from "../../modules/EmbeddedVideoPlayer.mjs";
+import { Person } from "./Person.mjs";
+import { Timeline } from "./Timeline.mjs";
+import { TimeSource } from "./TimeSource.mjs";
 
 /**
  * Abstact base class for videos from a video platform. A video had to be segmented into {@link Clip}s to be placed on the timeline.

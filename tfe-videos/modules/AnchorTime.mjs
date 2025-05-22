@@ -1,7 +1,7 @@
 // @ts-check
 
-import { DATE_FORMAT_UGC_DETAILED } from "./Timeline.js";
-import { TimeSource } from "./TimeSource.js";
+import { DATE_FORMAT_UGC_DETAILED } from "./Timeline.mjs";
+import { TimeSource } from "./TimeSource.mjs";
 
 /**
  * Associates a real time with a position in a video via a {@link TimeSource} object.

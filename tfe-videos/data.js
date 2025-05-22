@@ -1,11 +1,11 @@
 // @ts-check
 
-import { Camera, NTSC24, NTSC30, NTSC60 } from "./modules/Camera.js";
-import { Clip } from "./modules/Clip.js";
-import { Person } from "./modules/Person.js";
-import { Timeline } from "./modules/Timeline.js";
-import { TimeSource } from "./modules/TimeSource.js";
-import { MCToonDjiUpload, TikTokVideo, YouTubeVideo } from "./modules/Video.js";
+import { Camera, NTSC24, NTSC30, NTSC60 } from "./modules/Camera.mjs";
+import { Clip } from "./modules/Clip.mjs";
+import { Person } from "./modules/Person.mjs";
+import { Timeline } from "./modules/Timeline.mjs";
+import { TimeSource } from "./modules/TimeSource.mjs";
+import { MCToonDjiUpload, TikTokVideo, YouTubeVideo } from "./modules/Video.mjs";
 
 /** Timeline object that the videos are placed on. It will perform some consistency checks on the video clips and produce the output graphics. */
 export const timeline = new Timeline();

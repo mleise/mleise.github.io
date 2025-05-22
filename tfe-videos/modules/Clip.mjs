@@ -1,12 +1,12 @@
 // @ts-check
 
-import { Video } from "./Video.js";
-import { Camera } from "./Camera.js"
-import { AnchorTime } from "./AnchorTime.js";
-import { DATE_FORMAT_UGC_TOOLTIP, DATE_FORMAT_UGC_DETAILED } from "./Timeline.js";
-import { Person } from "./Person.js";
-import { TimeInterval } from "./TimeInterval.js";
-import { TimeSource } from "./TimeSource.js";
+import { Video } from "./Video.mjs";
+import { Camera } from "./Camera.mjs"
+import { AnchorTime } from "./AnchorTime.mjs";
+import { DATE_FORMAT_UGC_TOOLTIP, DATE_FORMAT_UGC_DETAILED } from "./Timeline.mjs";
+import { Person } from "./Person.mjs";
+import { TimeInterval } from "./TimeInterval.mjs";
+import { TimeSource } from "./TimeSource.mjs";
 
 /**
  * Part of a {@link Video}. Many videos will just be a single clip, but edited video may contain many.
