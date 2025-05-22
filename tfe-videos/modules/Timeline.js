@@ -116,7 +116,7 @@ export class Timeline {
 	}
 
 	/**
-	 * Establishes the timelapse rate of a {@link Video} {@link Clip} using two synched up timestamps in a reference video playing at normal speed.
+	 * Establishes the time-lapse rate of a {@link Video} {@link Clip} using two synched up timestamps in a reference video playing at normal speed.
 	 * @param {Video} video1 The video containing the sped up clip.
 	 * @param {string} time1a The first timestamp in the sped up video.
 	 * @param {string} time1b The second timestamp in the sped up video.
@@ -134,9 +134,9 @@ export class Timeline {
 		const clip2a = video2.getClipAtTime(time2aNum);
 		const clip2b = video2.getClipAtTime(time2bNum);
 		if (clip1a !== clip1b) throw new Error("Clips at time A and B in the first video are not identical.");
-		if (clip1a.timelapseRate !== undefined) throw new Error("First clip must be the one with unset timelapse rate.");
+		if (clip1a.timelapseRate !== undefined) throw new Error("First clip must be the one with unset time-lapse rate.");
 		if (clip2a !== clip2b) throw new Error("Clips at time A and B in the second video are not identical.");
-		if (clip2a.timelapseRate !== 1) throw new Error("Second clip must be the one with a timelapse rate of 1.");
+		if (clip2a.timelapseRate !== 1) throw new Error("Second clip must be the one with a time-lapse rate of 1.");
 		clip1a.setTimelapseRate((time2bNum - time2aNum) / (time1bNum - time1aNum));
 		this.addSyncPoint(video1, time1a, video2, time2a);
 	}
@@ -559,7 +559,7 @@ export class Timeline {
 						this.#svg.appendChild(liveText);
 					}
 
-					// Timelapse badge
+					// Time-lapse badge
 					if (clip.timelapseRate !== 1) {
 						const timelapseText = document.createElementNS("http://www.w3.org/2000/svg", "text");
 						timelapseText.setAttribute("x", `${x + 0.5}px`);

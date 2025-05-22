@@ -22,7 +22,7 @@ export class Video {
 	#fps;
 	/** Date and time this video was published on. Gives the program an upper bound for when this was shot. @type {Date|undefined} */
 	#publishTime;
-	/** Timelapse rate (defaulting to 1) for this video. Set to `undefined` to automatically calculate from two sync points into a video playing at normal rate. @type {number|undefined} */
+	/** Time-lapse rate (defaulting to 1) for this video. Set to `undefined` to automatically calculate from two sync points into a video playing at normal rate. @type {number|undefined} */
 	#timelapseRate;
 	/** The camera this video was shot on. If this is an edited video with segments from multiple cameras, leave it as `undefined` and set the camera for each segment instead. */
 	#camera
@@ -107,7 +107,7 @@ export class Video {
 	}
 
 	/**
-	 * Sets the timelapse rate for this entire video. Can be overridden by segments. An `undefined` value means that the
+	 * Sets the time-lapse rate for this entire video. Can be overridden by segments. An `undefined` value means that the
 	 * rate is to be determined automatically from two sync times with another video that plays at normal speed.
 	 * @param {(number|undefined)} value The speedup factor of this video compared to real time playback.
 	 */
@@ -118,7 +118,7 @@ export class Video {
 	}
 
 	/**
-	 * @returns The timelapse rate for this entire video. Can be overridden by segments. An `undefined` value means that the
+	 * @returns The time-lapse rate for this entire video. Can be overridden by segments. An `undefined` value means that the
 	 * rate is to be determined automatically from two sync times with another video that plays at normal speed.
 	 */
 	get timelapseRate() {
@@ -313,7 +313,7 @@ export class Video {
 		const seconds = this.parseVideoTime(videoTime);
 		for (const seg of this.#clips) {
 			if (seg.start <= seconds && seg.start + seg.duration > seconds) {
-				if (seg.timelapseRate === undefined) throw new Error("Timelapse rate is missing.");
+				if (seg.timelapseRate === undefined) throw new Error("Time-lapse rate is missing.");
 				return new Date(seg.startTimeAvgMs + (seconds - seg.start) * 1000 * seg.timelapseRate);
 			}
 		}

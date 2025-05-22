@@ -95,7 +95,7 @@ const cams = {
 	jeranAction    : new Camera(peeps.jeran   , true , "GoPro HERO12"),
 	/** Jeran’s camera. */
 	jeranCam       : new Camera(peeps.jeran   , true , "Nikon Coolpix P900 (UV/IR blocker removed)", "125mm F/8 + Filter"),
-	/** Jeran’s timelapse camera. */
+	/** Jeran’s time-lapse camera. */
 	jeranTimelapse : new Camera(peeps.jeran   , false, "Afidus ATL-800i 4K Time Lapse"),
 	/** Jonathan’s phone. */
 	jonathanPhone  : new Camera(peeps.jonathan, true , "Smart Phone"),
@@ -1219,7 +1219,7 @@ export const clips = {
 	will360Part3               : vids.will360Part3.createClip(),
 	willStartrailsA            : vids.willStartrails
 		.skipClip("00:10:55/23")
-		.addAnchorTime("14T01:26:00-03", "00:10:55/23", ts.stars) // MCToon is talking about starting the timelapse in his live stream that night.
+		.addAnchorTime("14T01:26:00-03", "00:10:55/23", ts.stars) // MCToon is talking about starting the time-lapse in his live stream that night.
 		.createClip("00:11:05/26").setTimelapseRate(891.08910891089108910891089108911).setCamera(cams.mctoonCam), // MCToon said he recorded 150 minutes.
 	willStartrailsB            : vids.willStartrails
 		.skipClip("00:11:10/20")
@@ -1276,9 +1276,9 @@ timeline.chronology(vids.criticalFlight2Tl, "00:05:10/11", vids.criticalFlight3T
 // Punta Arenas
 timeline.addSyncPoint(vids.mctoonPuntaArenasLive1, "00:04:19/19", vids.mctoonDji10140047, "00:15:30.886");
 timeline.addSyncPoint(vids.daveSunspots, "00:17:25/17", vids.daveSunspots, "00:17:34/18");
-//timeline.addSyncPoint(vids.daveSunspots, "00:17:33/18", vids.daveSunspots, "00:17:38/15"); // TODO: Do not uncomment, just for the timelapse calculation. +8.040s / +3.880s
+//timeline.addSyncPoint(vids.daveSunspots, "00:17:33/18", vids.daveSunspots, "00:17:38/15"); // TODO: Do not uncomment, just for the time-lapse calculation. +8.040s / +3.880s
 timeline.addSyncPoint(vids.daveSunspots, "00:17:24/17", vids.daveSunspots, "00:17:40/04"); // ident
-//timeline.addSyncPoint(vids.daveSunspots, "00:17:24/24", vids.daveSunspots, "00:17:45/12"); // TODO: Do not uncomment, just for the timelapse calculation.
+//timeline.addSyncPoint(vids.daveSunspots, "00:17:24/24", vids.daveSunspots, "00:17:45/12"); // TODO: Do not uncomment, just for the time-lapse calculation.
 timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:47", vids.mctoon1ToGo, "00:06:55/25", 43); // Cloud paterns
 timeline.addSyncPoint(vids.jeranPuntaArenas2, "00:02:30", vids.mctoon1ToGo, "00:06:56/10", 1); // Lisbeth filming to the left and Jonathan approaching Austin
 timeline.addSyncPoint(vids.criticalLivePuntaArenas, "00:09:44/29", vids.mctoonDji11113557, "00:23:17.040", 0.04);
@@ -1432,8 +1432,8 @@ timeline.addSyncPoint(vids.criticalFlight3Tl, "00:07:55/16", vids.jeranChestCam,
 clips.jeranChestCamBV.setEndTimeManually(vids.daveTl360.videoToRealTime("00:09:35/05"), "At the start of the clip, the door is closing after someone left. This is the last time that happened, before Jeran leaves the shed and everyone drives to main camp. When they return, the Sun is no longer shining through the windows.");
 clips.jeranChestCamCT.setStartTimeManually(vids.willSecond360.videoToRealTime("00:17:57/03"), "That’s when we can see a lot of people enter the library tent.");
 clips.jeranChestCamCU.setEndTimeManually(vids.willSecond360.videoToRealTime("00:19:45/16"), "A group of people leaves the library tent, one of whom end up at Jeran & Austin’s tent.");
-clips.jeranChestCamDO.setStartTimeManually(vids.criticalFlight3Tl.videoToRealTime("00:00:26/25"), "In Critical Think’s timelapse we see the plane turns into the direction it is heading on Jeran’s video.");
-clips.jeranChestCamEE.setStartTimeManually(vids.criticalFlight3Tl.videoToRealTime("00:08:16/10"), "In Jeran’s clip the plane is standin. This is the first time it stops in Critical Think’s timelapse.");
+clips.jeranChestCamDO.setStartTimeManually(vids.criticalFlight3Tl.videoToRealTime("00:00:26/25"), "In Critical Think’s time-lapse we see the plane turns into the direction it is heading on Jeran’s video.");
+clips.jeranChestCamEE.setStartTimeManually(vids.criticalFlight3Tl.videoToRealTime("00:08:16/10"), "In Jeran’s clip the plane is standin. This is the first time it stops in Critical Think’s time-lapse.");
 
 // (Solar events based on Stellarium.)
 timeline.addEvent("10T22:02:28-03:00", "Sunset", "🌇");

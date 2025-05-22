@@ -51,7 +51,7 @@ export class Clip {
 	 * @param {number} start Start of the segment in the video in seconds.
 	 * @param {number} duration Duration of the segment in seconds.
 	 * @param {Camera|Person} cameraOrOwner The camera/device this was recorded on or the owner of the camera/device/channel if unknown.
-	 * @param {number} [timelapseRate] Sets the timelapse rate for this clip, overriding the one from the {@link Video}.
+	 * @param {number} [timelapseRate] Sets the time-lapse rate for this clip, overriding the one from the {@link Video}.
 	 */
 	constructor(video, start, duration, cameraOrOwner, timelapseRate) {
 		if (timelapseRate !== undefined && !(timelapseRate >= 1)) {
@@ -139,20 +139,20 @@ export class Clip {
 	}
 
 	/**
-	 * Gets the timelapse rate of this clip if set.
-	 * @returns {number|undefined} The timelapse rate of this clip.
+	 * Gets the time-lapse rate of this clip if set.
+	 * @returns {number|undefined} The time-lapse rate of this clip.
 	 */
 	get timelapseRate() {
 		return this.#timelapseRate;
 	}
 	
 	/**
-	 * The timelapse rate of this clip. Only valid if the timelapse rate is unset.
-	 * @param {number} value The timelapse rate. Must be >= 1.
+	 * The time-lapse rate of this clip. Only valid if the time-lapse rate is unset.
+	 * @param {number} value The time-lapse rate. Must be >= 1.
 	 */
 	setTimelapseRate(value) {
-		if (this.#timelapseRate !== undefined) throw new Error("Timelapse rate is already defined.");
-		if (!(value >= 1)) throw new Error("Timelapse rate must be >= 1.");
+		if (this.#timelapseRate !== undefined) throw new Error("Time-lapse rate is already defined.");
+		if (!(value >= 1)) throw new Error("Time-lapse rate must be >= 1.");
 		this.#timelapseRate = value;
 		this.#tryToApplyTimes();
 		return this;
@@ -247,7 +247,7 @@ export class Clip {
 	/** @returns The real time duration of this clip in milliseconds. */
 	get realTimeDurationMs() {
 		if (!this.#timelapseRate) {
-			throw new Error("Timelapse rate has not yet been determined.");
+			throw new Error("Time-lapse rate has not yet been determined.");
 		}
 		let durationLimitMs = +Infinity;
 		if (this.#autoDurationClip?.hasDefinedStartTimes && this.hasDefinedStartTimes) {
