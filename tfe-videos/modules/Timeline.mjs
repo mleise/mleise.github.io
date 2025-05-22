@@ -71,7 +71,7 @@ export class Timeline {
 		this.#minTimeMs  	  = +Infinity;
 		this.#maxTimeMs  	  = -Infinity;
 		this.#rowsNeeded 	  = 0;
-		this.#trackerMs  	  = 0;
+		this.#trackerMs  	  = typeof window !== "undefined" && new Date("2024-12-" + (new URLSearchParams(window.location.search).get("time") || "01T00:00") + "-00:00").valueOf() + 3 * 3600000 || 0;
 		this.#clipPlayers     = new Map();
 	}
 
@@ -300,7 +300,7 @@ export class Timeline {
 		if (this.#minTimeMs === +Infinity || this.#maxTimeMs === -Infinity) {
 			throw new Error("Could not determine a time frame for the trip for rendering the SVG timeline");
 		}
-		this.#trackerMs = this.#minTimeMs;
+		this.#trackerMs = Math.min(Math.max(this.#trackerMs, this.#minTimeMs), this.#maxTimeMs);
 
 		/** @type {Map<Person,Map<Camera?,Clip[][]>>} */
 		const clipsByOwner = new Map();
@@ -704,6 +704,26 @@ export class Timeline {
 	 */
 	#msToX(ms) {
 		return (ms - this.#minTimeMs) / this.#zoom;
+	}
+
+	/** @returns The zoom level. */
+	get zoom() {
+		return this.#zoom;
+	}
+
+	/** @returns The start time & date of this timeline in milliseconds.  */
+	get minTimeMs() {
+		return this.#minTimeMs;
+	}
+
+	/** @returns The end time & date of this timeline in milliseconds.  */
+	get maxTimeMs() {
+		return this.#maxTimeMs;
+	}
+
+	/** @returns The tracker position and loads corresponding videos. */
+	get trackerMs() {
+		return this.#trackerMs;
 	}
 
 	/**

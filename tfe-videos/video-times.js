@@ -9,6 +9,7 @@ if (typeof window !== "undefined") {
 	if (container) {
 		const svg = timeline.produceSvg(container, false);
 		container.appendChild(svg);
+		container.scrollLeft = (timeline.trackerMs - timeline.minTimeMs) / timeline.zoom - container.clientWidth / 2;
 	}
 }
 
