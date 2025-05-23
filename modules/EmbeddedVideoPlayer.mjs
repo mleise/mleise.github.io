@@ -336,7 +336,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 				// Load new video
 				()        => {
 					this.#postMessage({ event: "command", func: "mute" });
-					this.#postMessage({ event: "command", func: "loadVideoById", args: [ id ] });
+					this.#postMessage({ event: "command", func: "loadVideoById", args: [ id, Math.trunc(this.position) ] });
 				},
 				(success) => {
 					this.#messageHandler = (message) => {
