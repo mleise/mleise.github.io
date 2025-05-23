@@ -59,7 +59,7 @@ export class Timeline {
 	#trackerDragStartMs = 0;
 	/** Embedded video players for clips at the currently selected time. @type {Map<Clip, EmbeddedVideoPlayer>} */
 	#clipPlayers;
-	/** The currently selected clip. @type {Clip} */
+	/** The currently selected clip. @type {Clip|null} */
 	#selectedClip;
 
 	constructor() {
@@ -423,6 +423,9 @@ export class Timeline {
 			parent.scrollLeft = ((mouseTimeMs - scrollDelta) - this.#minTimeMs) / this.#zoom;
 			return false;
 		};
+		this.#svg.onclick = () => {
+			this.selectedClip = null;
+		};
 
 		const trackBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		trackBar.onclick = (event) => {
@@ -602,19 +605,9 @@ export class Timeline {
 		const clip = this.#clips[i];
 		if (clip.hasDefinedStartTimes) {
 			const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-			rect.onclick = () => {
-				this.#selectedClip = clip;
-				const clipNameElement = document.getElementById("clip-name");
-				if (clipNameElement) clipNameElement.innerText = clip.toString();
-				const parent = this.#svg.parentElement;
-				if (parent) {
-					const oldSvg = this.#svg;
-					const newSvg = this.produceSvg(parent, true);
-					parent.replaceChild(newSvg, oldSvg);
-				}
-				if (this.#trackerMs < clip.startTimeAvgMs || this.#trackerMs >= clip.endTimeAvgMs) {
-					this.trackerMs = clip.startTimeAvgMs;
-				}
+			rect.onclick = (event) => {
+				this.selectedClip = clip;
+				event.stopPropagation();
 			};
 			const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
 			title.innerHTML = clip.tooltip;
@@ -685,6 +678,25 @@ export class Timeline {
 					this.#svg.appendChild(timelapseText);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Updates the currently selected clip (or deselects it).
+	 * @param {Clip|null} clip The newly selected clip or `null` for deselection.
+	 */
+	set selectedClip(clip) {
+		this.#selectedClip = clip;
+		const clipNameElement = document.getElementById("clip-name");
+		if (clipNameElement) clipNameElement.innerText = clip?.toString() || "-";
+		const parent = this.#svg.parentElement;
+		if (parent) {
+			const oldSvg = this.#svg;
+			const newSvg = this.produceSvg(parent, true);
+			parent.replaceChild(newSvg, oldSvg);
+		}
+		if (clip && (this.#trackerMs < clip.startTimeAvgMs || this.#trackerMs >= clip.endTimeAvgMs)) {
+			this.trackerMs = clip.startTimeAvgMs;
 		}
 	}
 
