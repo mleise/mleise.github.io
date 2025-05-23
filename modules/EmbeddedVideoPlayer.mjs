@@ -354,7 +354,10 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 	#commonOpenActions() {
 		return [
 			// Seek into position, which starts playback
-			()        => { this.#seekToInternal(); },
+			()        => {
+				this.element.style.pointerEvents = "";
+				this.#seekToInternal();
+			},
 			(success) => {
 				this.#messageHandler = (message) => {
 					const ps = message.info.playerState;
@@ -366,6 +369,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 			},
 			// Pause video and unmute
 			()        => {
+				this.element.style.pointerEvents = "none";
 				this.#postMessage({ event: "command", func: "pauseVideo" });
 				this.#postMessage({ event: "command", func: "unMute" });
 			},
