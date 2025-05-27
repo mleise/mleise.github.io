@@ -376,7 +376,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 			(success) => {
 				this.#messageHandler = (message) => {
 					const ps = message.info.playerState;
-					if (message.event == "infoDelivery" && (ps == 2 || ps == 3)) {
+					if (message.event == "infoDelivery" && message.info.progressState?.allowSeeking && (ps == 2 || ps == 3)) {
 						success(true);
 					}
 				};
