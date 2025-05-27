@@ -7,6 +7,9 @@ timeline.process();
 if (typeof window !== "undefined") {
 	const container = document.getElementById("svgContainer");
 	if (container) {
+		window.onresize = () => {
+			timeline.updateZoom();
+		}
 		const svg = timeline.produceSvg(container, false);
 		container.appendChild(svg);
 		container.scrollLeft = (timeline.trackerMs - timeline.minTimeMs) / timeline.zoom - container.clientWidth / 2;
@@ -24,5 +27,7 @@ export function showClipInfo() {
 }
 
 export function openClipLink() {
-	window.open(timeline.selectedClip.url);
+	if (timeline.selectedClip) {
+		window.open(timeline.selectedClip.url);
+	}
 }

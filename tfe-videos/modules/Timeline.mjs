@@ -394,6 +394,18 @@ export class Timeline {
 		}
 	}
 
+	updateZoom() {
+		if (this.#svg.parentElement) {
+			const newZoom = Math.min(this.#zoom, (this.#maxTimeMs - this.#minTimeMs) / this.#svg.parentElement.clientWidth);
+			if (this.#zoom != newZoom) {
+				this.#zoom = newZoom;
+				const oldSvg = this.#svg;
+				this.produceSvg(this.#svg.parentElement, true);
+				oldSvg.parentElement?.replaceChild(this.#svg, oldSvg);
+			}
+		}
+	}
+
 	/**
 	 * Produces an SVG from this timeline. It also finds videos to preview.
 	 * @param {HTMLElement} parent The HTML element that is serving as the parent node for the SVG.
@@ -418,8 +430,8 @@ export class Timeline {
 			const oldSvg = this.#svg;
 			this.#zoom = Math.min(Math.max(this.#zoom * Math.pow(1.003, event.deltaY), 500), (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth);
 			scrollDelta *= this.#zoom;
-			const newSvg = this.produceSvg(parent, true);
-			parent.replaceChild(newSvg, oldSvg);
+			this.produceSvg(parent, true);
+			parent.replaceChild(this.#svg, oldSvg);
 			parent.scrollLeft = ((mouseTimeMs - scrollDelta) - this.#minTimeMs) / this.#zoom;
 			return false;
 		};
