@@ -126,4 +126,5 @@ button {
 	cursor: pointer;
 	color: initial;
 	background-color: silver;
+	border-radius: 4px;
 }

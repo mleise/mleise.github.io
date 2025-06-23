@@ -61,7 +61,15 @@ export class EmbeddedVideoPlayer {
 	/** The playhead position that we want to be at. A seek to that position may be pending. */
 	#position;
 	/** The HTML element representing this video player. */
-	#element;
+	#player;
+	/** The video platform name as a snake-case name. */
+	#providerStorageName;
+	/** Whether this video player has been given permission to load the video and allow the provider to set tracking/marketing cookies. */
+	#hasTrackingConsent;
+	/** @type {Object<string, EmbeddedVideoPlayer[]>} */
+	static #awaitingConsent = {};
+	/** The HTML placeholder element to show until cookie consent has been given. */
+	#container;
 	/** @type {Array<CourseOfActions>} Action sequences currently executing for this video player. */
 	#coas;
 
@@ -70,13 +78,45 @@ export class EmbeddedVideoPlayer {
 	 * @param {number} end Maximum video time that the player should be limited to.
 	 * @param {number} position The time in seconds into the video.
 	 * @param {HTMLElement} element The HTML element for this player to place it on a web site.
+	 * @param {string} providerName The video platform name for cookie consent checks.
 	 */
-	constructor(start, end, position, element) {
+	constructor(start, end, position, element, providerName) {
 		this.#start = start;
 		this.#end = end;
 		this.#position = position;
-		this.#element = element;
-		this.element.style.gridArea = `auto / auto / span 9 / span 16`;
+		this.#player = element;
+		this.#providerStorageName = providerName.toLowerCase().replaceAll(" ", "_");
+		this.#hasTrackingConsent = window.localStorage.getItem("privacy.cookie_consent." + this.#providerStorageName) == "true";
+		this.#container = document.createElement("div");
+		if (this.#hasTrackingConsent) {
+			this.#container.appendChild(element);
+		}
+		else {
+			if (EmbeddedVideoPlayer.#awaitingConsent[providerName] === undefined) {
+				EmbeddedVideoPlayer.#awaitingConsent[providerName] = [];
+			}
+			EmbeddedVideoPlayer.#awaitingConsent[providerName].push(this);
+			this.#container.style.width = "480px";
+			this.#container.style.maxWidth = "480px";
+			this.#container.style.height = "360px";
+			this.#container.style.maxHeight = "360px";
+			const btn = document.createElement("button");
+			btn.style.position = "relative";
+			btn.style.left = "1%";
+			btn.style.top = "1%";
+			btn.style.width = "98%";
+			btn.style.height = "98%";
+			btn.innerHTML = "Click to show videos from <b>" + providerName + "</b>.<br>The video platform may set tracking/marketing cookies described in their Privacy/Cookie Policy.";
+			btn.onclick = () => {
+				window.localStorage.setItem("privacy.cookie_consent." + this.#providerStorageName, "true");
+				for (const player of EmbeddedVideoPlayer.#awaitingConsent[providerName]) {
+					player.giveTrackingConsent();
+				}
+				delete EmbeddedVideoPlayer.#awaitingConsent[providerName];
+			};
+			this.#container.appendChild(btn);
+		}
+		this.container.style.gridArea = `auto / auto / span 9 / span 16`;
 		this.#coas = [];
 	}
 
@@ -95,10 +135,39 @@ export class EmbeddedVideoPlayer {
 		return this.#position;
 	}
 
-	/** @returns {HTMLElement} The HTML element for this player to place it on a web site. */
-	get element() {
-		return this.#element;
+	/**
+	 * @returns {HTMLElement} The HTML element for this player to place it on a web site. If cookie consent has been given,
+	 * this element contains the actual player iframe/element.
+	 */
+	get container() {
+		return this.#container;
 	}
+
+	/** @returns {HTMLElement} The HTML element for this player. */
+	get player() {
+		return this.#player;
+	}
+
+	/** @returns Whether this video player has been given permission to load the video and allow the provider to set tracking/marketing cookies. */
+	get hasTrackingConsent() {
+		return this.#hasTrackingConsent;
+	}
+
+	/** Allows this video player to load the video and have the provider set tracking/marketing cookies. */
+	giveTrackingConsent() {
+		if (!this.#hasTrackingConsent) {
+			this.#hasTrackingConsent = true;
+			this.#container.firstChild?.remove();
+			this.#container.style.removeProperty("width");
+			this.#container.style.removeProperty("max-width");
+			this.#container.style.removeProperty("height");
+			this.#container.style.removeProperty("max-height");
+			this.#container.appendChild(this.#player);
+			this.initialLoad();
+		}
+	}
+
+	initialLoad() {}
 
 	/**
 	 * Pushes a sequence of actions to be performed on this video player onto the stack.
@@ -117,8 +186,8 @@ export class EmbeddedVideoPlayer {
 		}
 		this.#coas.push(coa);
 		if (this.#coas.length == 1) {
-			this.#element.style.pointerEvents = "none";
-			this.#element.tabIndex = -1;
+			this.#player.style.pointerEvents = "none";
+			this.#player.tabIndex = -1;
 			document.body.focus({ preventScroll: true });
 			this.#processAction();
 		}
@@ -150,8 +219,8 @@ export class EmbeddedVideoPlayer {
 			this.#processAction();
 		}
 		else {
-			this.#element.tabIndex = 0;
-			this.#element.style.pointerEvents = "";
+			this.#player.tabIndex = 0;
+			this.#player.style.pointerEvents = "";
 		}
 	}
 
@@ -173,16 +242,16 @@ export class EmbeddedVideoPlayer {
 	 * Shows the player again, after it has been hidden.
 	 */
 	show() {
-		this.#element.style.removeProperty("position");
-		this.#element.style.removeProperty("visibility");
+		this.#container.style.removeProperty("position");
+		this.#container.style.removeProperty("visibility");
 	}
 
 	/**
 	 * The player is kept alive, but hidden. This is useful of you need it again at a later point.
 	 */
 	hide() {
-		this.#element.style.visibility = "hidden";
-		this.#element.style.position = "absolute";
+		this.#container.style.visibility = "hidden";
+		this.#container.style.position = "absolute";
 	}
 
 	/**
@@ -197,9 +266,9 @@ export class EmbeddedVideoPlayer {
 		const zoom = 480 / Math.max(w, h);
 		w *= zoom;
 		h *= zoom;
-		this.element.style.width = `${w}px`;
-		this.element.style.height = `${h}px`;
-		this.element.style.gridArea = `auto / auto / span ${h / 30} / span ${w / 30}`;
+		this.#container.style.width = this.#player.style.width = `${w}px`;
+		this.#container.style.height = this.#player.style.height = `${h}px`;
+		this.#container.style.gridArea = `auto / auto / span ${h / 30} / span ${w / 30}`;
 	}
 }
 
@@ -215,13 +284,14 @@ class EmbeddedIframePlayer extends EmbeddedVideoPlayer {
 	 * @param {number} end Maximum video time that the player should be limited to.
 	 * @param {number} position The time in seconds into the video.
 	 * @param {string} targetOrigin The domain of the IFrame content for security reasons.
+	 * @param {string} providerName The video platform name for cookie consent checks.
 	 */
-	constructor(start, end, position, targetOrigin) {
+	constructor(start, end, position, targetOrigin, providerName) {
 		const iframe = document.createElement("iframe");
 		iframe.loading = "eager";
 		iframe.allowFullscreen = true;
 		iframe.style.border = "0";
-		super(start, end, position, iframe);
+		super(start, end, position, iframe, providerName);
 		this.#targetOrigin = targetOrigin;
 		knownIframePlayers.add(this);
 	}
@@ -233,10 +303,10 @@ class EmbeddedIframePlayer extends EmbeddedVideoPlayer {
 
 	/** @returns {HTMLIFrameElement} The player HTML element as an IFrame. */
 	get iframe() {
-		if (!(this.element instanceof HTMLIFrameElement)) {
+		if (!(this.player instanceof HTMLIFrameElement)) {
 			throw new Error("Player HTML element is expected to be an IFrame");
 		}
-		return this.element;
+		return this.player;
 	}
 
 	/**
@@ -291,17 +361,23 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 	 * @param {string} id YouTube video ID.
 	 */
 	constructor(start, end, position, id) {
-		let origin = document.baseURI;
-		origin = origin.substring(0, origin.indexOf("/", 8));
-		super(start, end, position, "https://www.youtube.com");
+		super(start, end, position, "https://www.youtube.com", "YouTube");
 		this.iframe.style.width = "480px";
 		this.iframe.style.height = "270px";
 		this.#id = id;
 		this.#serial = EmbeddedYouTubePlayer.#nextSerial++;
+		if (this.hasTrackingConsent) {
+			this.initialLoad();
+		}
+	}
+
+	initialLoad() {
+		let origin = document.baseURI;
+		origin = origin.substring(0, origin.indexOf("/", 8));
 		this.courseOfActions(2, [
 			// Load IFrame
-			()        => { this.iframe.src = `https://www.youtube.com/embed/${id}?enablejsapi=1&autoplay=0&rel=0&origin=${origin}`; },
-			(success) => { this.element.onload = () => { this.element.onload = null; success(true); } },
+			()        => { this.iframe.src = `https://www.youtube.com/embed/${this.#id}?enablejsapi=1&autoplay=0&rel=0&origin=${origin}`; },
+			(success) => { this.player.onload = () => { this.player.onload = null; success(true); } },
 			// Establish communication with YouTube Player and mute audio
 			()        => { this.#establishCommunicationsWithPlayer(); },
 			(success) => {
@@ -332,22 +408,28 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 		}
 		else {
 			this.#id = id;
-			this.courseOfActions(2, [
-				// Load new video
-				()        => {
-					this.#postMessage({ event: "command", func: "mute" });
-					this.#postMessage({ event: "command", func: "loadVideoById", args: [ id, Math.trunc(this.position) ] });
-				},
-				(success) => {
-					this.#messageHandler = (message) => {
-						if (message.event == "infoDelivery") {
-							super.updateLimits(start, end);
-							super.seekTo(position);
-							success(true);
-						}
-					};
-				},
-			].concat(this.#commonOpenActions()));
+			if (this.hasTrackingConsent) {
+				this.courseOfActions(2, [
+					// Load new video
+					()        => {
+						this.#postMessage({ event: "command", func: "mute" });
+						this.#postMessage({ event: "command", func: "loadVideoById", args: [ id, Math.trunc(this.position) ] });
+					},
+					(success) => {
+						this.#messageHandler = (message) => {
+							if (message.event == "infoDelivery") {
+								super.updateLimits(start, end);
+								super.seekTo(position);
+								success(true);
+							}
+						};
+					},
+				].concat(this.#commonOpenActions()));
+			}
+			else {
+				super.updateLimits(start, end);
+				super.seekTo(position);
+			}
 		}
 	}
 
@@ -355,7 +437,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 		return [
 			// Seek into position, which starts playback
 			()        => {
-				this.element.style.pointerEvents = "";
+				this.player.style.pointerEvents = "";
 				this.#seekToInternal();
 			},
 			(success) => {
@@ -369,7 +451,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 			},
 			// Pause video and unmute
 			()        => {
-				this.element.style.pointerEvents = "none";
+				this.player.style.pointerEvents = "none";
 				this.#postMessage({ event: "command", func: "pauseVideo" });
 				this.#postMessage({ event: "command", func: "unMute" });
 			},
@@ -396,48 +478,52 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 
 	/** @inheritdoc @type {EmbeddedVideoPlayer['hide']} */
 	hide() {
-		this.courseOfActions(undefined, [
-			()        => {
-				if (this.#playerState == 1 || this.#playerState == 3) {
-					this.#postMessage({ event: "command", func: "pauseVideo" });
-				}
-				else {
-					this.#messageHandler && this.#messageHandler({ event: "infoDelivery", info: { playerState: this.#playerState } });
-				}
-			},
-			(success) => {
-				this.#messageHandler = (message) => {
-					const ps = message.info.playerState;
-					if (message.event == "infoDelivery" && (ps == 0 || ps == 2)) {
-						success(true);
+		if (this.hasTrackingConsent) {
+			this.courseOfActions(undefined, [
+				()        => {
+					if (this.#playerState == 1 || this.#playerState == 3) {
+						this.#postMessage({ event: "command", func: "pauseVideo" });
 					}
-				};
-			},
-		]);
+					else {
+						this.#messageHandler && this.#messageHandler({ event: "infoDelivery", info: { playerState: this.#playerState } });
+					}
+				},
+				(success) => {
+					this.#messageHandler = (message) => {
+						const ps = message.info.playerState;
+						if (message.event == "infoDelivery" && (ps == 0 || ps == 2)) {
+							success(true);
+						}
+					};
+				},
+			]);
+		}
 		super.hide();
 	}
 
 	/** @inheritdoc @type {EmbeddedVideoPlayer['seekTo']} */
 	seekTo(position) {
 		const clippedPosition = Math.max(Math.min(position, this.#seekableEnd, this.end), this.start);
-		this.courseOfActions(1, [
-			()        => {
-				this.#postMessage({ event: "command", func: "pauseVideo" });
-				super.seekTo(clippedPosition);
-				this.#seekToInternal();
-			},
-			(success) => {
-				this.#messageHandler = (message) => {
-					if (message.info.currentTime == this.position) {
-						this.#messageHandler = null;
-						success(true);
-					}
-					else {
-						this.#seekToInternal();
-					}
-				};
-			}
-		]);
+		super.seekTo(clippedPosition);
+		if (this.hasTrackingConsent) {
+			this.courseOfActions(1, [
+				()        => {
+					this.#postMessage({ event: "command", func: "pauseVideo" });
+					this.#seekToInternal();
+				},
+				(success) => {
+					this.#messageHandler = (message) => {
+						if (message.info.currentTime == this.position) {
+							this.#messageHandler = null;
+							success(true);
+						}
+						else {
+							this.#seekToInternal();
+						}
+					};
+				}
+			]);
+		}
 	}
 
 	#seekToInternal() {
@@ -547,9 +633,15 @@ export class EmbeddedTikTokPlayer extends EmbeddedIframePlayer {
 	 * @param {string} id TikTok video ID.
 	 */
 	constructor(start, end, position, id) {
-		super(start, end, position, `https://www.tiktok.com`);
+		super(start, end, position, `https://www.tiktok.com`, "TikTok");
 		this.resize(576, 768)
 		this.#id = id;
+		if (this.hasTrackingConsent) {
+			this.initialLoad();
+		}
+	}
+
+	initialLoad() {
 		this.courseOfActions(2, this.#commonOpenActions());
 	}
 
@@ -568,7 +660,9 @@ export class EmbeddedTikTokPlayer extends EmbeddedIframePlayer {
 			this.#id = id;
 			super.updateLimits(start, end);
 			super.seekTo(position);
-			this.courseOfActions(2, this.#commonOpenActions());
+			if (this.hasTrackingConsent) {
+				this.courseOfActions(2, this.#commonOpenActions());
+			}
 		}
 	}
 
@@ -578,11 +672,13 @@ export class EmbeddedTikTokPlayer extends EmbeddedIframePlayer {
 			()        => { this.iframe.src = `https://www.tiktok.com/player/v1/${this.#id}?rel=0`; },
 			(success) => { this.#messageHandler = (message) => { if (message.type == "onPlayerReady") { success(true); } } },
 			// Seek into position
-			()        => { this.#postMessage("seekTo", this.position); },
+			()        => {
+				this.#postMessage("seekTo", this.position);
+			},
 			(success) => { 
 				this.#messageHandler = (message) => {
 					if (message.type == "onCurrentTime") {
-						if (message.value.currentTime == this.position) {
+						if (Math.abs(message.value.currentTime - this.position) < 0.001 ) {
 							this.#messageHandler = null;
 							success(true);
 						}
@@ -620,31 +716,33 @@ export class EmbeddedTikTokPlayer extends EmbeddedIframePlayer {
 
 	/** @inheritdoc @type {EmbeddedVideoPlayer['seekTo']} */
 	seekTo(position) {
-		this.courseOfActions(1, [
-			()        => {
-				this.#postMessage("pause");
-				if (this.#currentTime != position) {
-					super.seekTo(position);
-					this.#postMessage("seekTo", position);
-				}
-				else {
-					this.#messageHandler && this.#messageHandler({ type: "onCurrentTime", value: { currentTime: this.#currentTime } });
-				}
-			},
-			(success) => {
-				this.#messageHandler = (message) => {
-					if (message.type == "onCurrentTime") {
-						if (message.value.currentTime == this.position) {
-							this.#messageHandler = null;
-							success(true);
-						}
-						else {
-							this.#postMessage("seekTo", position);
-						}
+		if (this.hasTrackingConsent) {
+			this.courseOfActions(1, [
+				()        => {
+					this.#postMessage("pause");
+					if (this.#currentTime != position) {
+						super.seekTo(position);
+						this.#postMessage("seekTo", position);
 					}
-				};
-			}
-		]);
+					else {
+						this.#messageHandler && this.#messageHandler({ type: "onCurrentTime", value: { currentTime: this.#currentTime } });
+					}
+				},
+				(success) => {
+					this.#messageHandler = (message) => {
+						if (message.type == "onCurrentTime") {
+							if (message.value.currentTime == this.position) {
+								this.#messageHandler = null;
+								success(true);
+							}
+							else {
+								this.#postMessage("seekTo", position);
+							}
+						}
+					};
+				}
+			]);
+		}
 	}
 
 	/**
@@ -707,17 +805,23 @@ export class EmbeddedHtmlVideoPlayer extends EmbeddedVideoPlayer {
 		videoElement.preservesPitch = true;
 		videoElement.controls = true;
 		videoElement.preload = "metadata";
-		super(start, end, position, videoElement);
+		super(start, end, position, videoElement, "Internet Archive");
 		this.#url = url;
+		if (this.hasTrackingConsent) {
+			this.initialLoad();
+		}
+	}
+
+	initialLoad() {
 		this.courseOfActions(2, this.#commonOpenActions());
 	}
 
 	/** @returns {HTMLVideoElement} The player HTMLVideoElement */
 	get #videoElement() {
-		if (!(this.element instanceof HTMLVideoElement)) {
+		if (!(this.player instanceof HTMLVideoElement)) {
 			throw new Error("Player HTML element is expected to be a Video element.");
 		}
-		return this.element;
+		return this.player;
 	}
 
 	/**
@@ -734,8 +838,10 @@ export class EmbeddedHtmlVideoPlayer extends EmbeddedVideoPlayer {
 		else {
 			super.updateLimits(start, end);
 			super.seekTo(position);
-			this.#url = url;
-			this.courseOfActions(2, this.#commonOpenActions());
+			if (this.hasTrackingConsent) {
+				this.#url = url;
+				this.courseOfActions(2, this.#commonOpenActions());
+			}
 		}
 	}
 
@@ -788,20 +894,22 @@ export class EmbeddedHtmlVideoPlayer extends EmbeddedVideoPlayer {
 	/** @inheritdoc @type {EmbeddedVideoPlayer['seekTo']} */
 	seekTo(position) {
 		super.seekTo(position);
-		this.courseOfActions(1, [
-			()        => { this.#videoElement.pause(); },
-			(success) => {
-				if (this.#videoElement.paused) {
-					success(true);
-				}
-				else {
-					this.#videoElement.onpause = () => {
-						this.#videoElement.onpause = null;
+		if (this.hasTrackingConsent) {
+			this.courseOfActions(1, [
+				()        => { this.#videoElement.pause(); },
+				(success) => {
+					if (this.#videoElement.paused) {
 						success(true);
 					}
-				}
-			},
-		].concat(this.#commonSeekActions()));
+					else {
+						this.#videoElement.onpause = () => {
+							this.#videoElement.onpause = null;
+							success(true);
+						}
+					}
+				},
+			].concat(this.#commonSeekActions()));
+		}
 	}
 
 	#commonSeekActions() {

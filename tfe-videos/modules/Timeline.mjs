@@ -881,7 +881,7 @@ export class Timeline {
 				}
 				if (player) {
 					this.#clipPlayers.set(newClip, player);
-					videoPreviewDiv.appendChild(player.element);
+					videoPreviewDiv.appendChild(player.container);
 				}
 			}
 		}
