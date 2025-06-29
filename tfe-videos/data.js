@@ -149,12 +149,12 @@ const vids = {
 
 	// Critical Think / videos
 	criticalFlight1Tl         : new YouTubeVideo(timeline, "Uo_kV3w5dCg", "Critical Think", "Timelapse of flight QF27 10-Dec-2024 en route to The Final Experiment Expedition", 1413.861, 30, cams.criticalAction, "2025-01-13T02:22:41Z")
-		.setTimelapseRate(30),
+		.setTimeLapseRate(30),
 	criticalFlight2Tl         : new YouTubeVideo(timeline, "hc444QdX93U", "Critical Think", "Timelapse of the Flight from Punta Arenas to Union Glacier Left Side View", 517.341, 30, cams.criticalAction, "2024-12-18T16:29:04Z")
-		.setTimelapseRate(30),
+		.setTimeLapseRate(30),
 	criticalFlight2Landing    : new YouTubeVideo(timeline, "DdoUdeEJ9us", "Critical Think", "Landing at Union Glacier - Full Time Video Left Side View", 630.021, 30, cams.criticalAction, "2024-12-18T18:09:37Z"),
 	criticalFlight3Tl         : new YouTubeVideo(timeline, "13hXzRjSFh4", "Critical Think", "Timelapse of the Flight from Union Glacier to Punta Arenas Left Side View", 504.341, 30, cams.criticalAction, "2024-12-20T22:26:24Z")
-		.setTimelapseRate(30),
+		.setTimeLapseRate(30),
 	// Critical Think / streams
 	criticalBrisbane          : new YouTubeVideo(timeline, "s6qVQRjEhJY", "Critical Think", "Critical Think is live at Brisbane Airport", 34.930, 30, cams.criticalPhone, "2024-12-09T20:43:36Z", "2024-12-09T20:44:01Z"),
 	criticalTakeoff           : new YouTubeVideo(timeline, "Vd4qp0Ua6ys", "Critical Think", "About to take off from Brisbane on the way to The Final Experiment", 15.008, 30, cams.criticalPhone, "2024-12-09T20:59:44Z", "2024-12-09T20:59:50Z"),
@@ -177,19 +177,19 @@ const vids = {
 
 	// Dave McKeegan / videos
 	daveToUGTl                : new YouTubeVideo(timeline, "sl61HnhDDeA", "Dave McKeegan", "Insta360 timelapse of flight from Punta Arenas to Union Glacier", 249.981, NTSC30, cams.dave360, "2024-12-18T19:59:57Z")
-		.setTimelapseRate(60.726643598615916955017301038062),
+		.setTimeLapseRate(60.726643598615916955017301038062),
 	daveTl                    : new YouTubeVideo(timeline, "in0B1OQG3-M", "Dave McKeegan", "Timelapse of the 24 hour Antarctic sun", 48.241, NTSC30, cams.dave360, "2024-12-16T18:09:28Z")
-		.setTimelapseRate(undefined),
+		.setTimeLapseRate(undefined),
  	daveTl360                 : new YouTubeVideo(timeline, "jliLRasB48U", "Dave McKeegan", "360° Timelapse of capturing the 24hr Antarctic sun", 1540.101, NTSC30, cams.dave360, "2024-12-23T15:00:54Z")
-		.setTimelapseRate(undefined),
+		.setTimeLapseRate(undefined),
 	daveSolarPhotography      : new YouTubeVideo(timeline, "eYm6q8JY7Hk", "Dave McKeegan", "Solar photography destroys Flat Earth?", 1154.817, 25, peeps.dave, "2025-01-02T15:00:46Z")
-		.setTimelapseRate(undefined).setClipsAreSequential(false),
+		.setTimeLapseRate(undefined).setClipsAreSequential(false),
 	daveVapegate              : new YouTubeVideo(timeline, "4MsLg8Pjf-k", "Dave McKeegan", "Does #Vapegate and 'No breath' destroy 'The Final Experiment'?", 897.581, 25, peeps.dave, "2025-01-07T15:00:04Z")
-		.setTimelapseRate(undefined).setClipsAreSequential(false),
+		.setTimeLapseRate(undefined).setClipsAreSequential(false),
 	daveExcuses               : new YouTubeVideo(timeline, "AfQcTpXCLv8", "Dave McKeegan", "Flat Earthers excuses are getting desperate now", 1904.461, 25, peeps.dave, "2025-01-14T16:02:49Z")
-		.setTimelapseRate(undefined).setClipsAreSequential(false),
+		.setTimeLapseRate(undefined).setClipsAreSequential(false),
 	daveSunspots              : new YouTubeVideo(timeline, "RjQCb2TUMIU", "Dave McKeegan", "Antarctic sunspot video Update / Corrections", 1138.061, 25, peeps.dave, "2025-01-21T15:00:39Z")
-		.setTimelapseRate(undefined).setClipsAreSequential(false),
+		.setTimeLapseRate(undefined).setClipsAreSequential(false),
 	// Dave McKeegan / streams
 	daveLive                  : new YouTubeVideo(timeline, "iOYpeysawuw", "Dave McKeegan", "The 24 hour sun has been captured in Antarctica!", 9834.461, 30, cams.daveLaptop, "2024-12-16T00:01:40Z", "2024-12-16T02:45:31Z"),
 
@@ -411,7 +411,7 @@ const vids = {
 
 	// Wheres Wally / videos
 	wallyJeranometer          : new YouTubeVideo(timeline, "4N3EY7SgxXU", "WheresWally", "LAP 0008 A RAW",  49.400, 30, cams.wallyAction, "2024-12-19T15:43:14Z")
-		.setTimelapseRate(1800.2025658338960162052667116813),
+		.setTimeLapseRate(1800.2025658338960162052667116813),
 	wallyGreenscreen          : new YouTubeVideo(timeline, "CAUBiTBFUR4", "WheresWally", "The Final Experiment Drone Supercut Wrecks Drone Gate by Fkatzoid & Sovereign Soul Unchained Mind", 850.401, 30, cams.willDrone, "2025-01-02T15:12:54Z"),
 	wallyDrone                : new YouTubeVideo(timeline, "x1yKGnMzVoE", "WheresWally", "The Final Experiment Mile High Drone with Ascent and Descent by Will Duffy Telemetry by WheresWally", 1305.131, NTSC60, cams.willDrone, "2025-01-14T00:03:36Z"),
 
@@ -426,12 +426,12 @@ const vids = {
 	will360Part3              : new YouTubeVideo(timeline, "vzGvqEObA6c", "The Final Experiment", "World's First Non-Timelapse Video of the 24-Hour Sun in Antarctica! (Part 3)", 21559.061, NTSC30, cams.will360B, "2025-01-15T17:59:45Z"),
 	willStartrails            : new YouTubeVideo(timeline, "5Ih7NvUYg4g", "The Final Experiment", "THE FINAL EXPERIMENTS - South Celestial Pole", 1537.421, NTSC30, peeps.will, "2025-01-13T20:00:06Z")
 		.setClipsAreSequential(false)
-		.setTimelapseRate(undefined),
+		.setTimeLapseRate(undefined),
 	willSunriseSunsetPuntaArenas : new YouTubeVideo(timeline, "_2Wy2aTnTME", "The Final Experiment", "THE FINAL EXPERIMENTS - Sunrise & Sunset Direction", 1423.901, 25, peeps.will, "2025-01-20T20:00:06Z")
 		.setClipsAreSequential(false)
-		.setTimelapseRate(undefined),
+		.setTimeLapseRate(undefined),
 	willSecond360             : new YouTubeVideo(timeline, "c_ZvL-F4prs", "The Final Experiment", "360-Degree Antarctica! Interactive 36-Hour Timelapse of the 24-Hour Sun (Click/drag to look around)", 2161.785, NTSC30, cams.will360B, "2025-01-07T16:50:55Z")
-		.setTimelapseRate(60.7), // 60.68 .. 60.83
+		.setTimeLapseRate(60.7), // 60.68 .. 60.83
 	// Will Duffy / streams
 	willMidnightAntarctica    : new YouTubeVideo(timeline, "d_LNSbStu9c", "The Final Experiment", "It's Midnight in Antarctica!", 3095.721, 30, cams.willLaptop, "2024-12-15T03:00:13Z", "2024-12-15T03:51:43Z"),
 	willNoGreenscreens        : new YouTubeVideo(timeline, "E1vXwAT6P5k", "The Final Experiment", "There Are No Green Screens in Antarctica (Here's Proof!)", 995.101, 30, cams.willLaptop, "2024-12-15T17:50:16Z", "2024-12-15T18:06:44Z"),
@@ -513,233 +513,233 @@ export const clips = {
 	daveTl360                  : vids.daveTl360.createClip(),
 	daveSolarPhotographyA      : vids.daveSolarPhotography
 		.skipClip("00:00:05/11")
-		.createClip("00:00:13/02").setTimelapseRate(1),
+		.createClip("00:00:13/02").setTimeLapseRate(1),
 	daveSolarPhotographyB      : vids.daveSolarPhotography
 		.skipClip("00:00:40/21") // There is a longer clip of the long distance shot in Dave's next video.
-		.createClip("00:00:45/16").setTimelapseRate(1),
+		.createClip("00:00:45/16").setTimeLapseRate(1),
 	daveSolarPhotographyC      : vids.daveSolarPhotography
 		.skipClip("00:01:30/23") // There's a longer version of the clip at 0:52 in "Antarctic sunspot video Update / Corrections" at 7:25	
-		.createClip("00:01:38/12").setTimelapseRate(1),
+		.createClip("00:01:38/12").setTimeLapseRate(1),
 	daveSolarPhotographyD      : vids.daveSolarPhotography
 		.skipClip("00:02:00/06") // There's a longer version of the clip at 1:31 in "Antarctic sunspot video Update / Corrections" at 1:53
-		.createClip("00:02:05/17").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:02:05/17").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveSolarPhotographyE      : vids.daveSolarPhotography
-		.createClip("00:02:17/13").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:02:17/13").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveSolarPhotographyF      : vids.daveSolarPhotography
 		.skipClip("00:03:04/13")
-		.createClip("00:03:11/07").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:03:11/07").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveSolarPhotographyG      : vids.daveSolarPhotography
 		.skipClip("00:03:13/03")
-		.createClip("00:03:17/11").setTimelapseRate(1),
+		.createClip("00:03:17/11").setTimeLapseRate(1),
 	daveSolarPhotographyH      : vids.daveSolarPhotography
-		.createClip("00:03:22/16").setTimelapseRate(1),
+		.createClip("00:03:22/16").setTimeLapseRate(1),
 	daveSolarPhotographyI      : vids.daveSolarPhotography
 		.skipClip("00:03:31/19")
-		.createClip("00:03:38/23").setTimelapseRate(1),
+		.createClip("00:03:38/23").setTimeLapseRate(1),
 	daveSolarPhotographyJ      : vids.daveSolarPhotography
 		.skipClip("00:04:19/00")
 		.addAnchorTime("17T02:22-03", "00:04:19/09", ts.digital)
-		.createClip("00:04:22/19").setTimelapseRate(1),
+		.createClip("00:04:22/19").setTimeLapseRate(1),
 	daveSolarPhotographyK      : vids.daveSolarPhotography
 		.skipClip("00:04:47/13")
 		//.addAnchorTime("17T01:11-03", "00:04:50", ts.sun) // Time estimated from 24h footage. The 15th/16th were the only day TFE was in Antarctica and the 15th didn't have clouds.
 		.addAnchorTime("17T02:30-03", "00:04:50", ts.sun) // TODO: Time estimated from 24h footage. The 15th/16th were the only day TFE was in Antarctica and the 15th didn't have clouds.
-		.createClip("00:04:53/07").setTimelapseRate(1),
+		.createClip("00:04:53/07").setTimeLapseRate(1),
 	daveSolarPhotographyL      : vids.daveSolarPhotography
 		.skipClip("00:05:18/10")
-		.createClip("00:05:39/19").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:05:39/19").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveSolarPhotographyM      : vids.daveSolarPhotography
-		.createClip("00:05:46/13").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:05:46/13").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveSolarPhotographyN      : vids.daveSolarPhotography
-		.createClip("00:05:52/01").setTimelapseRate(1),
+		.createClip("00:05:52/01").setTimeLapseRate(1),
 	daveSolarPhotographyO      : vids.daveSolarPhotography
 		.skipClip("00:06:07/00")
-		.createClip("00:06:13/07").setTimelapseRate(1),
+		.createClip("00:06:13/07").setTimeLapseRate(1),
 	daveSolarPhotographyP      : vids.daveSolarPhotography
 		.skipClip("00:08:02/13")
-		.createClip("00:08:07/17").setTimelapseRate(1),
+		.createClip("00:08:07/17").setTimeLapseRate(1),
 	daveSolarPhotographyQ      : vids.daveSolarPhotography
 		.skipClip("00:09:49/00") // Sun spot clip was redone in a later video.
-		.createClip("00:09:53/03").setTimelapseRate(1),
+		.createClip("00:09:53/03").setTimeLapseRate(1),
 	daveSolarPhotographyR      : vids.daveSolarPhotography
 		.skipClip("00:11:06/05")
-		.createClip("00:11:11/23").setTimelapseRate(1),
+		.createClip("00:11:11/23").setTimeLapseRate(1),
 	daveSolarPhotographyS      : vids.daveSolarPhotography
 		.skipClip("00:14:01/12")
-		.createClip("00:14:06/19").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:14:06/19").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveSolarPhotographyT      : vids.daveSolarPhotography
-		.createClip("00:14:08/21").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:14:08/21").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveSolarPhotographyU      : vids.daveSolarPhotography
 		.skipClip("00:14:11/18")
-		.createClip("00:14:19/08").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:14:19/08").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveSolarPhotographyV      : vids.daveSolarPhotography
-		.createClip("00:14:23/12").setTimelapseRate(1),
+		.createClip("00:14:23/12").setTimeLapseRate(1),
 	daveVapegateA              : vids.daveVapegate
 		.skipClip("00:00:11/07")
-		.createClip("00:00:22/20").setTimelapseRate(1),
+		.createClip("00:00:22/20").setTimeLapseRate(1),
 	daveVapegateB              : vids.daveVapegate
 		.skipClip("00:01:31/00")
-		.createClip("00:01:37/03").setTimelapseRate(1),
+		.createClip("00:01:37/03").setTimeLapseRate(1),
 	daveVapegateC              : vids.daveVapegate
 		.skipClip("00:05:33/05")
-		.createClip("00:05:37/04").setTimelapseRate(1), // TODO: Shows time-lapse recording timer on insta360 X4. Create a sync point out of it.
+		.createClip("00:05:37/04").setTimeLapseRate(1), // TODO: Shows time-lapse recording timer on insta360 X4. Create a sync point out of it.
 	daveVapegateD              : vids.daveVapegate
 		.skipClip("00:09:44/06")
-		.createClip("00:09:49/18").setTimelapseRate(1),
+		.createClip("00:09:49/18").setTimeLapseRate(1),
 	daveVapegateE              : vids.daveVapegate
-		.createClip("00:09:59/18").setTimelapseRate(1),
+		.createClip("00:09:59/18").setTimeLapseRate(1),
 	daveVapegateF              : vids.daveVapegate
 		.skipClip("00:11:44/10")
 		.createClip("00:11:50/05"),
 	daveVapegateG              : vids.daveVapegate
 		.createClip("00:12:03/12"),
 	daveVapegateH              : vids.daveVapegate
-		.createClip("00:12:07/01").setTimelapseRate(1),
+		.createClip("00:12:07/01").setTimeLapseRate(1),
 	daveVapegateI              : vids.daveVapegate
-		.createClip("00:12:12/14").setTimelapseRate(1),
+		.createClip("00:12:12/14").setTimeLapseRate(1),
 	daveVapegateJ              : vids.daveVapegate
-		.createClip("00:12:23/16").setTimelapseRate(1),
+		.createClip("00:12:23/16").setTimeLapseRate(1),
 	daveExcusesA               : vids.daveExcuses
 		.skipClip("00:03:25/02")
-		.createClip("00:03:31/06").setTimelapseRate(1),
+		.createClip("00:03:31/06").setTimeLapseRate(1),
 	daveExcusesB               : vids.daveExcuses
-		.createClip("00:03:36/01").setTimelapseRate(1),
+		.createClip("00:03:36/01").setTimeLapseRate(1),
 	daveExcusesC               : vids.daveExcuses
 		.skipClip("00:04:34/12")
-		.createClip("00:04:38/18").setTimelapseRate(1), // Dave's camera recording.
+		.createClip("00:04:38/18").setTimeLapseRate(1), // Dave's camera recording.
 	daveExcusesD               : vids.daveExcuses
 		.skipClip("00:07:18/06")
-		.createClip("00:07:32/19").setTimelapseRate(1),
+		.createClip("00:07:32/19").setTimeLapseRate(1),
 	daveExcusesE               : vids.daveExcuses
 		.skipClip("00:08:42/23")
-		.createClip("00:08:53/20").setTimelapseRate(1),
+		.createClip("00:08:53/20").setTimeLapseRate(1),
 	daveExcusesF               : vids.daveExcuses
 		.addAnchorTime("16T15:09-03", "00:08:54/22", ts.digital)
 		.addAnchorTime("16T15:09-03", "00:08:58/04", ts.digital)
-		.createClip("00:08:58/09").setTimelapseRate(1),
+		.createClip("00:08:58/09").setTimeLapseRate(1),
 	daveExcusesG               : vids.daveExcuses
 		.skipClip("00:15:16/02")
-		.createClip("00:15:21/04").setTimelapseRate(1),
+		.createClip("00:15:21/04").setTimeLapseRate(1),
 	daveExcusesH               : vids.daveExcuses
-		.createClip("00:15:27/13").setTimelapseRate(1),
+		.createClip("00:15:27/13").setTimeLapseRate(1),
 	daveExcusesI               : vids.daveExcuses
 		.skipClip("00:15:45/14")
-		.createClip("00:15:47/24").setTimelapseRate(1),
+		.createClip("00:15:47/24").setTimeLapseRate(1),
 	daveExcusesJ               : vids.daveExcuses
 		.skipClip("00:15:53/11")
-		.createClip("00:15:57/15").setTimelapseRate(1),
+		.createClip("00:15:57/15").setTimeLapseRate(1),
 	daveExcusesK               : vids.daveExcuses
 		.skipClip("00:15:57/16")
-		.createClip("00:16:09/14").setTimelapseRate(1),
+		.createClip("00:16:09/14").setTimeLapseRate(1),
 	daveExcusesL               : vids.daveExcuses
 		.skipClip("00:16:36/18")
-		.createClip("00:16:42/22").setTimelapseRate(1),
+		.createClip("00:16:42/22").setTimeLapseRate(1),
 	daveExcusesM               : vids.daveExcuses
 		.skipClip("00:16:57/22")
-		.createClip("00:17:02/13").setTimelapseRate(1),
+		.createClip("00:17:02/13").setTimeLapseRate(1),
 	daveExcusesN               : vids.daveExcuses
-		.createClip("00:17:04/05").setTimelapseRate(1),
+		.createClip("00:17:04/05").setTimeLapseRate(1),
 	daveExcusesO               : vids.daveExcuses
 		.skipClip("00:17:08/09")
-		.createClip("00:17:11/15").setTimelapseRate(1),
+		.createClip("00:17:11/15").setTimeLapseRate(1),
 	daveExcusesP               : vids.daveExcuses
 		.skipClip("00:17:37/17")
-		.createClip("00:17:43/21").setTimelapseRate(1),
+		.createClip("00:17:43/21").setTimeLapseRate(1),
 	daveExcusesQ               : vids.daveExcuses
 		.skipClip("00:18:06/02")
-		.createClip("00:18:11/21").setTimelapseRate(1),
+		.createClip("00:18:11/21").setTimeLapseRate(1),
 	daveExcusesR               : vids.daveExcuses
-		.createClip("00:18:20/05").setTimelapseRate(1),
+		.createClip("00:18:20/05").setTimeLapseRate(1),
 	daveExcusesS               : vids.daveExcuses
 		.skipClip("00:18:22/20")
-		.createClip("00:18:26/12").setTimelapseRate(1),
+		.createClip("00:18:26/12").setTimeLapseRate(1),
 	daveExcusesT               : vids.daveExcuses
 		.skipClip("00:21:14/20")
-		.createClip("00:21:18/09").setTimelapseRate(1),
+		.createClip("00:21:18/09").setTimeLapseRate(1),
 	daveExcusesU               : vids.daveExcuses
 		.skipClip("00:22:36/19")
-		.createClip("00:22:39/13").setTimelapseRate(1),
+		.createClip("00:22:39/13").setTimeLapseRate(1),
 	daveExcusesV               : vids.daveExcuses
-		.createClip("00:22:47/11").setTimelapseRate(1),
+		.createClip("00:22:47/11").setTimeLapseRate(1),
 	daveExcusesW               : vids.daveExcuses
-		.createClip("00:22:57/04").setTimelapseRate(1),
+		.createClip("00:22:57/04").setTimeLapseRate(1),
 	daveExcusesX               : vids.daveExcuses
 		.skipClip("00:23:09/05")
-		.createClip("00:23:20/21").setTimelapseRate(1),
+		.createClip("00:23:20/21").setTimeLapseRate(1),
 	daveExcusesY               : vids.daveExcuses
 		.skipClip("00:25:42/19")
-		.createClip("00:26:11/24").setTimelapseRate(1),
+		.createClip("00:26:11/24").setTimeLapseRate(1),
 	daveExcusesZ               : vids.daveExcuses
 		.skipClip("00:27:51/15")
-		.createClip("00:27:56/11").setTimelapseRate(1),
+		.createClip("00:27:56/11").setTimeLapseRate(1),
 	daveExcusesZA              : vids.daveExcuses
 		.skipClip("00:28:02/17")
-		.createClip("00:28:05/22").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:28:05/22").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveExcusesZB              : vids.daveExcuses
-		.createClip("00:28:08/02").setTimelapseRate(1), // TODO: what's the speedup?
+		.createClip("00:28:08/02").setTimeLapseRate(1), // TODO: what's the speedup?
 	daveExcusesZC              : vids.daveExcuses
 		.skipClip("00:28:24/24")
-		.createClip("00:28:28/05").setTimelapseRate(1),
+		.createClip("00:28:28/05").setTimeLapseRate(1),
 	daveExcusesZD              : vids.daveExcuses
 		.skipClip("00:28:32/21")
-		.createClip("00:28:38/16").setTimelapseRate(1),
+		.createClip("00:28:38/16").setTimeLapseRate(1),
 	daveExcusesZE              : vids.daveExcuses
-		.createClip("00:28:42/07").setTimelapseRate(1),
+		.createClip("00:28:42/07").setTimeLapseRate(1),
 	daveExcusesZF              : vids.daveExcuses
 		.skipClip("00:28:47/05")
-		.createClip("00:28:52/09").setTimelapseRate(1),
+		.createClip("00:28:52/09").setTimeLapseRate(1),
 	daveExcusesZG              : vids.daveExcuses
-		.createClip("00:29:00/17").setTimelapseRate(1),
+		.createClip("00:29:00/17").setTimeLapseRate(1),
 	daveExcusesZH              : vids.daveExcuses
-		.createClip("00:29:15/05").setTimelapseRate(1),
+		.createClip("00:29:15/05").setTimeLapseRate(1),
 	daveExcusesZI              : vids.daveExcuses
 		.skipClip("00:29:40/12")
-		.createClip("00:29:45/17").setTimelapseRate(1),
+		.createClip("00:29:45/17").setTimeLapseRate(1),
 	daveSunspotsA              : vids.daveSunspots
 		.skipClip("00:01:52/23") // The clip around 0:15 has a longer version in "Solar photography destroys Flat Earth?" at 0:53
-		.createClip("00:02:03/20").setTimelapseRate(1),
+		.createClip("00:02:03/20").setTimeLapseRate(1),
 	daveSunspotsB              : vids.daveSunspots
 		.skipClip("00:05:01/24")
-		.createClip("00:05:05/11").setTimelapseRate(1),
+		.createClip("00:05:05/11").setTimeLapseRate(1),
 	daveSunspotsC              : vids.daveSunspots
-		.createClip("00:05:08/05").setTimelapseRate(1),
+		.createClip("00:05:08/05").setTimeLapseRate(1),
 	daveSunspotsD              : vids.daveSunspots
 		.skipClip("00:05:22/14")
-		.createClip("00:05:27/22").setTimelapseRate(1),
+		.createClip("00:05:27/22").setTimeLapseRate(1),
 	daveSunspotsE              : vids.daveSunspots
 		.skipClip("00:05:55/19")
-		.createClip("00:05:57/15").setTimelapseRate(1),
+		.createClip("00:05:57/15").setTimeLapseRate(1),
 	daveSunspotsF              : vids.daveSunspots
-		.createClip("00:06:01/04").setTimelapseRate(1),
+		.createClip("00:06:01/04").setTimeLapseRate(1),
 	daveSunspotsG              : vids.daveSunspots
 		.skipClip("00:06:22/16")
-		.createClip("00:06:25/05").setTimelapseRate(1), // First day, during 1 hour waiting for luggage to arrive.
+		.createClip("00:06:25/05").setTimeLapseRate(1), // First day, during 1 hour waiting for luggage to arrive.
 	daveSunspotsH              : vids.daveSunspots
 		.skipClip("00:06:26/14")
-		.createClip("00:06:30/08").setTimelapseRate(1),
+		.createClip("00:06:30/08").setTimeLapseRate(1),
 	daveSunspotsI              : vids.daveSunspots
-		.createClip("00:06:35/21").setTimelapseRate(1),
+		.createClip("00:06:35/21").setTimeLapseRate(1),
 	daveSunspotsJ              : vids.daveSunspots
 		.skipClip("00:07:24/21")
-		.createClip("00:07:30/13").setTimelapseRate(1),
+		.createClip("00:07:30/13").setTimeLapseRate(1),
 	daveSunspotsK              : vids.daveSunspots
 		.skipClip("00:10:28/19")
 		// At 15:39 in the video we see file 101-0115 was #1574 on the SD-card. At 15:20 we see a photo which was #1348 on the SD-card with camera time 2024-12-15 19:37.
 		// By counting back 226 images, that photo should be file 100-9889 with camera time 2024-12-15 19:25 correlating to 2024-12-15 19:37 on the phone. 12 minutes behind.
 		.addAnchorTime("15T19:38:16-00", "10:48/19", new TimeSource("Corrected photo file time stamp (+12 minutes)", -60*1000, +60*1000))
-		.createClip("00:10:54/05").setTimelapseRate(3213.7007874015748031496062992126), // 23:26:17 - 00:45:49 = 22:40:28 = 81628s | 10:54/04 - 10:28/19 = 25.4s
+		.createClip("00:10:54/05").setTimeLapseRate(3213.7007874015748031496062992126), // 23:26:17 - 00:45:49 = 22:40:28 = 81628s | 10:54/04 - 10:28/19 = 25.4s
 	daveSunspotsL              : vids.daveSunspots
 		.skipClip("00:17:23/01")
-		.createClip("00:17:33/19").setTimelapseRate(1), // TODO
+		.createClip("00:17:33/19").setTimeLapseRate(1), // TODO
 	daveSunspotsM              : vids.daveSunspots
-		.createClip("00:17:39/11").setTimelapseRate(1), // TODO
+		.createClip("00:17:39/11").setTimeLapseRate(1), // TODO
 	daveSunspotsN              : vids.daveSunspots
-		.createClip("00:17:47/09").setTimelapseRate(1), // TODO
+		.createClip("00:17:47/09").setTimeLapseRate(1), // TODO
 	daveSunspotsO              : vids.daveSunspots
-		.createClip("00:17:54/08").setTimelapseRate(1), // TODO
+		.createClip("00:17:54/08").setTimeLapseRate(1), // TODO
 	daveSunspotsP              : vids.daveSunspots
 		.skipClip("00:18:31/18")
-		.createClip("00:18:37/09").setTimelapseRate(1),
+		.createClip("00:18:37/09").setTimeLapseRate(1),
 	// Dave McKeegan / streams
 	daveLive                   : vids.daveLive
 		.addAnchorTime("15T21:05-03", "00:03:34.0", ts.digitalRead)
@@ -1220,29 +1220,29 @@ export const clips = {
 	willStartrailsA            : vids.willStartrails
 		.skipClip("00:10:55/23")
 		.addAnchorTime("14T01:26:00-03", "00:10:55/23", ts.stars) // MCToon is talking about starting the time-lapse in his live stream that night.
-		.createClip("00:11:05/26").setTimelapseRate(891.08910891089108910891089108911).setCamera(cams.mctoonCam), // MCToon said he recorded 150 minutes.
+		.createClip("00:11:05/26").setTimeLapseRate(891.08910891089108910891089108911).setCamera(cams.mctoonCam), // MCToon said he recorded 150 minutes.
 	willStartrailsB            : vids.willStartrails
 		.skipClip("00:11:10/20")
-		.createClip("00:11:18/08").setTimelapseRate(1), // TODO
+		.createClip("00:11:18/08").setTimeLapseRate(1), // TODO
 	willStartrailsC            : vids.willStartrails
 		.addAnchorTime("13T01:38:18-03", "00:11:37/25", ts.stars)
 		.skipClip("00:11:34/24")
-		.createClip("00:11:43/21").setTimelapseRate(1278.1714285714285714285714285714),
+		.createClip("00:11:43/21").setTimeLapseRate(1278.1714285714285714285714285714),
 	willSunriseSunsetPuntaArenasA : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:16:40/04")
 		// 10th 18:35:12 / 11th 18:35:23 / 12th 18:35:35 / 13th 18:35:50 (maybe too cloudy) / 18th 18:37:31 / 19th 18:37:57
-		.createClip("00:16:50/02").setTimelapseRate(1),
+		.createClip("00:16:50/02").setTimeLapseRate(1),
 	willSunriseSunsetPuntaArenasB : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:16:56/02")
-		.createClip("00:17:04/10").setTimelapseRate(1),
+		.createClip("00:17:04/10").setTimeLapseRate(1),
 	willSunriseSunsetPuntaArenasC : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:17:48/04")
 		//.addAnchorTime("19T05:20:00-03", "00:18:29", ts.sun) // TODO: Which day? (11th - 14th, 18th, 19th)
-		.createClip("00:18:33/23").setTimelapseRate(1),
+		.createClip("00:18:33/23").setTimeLapseRate(1),
 	willSunriseSunsetPuntaArenasD : vids.willSunriseSunsetPuntaArenas
 		.skipClip("00:21:48/14")
 		//.addAnchorTime("12T05:19:00-03", "00:21:53/21", ts.sun) // TODO: Which day? (11th - 14th, 18th, 19th)
-		.createClip("00:22:02/17").setOwner(peeps.jonathan).setTimelapseRate(1), // TODO
+		.createClip("00:22:02/17").setOwner(peeps.jonathan).setTimeLapseRate(1), // TODO
 	willSecond360                 : vids.willSecond360.createClip(),
 	// Will Duffy / streams
 	willMidnightAntarctica        : vids.willMidnightAntarctica.createClip(),
@@ -1350,11 +1350,11 @@ timeline.addSyncPoint(vids.will360Part1, "09:01:43/02", vids.daveVapegate, "00:0
 timeline.addSyncPoint(vids.will360Part1, "09:01:54/17", vids.daveSolarPhotography, "00:03:31/19");
 timeline.addSyncPoint(vids.will360Part2, "07:32:56/10", vids.willNoGreenscreens, "00:05:38/24");
 timeline.addSyncPoint(vids.markBehindScenes, "00:04:08/21", vids.willNoGreenscreens, "00:06:00/27");
-timeline.establishTimelapseRate(vids.daveTl360, "00:09:32/24", "00:18:10/06", vids.will360Part2, "00:16:37/29", "09:00:18/25");
+timeline.establishTimeLapseRate(vids.daveTl360, "00:09:32/24", "00:18:10/06", vids.will360Part2, "00:16:37/29", "09:00:18/25");
 timeline.addSyncPoint(vids.willNoGreenscreens, "00:06:16/10", vids.daveExcuses, "00:04:34/12");
 timeline.addSyncPoint(vids.will360Part2, "08:24:33/21", vids.daveExcuses, "00:03:31/05"); // roundabout
 timeline.addSyncPoint(vids.willNoGreenscreens, "00:06:57/18", vids.daveExcuses, "00:07:20/08");
-timeline.establishTimelapseRate(vids.daveTl, "00:00:36/07", "00:00:45/27", vids.will360Part3, "00:40:02/05", "05:52:21/18");
+timeline.establishTimeLapseRate(vids.daveTl, "00:00:36/07", "00:00:45/27", vids.will360Part3, "00:40:02/05", "05:52:21/18");
 timeline.addSyncPoint(vids.will360Part3, "00:40:42/18", vids.mctoonOakley, "00:04:58/13", 0.04);
 timeline.addSyncPoint(vids.daveTl, "00:00:36/08", vids.mctoonOakley, "00:05:22/22", 40);
 timeline.addSyncPoint(vids.daveTl360, "00:01:27/00", vids.daveSolarPhotography, "00:06:09/21");

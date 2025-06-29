@@ -126,7 +126,7 @@ export class Timeline {
 	 * @param {string} time2a The first timestamp in the normal video.
 	 * @param {string} time2b The second timestamp in the normal video.
 	 */
-	establishTimelapseRate(video1, time1a, time1b, video2, time2a, time2b) {
+	establishTimeLapseRate(video1, time1a, time1b, video2, time2a, time2b) {
 		const time1aNum = video1.parseVideoTime(time1a);
 		const time1bNum = video1.parseVideoTime(time1b);
 		const time2aNum = video2.parseVideoTime(time2a);
@@ -136,10 +136,10 @@ export class Timeline {
 		const clip2a = video2.getClipAtTime(time2aNum);
 		const clip2b = video2.getClipAtTime(time2bNum);
 		if (clip1a !== clip1b) throw new Error("Clips at time A and B in the first video are not identical.");
-		if (clip1a.timelapseRate !== undefined) throw new Error("First clip must be the one with unset time-lapse rate.");
+		if (clip1a.timeLapseRate !== undefined) throw new Error("First clip must be the one with unset time-lapse rate.");
 		if (clip2a !== clip2b) throw new Error("Clips at time A and B in the second video are not identical.");
-		if (clip2a.timelapseRate !== 1) throw new Error("Second clip must be the one with a time-lapse rate of 1.");
-		clip1a.setTimelapseRate((time2bNum - time2aNum) / (time1bNum - time1aNum));
+		if (clip2a.timeLapseRate !== 1) throw new Error("Second clip must be the one with a time-lapse rate of 1.");
+		clip1a.setTimeLapseRate((time2bNum - time2aNum) / (time1bNum - time1aNum));
 		this.addSyncPoint(video1, time1a, video2, time2a);
 	}
 
@@ -208,10 +208,10 @@ export class Timeline {
 	 * @param {Clip} clip2 The clip found at the time stamp in the second video.
 	 */
 	#applySyncPoint(syncPoint, clip1, clip2) {
-		if (clip1.timelapseRate !== undefined && clip2.timelapseRate !== undefined) {
+		if (clip1.timeLapseRate !== undefined && clip2.timeLapseRate !== undefined) {
 			const clips = [ clip1, clip2 ];
 			const times = [ syncPoint.time1, syncPoint.time2 ];
-			const deltaMss = [ (syncPoint.time1 - clip1.start) * clip1.timelapseRate * 1000, (syncPoint.time2 - clip2.start) * clip2.timelapseRate * 1000 ];
+			const deltaMss = [ (syncPoint.time1 - clip1.start) * clip1.timeLapseRate * 1000, (syncPoint.time2 - clip2.start) * clip2.timeLapseRate * 1000 ];
 			for (let i = 0; i < 2; i++) {
 				const deltaSign = 2 * i - 1;
 				if (clips[1-i].startTimeMinMs !== -Infinity) {
@@ -231,7 +231,7 @@ export class Timeline {
 	printSegmentsForDate(date) {
 		let foundOne = false;
 		for (const seg of this.#clips) {
-			if (seg.startTimeMinMs !== undefined && seg.startTimeMaxMs !== undefined && seg.startTimeMaxMs - seg.startTimeMinMs < 20 * 60 * 1000 && seg.timelapseRate) {
+			if (seg.startTimeMinMs !== undefined && seg.startTimeMaxMs !== undefined && seg.startTimeMaxMs - seg.startTimeMinMs < 20 * 60 * 1000 && seg.timeLapseRate) {
 				const segStartTimeAvgMs = seg.startTimeAvgMs;
 				const segEndTimeAvgMs = seg.endTimeAvgMs;
 				if (date.valueOf() >= segStartTimeAvgMs && date.valueOf() < segEndTimeAvgMs) {
@@ -239,7 +239,7 @@ export class Timeline {
 						foundOne = true;
 						console.log(`The following segments contain ${date}:`);
 					}
-					const videoTime = new Date((date.valueOf() - segStartTimeAvgMs) / seg.timelapseRate).toISOString().substring(11, 19);
+					const videoTime = new Date((date.valueOf() - segStartTimeAvgMs) / seg.timeLapseRate).toISOString().substring(11, 19);
 					console.log(`  ${seg.video} at ${videoTime}`);
 				}
 			}
@@ -271,7 +271,7 @@ export class Timeline {
 		unfixable.add("0:13.367 to 1:16.633 in The Final Experiment: The Final Day"); // MCToon walking through Punta Arenas, talking about police and having a flashback.
 		unfixable.add("The Globe Predicts 24-Hour Sun AND 24-Hour Moon in Antarctica!"); // Will speaking about the 24h Moon the 1st time after his prerecorded video.
 		unfixable.add("11:10.667 to 11:18.267 in THE FINAL EXPERIMENTS - South Celestial Pole"); // Dave’s star trail footage from Punta Arenas.
-		unfixable.add("16:40.16 to 16:50.08 in THE FINAL EXPERIMENTS - Sunrise & Sunset Direction"); // Will’s drone in the afernoon/evening filming monument, sunny.
+		unfixable.add("16:40.16 to 16:50.08 in THE FINAL EXPERIMENTS - Sunrise & Sunset Direction"); // Will’s drone in the afternoon/evening filming monument, sunny.
 		unfixable.add("16:56.08 to 17:04.4 in THE FINAL EXPERIMENTS - Sunrise & Sunset Direction"); // Will’s drone filming orange sculpture, overcast.
 
 		console.log("Remaining clips are:");
@@ -678,16 +678,16 @@ export class Timeline {
 				}
 
 				// Time-lapse badge
-				if (clip.timelapseRate !== 1) {
-					const timelapseText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-					timelapseText.setAttribute("x", `${x + 0.5}px`);
-					timelapseText.setAttribute("y", `${y + 0.8 * ROW_HEIGHT}pt`);
-					timelapseText.style.fontSize = `${0.5 * ROW_HEIGHT}pt`;
-					timelapseText.style.clipPath = `url(#clipPath${i})`;
-					timelapseText.style.pointerEvents = "none";
-					timelapseText.style.userSelect = "none";
-					timelapseText.textContent = "⌚";
-					this.#svg.appendChild(timelapseText);
+				if (clip.timeLapseRate !== 1) {
+					const timeLapseText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+					timeLapseText.setAttribute("x", `${x + 0.5}px`);
+					timeLapseText.setAttribute("y", `${y + 0.8 * ROW_HEIGHT}pt`);
+					timeLapseText.style.fontSize = `${0.5 * ROW_HEIGHT}pt`;
+					timeLapseText.style.clipPath = `url(#clipPath${i})`;
+					timeLapseText.style.pointerEvents = "none";
+					timeLapseText.style.userSelect = "none";
+					timeLapseText.textContent = "⌚";
+					this.#svg.appendChild(timeLapseText);
 				}
 			}
 		}
@@ -773,7 +773,7 @@ export class Timeline {
 				if (clip.hasDefinedStartTimes && clip.startTimeAvgMs <= this.#trackerMs && clip.endTimeAvgMs > this.#trackerMs) {
 					const start = clip.start + 0.3 / clip.video.fps;
 					const end = clip.start + clip.duration - 0.6 / clip.video.fps;
-					const position = Math.max(start, Math.min(end, clip.start + (this.#trackerMs - clip.startTimeAvgMs) / (1000 * (clip.timelapseRate || 1)) + 0.3 / clip.video.fps));
+					const position = Math.max(start, Math.min(end, clip.start + (this.#trackerMs - clip.startTimeAvgMs) / (1000 * (clip.timeLapseRate || 1)) + 0.3 / clip.video.fps));
 					newClips.set(clip, [start, end, position]);
 				}
 			}

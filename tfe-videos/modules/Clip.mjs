@@ -34,7 +34,7 @@ export class Clip {
 	/** Overrides the field of the same name in the {@link Video}. */
 	#owner;
 	/** Overrides the field of the same name in the {@link Video}. @type {number|undefined} */
-	#timelapseRate;
+	#timeLapseRate;
 	/** Add clips to this that are known to precede this one. @type {Clip[]} */
 	#precedingClips;
 	/** Add clips to this that are known to succeed this one. @type {Clip[]} */
@@ -51,10 +51,10 @@ export class Clip {
 	 * @param {number} start Start of the segment in the video in seconds.
 	 * @param {number} duration Duration of the segment in seconds.
 	 * @param {Camera|Person} cameraOrOwner The camera/device this was recorded on or the owner of the camera/device/channel if unknown.
-	 * @param {number} [timelapseRate] Sets the time-lapse rate for this clip, overriding the one from the {@link Video}.
+	 * @param {number} [timeLapseRate] Sets the time-lapse rate for this clip, overriding the one from the {@link Video}.
 	 */
-	constructor(video, start, duration, cameraOrOwner, timelapseRate) {
-		if (timelapseRate !== undefined && !(timelapseRate >= 1)) {
+	constructor(video, start, duration, cameraOrOwner, timeLapseRate) {
+		if (timeLapseRate !== undefined && !(timeLapseRate >= 1)) {
 			throw new Error("Time-lapse rate has to be greater than or equal 1 or undefined.");
 		}
 		this.#video              = video;
@@ -62,7 +62,7 @@ export class Clip {
 		this.#duration           = duration;
 		this.#camera             = cameraOrOwner instanceof Camera ? cameraOrOwner : undefined;
 		this.#owner              = cameraOrOwner instanceof Camera ? cameraOrOwner.owner : cameraOrOwner;
-		this.#timelapseRate      = timelapseRate ?? video.timelapseRate;
+		this.#timeLapseRate      = timeLapseRate ?? video.timeLapseRate;
 		this.#precedingClips     = [];
 		this.#succeedingClips    = [];
 		this.#timeInterval       = new TimeInterval();
@@ -142,24 +142,24 @@ export class Clip {
 	 * Gets the time-lapse rate of this clip if set.
 	 * @returns {number|undefined} The time-lapse rate of this clip.
 	 */
-	get timelapseRate() {
-		return this.#timelapseRate;
+	get timeLapseRate() {
+		return this.#timeLapseRate;
 	}
 	
 	/**
 	 * The time-lapse rate of this clip. Only valid if the time-lapse rate is unset.
 	 * @param {number} value The time-lapse rate. Must be >= 1.
 	 */
-	setTimelapseRate(value) {
-		if (this.#timelapseRate !== undefined) throw new Error("Time-lapse rate is already defined.");
+	setTimeLapseRate(value) {
+		if (this.#timeLapseRate !== undefined) throw new Error("Time-lapse rate is already defined.");
 		if (!(value >= 1)) throw new Error("Time-lapse rate must be >= 1.");
-		this.#timelapseRate = value;
+		this.#timeLapseRate = value;
 		this.#tryToApplyTimes();
 		return this;
 	}
 
 	#tryToApplyTimes() {
-		if (this.#timelapseRate !== undefined) {
+		if (this.#timeLapseRate !== undefined) {
 			// Apply video publish time to this clip.
 			this.applyPublishTime();
 			// Apply any anchor times.
@@ -172,7 +172,7 @@ export class Clip {
 	}
 
 	applyPublishTime() {
-		if ((this.#timelapseRate !== undefined || this.#autoDurationClip !== null) && this.#video.publishTime !== undefined) {
+		if ((this.#timeLapseRate !== undefined || this.#autoDurationClip !== null) && this.#video.publishTime !== undefined) {
 			this.lowerStartTimeMaxMs(this.#video.publishTime.valueOf() - (this.#autoDurationClip === null ? this.getRealTimeDurationMs(false) : 0), `the video was uploaded ${DATE_FORMAT_UGC_DETAILED.format(this.#video.publishTime)}`);
 		}
 	}
@@ -182,8 +182,8 @@ export class Clip {
 	 * @param {AnchorTime} anchorTime The anchor time within this video.
 	 */
 	applyAnchorTime(anchorTime) {
-		if (this.start <= anchorTime.videoTime && this.start + this.duration > anchorTime.videoTime && this.#timelapseRate !== undefined) {
-			const clipStart = anchorTime.realTime.valueOf() - (anchorTime.videoTime - this.start) * 1000 * this.#timelapseRate;
+		if (this.start <= anchorTime.videoTime && this.start + this.duration > anchorTime.videoTime && this.#timeLapseRate !== undefined) {
+			const clipStart = anchorTime.realTime.valueOf() - (anchorTime.videoTime - this.start) * 1000 * this.#timeLapseRate;
 			this.raiseStartTimeMinMs(clipStart + anchorTime.timeSource.lowerToleranceMs, `at ${Video.formatVideoTime(anchorTime.videoTime)} in its video we get ${anchorTime}`);
 			this.lowerStartTimeMaxMs(clipStart + anchorTime.timeSource.upperToleranceMs, `at ${Video.formatVideoTime(anchorTime.videoTime)} in its video we get ${anchorTime}`);
 		}
@@ -249,14 +249,14 @@ export class Clip {
 	 * @returns The real time duration of this clip in milliseconds.
 	 */
 	getRealTimeDurationMs(autoDuration) {
-		if (!this.#timelapseRate) {
+		if (!this.#timeLapseRate) {
 			throw new Error("Time-lapse rate has not yet been determined.");
 		}
 		let durationLimitMs = +Infinity;
 		if (autoDuration && this.#autoDurationClip?.hasDefinedStartTimes && this.hasDefinedStartTimes) {
 			durationLimitMs = this.#autoDurationClip.startTimeAvgMs - this.startTimeAvgMs;
 		}
-		return Math.min(1000 * this.duration * this.#timelapseRate, durationLimitMs);
+		return Math.min(1000 * this.duration * this.#timeLapseRate, durationLimitMs);
 	}
 
 	/** @returns Whether this clip has finite lower and upper bounds for its start time. */
@@ -341,7 +341,7 @@ export class Clip {
 	 */
 	raiseStartTimeMinMs(timeMs, source) {
 		const ourSource = `the clip cannot start earlier than ${DATE_FORMAT_UGC_DETAILED.format(timeMs)}, because ${source}`;
-		if (this.#timeInterval.raiseLower(timeMs, ourSource) && this.#timelapseRate !== undefined) {
+		if (this.#timeInterval.raiseLower(timeMs, ourSource) && this.#timeLapseRate !== undefined) {
 			const earliestMs = this.#timeInterval.lowerTimeMs + this.getRealTimeDurationMs(false);			
 			const theirSource = `a preceding clip from "${this.video}" runs to that point, because ${source}`;
 			for (const clip of this.#succeedingClips) {

@@ -23,7 +23,7 @@ export class Video {
 	/** Date and time this video was published on. Gives the program an upper bound for when this was shot. @type {Date|undefined} */
 	#publishTime;
 	/** Time-lapse rate (defaulting to 1) for this video. Set to `undefined` to automatically calculate from two sync points into a video playing at normal rate. @type {number|undefined} */
-	#timelapseRate;
+	#timeLapseRate;
 	/** The camera this video was shot on. If this is an edited video with segments from multiple cameras, leave it as `undefined` and set the camera for each segment instead. */
 	#camera
 	/** The owner of the camera(s) used for this video. */
@@ -51,7 +51,7 @@ export class Video {
 		this.#title              = title;
 		this.#duration           = duration;
 		this.#fps                = fps;
-		this.#timelapseRate      = 1;
+		this.#timeLapseRate      = 1;
 		this.#camera             = cameraOrOwner instanceof Camera ? cameraOrOwner : undefined;
 		this.#owner              = cameraOrOwner instanceof Camera ? cameraOrOwner.owner : cameraOrOwner;
 		this.#anchorTimes        = [];
@@ -111,9 +111,9 @@ export class Video {
 	 * rate is to be determined automatically from two sync times with another video that plays at normal speed.
 	 * @param {(number|undefined)} value The speedup factor of this video compared to real time playback.
 	 */
-	setTimelapseRate(value) {
+	setTimeLapseRate(value) {
 		if (value !== undefined && !(value >= 1)) throw new Error("Time-lapse rate has to be greater than or equal 1 or undefined.");
-		this.#timelapseRate = value;
+		this.#timeLapseRate = value;
 		return this;
 	}
 
@@ -121,8 +121,8 @@ export class Video {
 	 * @returns The time-lapse rate for this entire video. Can be overridden by segments. An `undefined` value means that the
 	 * rate is to be determined automatically from two sync times with another video that plays at normal speed.
 	 */
-	get timelapseRate() {
-		return this.#timelapseRate;
+	get timeLapseRate() {
+		return this.#timeLapseRate;
 	}
 
 	/** @returns The camera this video was recorded on, if a single camera was used, `undefined` otherwise. */
@@ -313,8 +313,8 @@ export class Video {
 		const seconds = this.parseVideoTime(videoTime);
 		for (const seg of this.#clips) {
 			if (seg.start <= seconds && seg.start + seg.duration > seconds) {
-				if (seg.timelapseRate === undefined) throw new Error("Time-lapse rate is missing.");
-				return new Date(seg.startTimeAvgMs + (seconds - seg.start) * 1000 * seg.timelapseRate);
+				if (seg.timeLapseRate === undefined) throw new Error("Time-lapse rate is missing.");
+				return new Date(seg.startTimeAvgMs + (seconds - seg.start) * 1000 * seg.timeLapseRate);
 			}
 		}
 		throw new Error("Video time is not found in any segment");
