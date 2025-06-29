@@ -43,7 +43,7 @@ const ts = {
 };
 
 /** List of the people having participated in TFE. */
-const peeps = {
+export const peeps = {
 	/** Austin Whitsitt */
 	austin   : new Person("Austin Whitsitt"  , "Witsit Gets It", "#FF7B0F", "https://scontent-ham3-1.cdninstagram.com/v/t51.2885-19/459065008_841785001478610_1172127654038584329_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_ht=scontent-ham3-1.cdninstagram.com&_nc_cat=106&_nc_ohc=7-y942EQ5wwQ7kNvgEo_H5m&_nc_gid=34935ae5f4b14fd9a61e71d8f7ecd065&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AYCQImuV3kALvgzd5uQPOO0Fb_KBFKgrh9exLX8b7NbrGw&oe=678C876B&_nc_sid=8b3546"),
 	/** Critical Think */
@@ -71,7 +71,7 @@ const cams = {
  	/** Austin’s action cam. */
 	austinAction   : new Camera(peeps.austin  , true , "GoPro HERO13"),
 	/** Critical Think’s action cam. */
-	criticalAction : new Camera(peeps.ct      , true , "Austek AT-M40(R/TRW)"),
+	criticalAction : new Camera(peeps.ct      , false, "Austek AT-M40(R/TRW)"),
 	/** Critical Think’s phone. */
 	criticalPhone  : new Camera(peeps.ct      , true , "Samsung Galaxy S24 Ultra"),
 	/** Critical Think’s laptop. */

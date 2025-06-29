@@ -20,6 +20,8 @@ const ROW_HEIGHT = 15;
 export const DATE_FORMAT_UGC_TOOLTIP = new Intl.DateTimeFormat("en-US", { timeZone: "Etc/GMT+3", dateStyle: "short", timeStyle: "medium" });
 /** Formats a {@link Date} in the Union Glacier time zone for a detailed reading down to the millisecond. */
 export const DATE_FORMAT_UGC_DETAILED = new Intl.DateTimeFormat("en-US", { timeZone: "Etc/GMT+3", month: "short", day: "numeric", hour: "numeric", minute: "2-digit", second: "2-digit", fractionalSecondDigits: 3 });
+/** Formats a {@link Date} in the Union Glacier time zone for a timecode reading. */
+export const DATE_FORMAT_UGC_TIMECODE = new Intl.DateTimeFormat("en-US", { timeZone: "Etc/GMT+3", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", fractionalSecondDigits: 3 });
 
 /**
  * The timeline is what all {@link Video} {@link Clip}s are placed on.
@@ -40,7 +42,7 @@ export class Timeline {
 	/** Interesting events that happened during the trip. @type {TimelineEvent[]} */
 	#events;
 	/** Current zoom level of for the timeline. */
-	#zoom;
+	#zoomLevel;
 	/** @type {number} */
 	#minTimeMs;
 	/** @type {number} */
@@ -61,13 +63,15 @@ export class Timeline {
 	#clipPlayers;
 	/** The currently selected clip. @type {Clip|null} */
 	#selectedClip;
+	/** Callback to use when the playhead moved to a new timecode. */
+	onTimecodeUpdate;
 
 	constructor() {
 		this.#videos     	  = [];
 		this.#clips      	  = [];
 		this.#syncPoints 	  = [];
 		this.#events     	  = [];
-		this.#zoom       	  = NaN;
+		this.#zoomLevel       = NaN;
 		this.#minTimeMs  	  = +Infinity;
 		this.#maxTimeMs  	  = -Infinity;
 		this.#rowsNeeded 	  = 0;
@@ -265,6 +269,9 @@ export class Timeline {
 			}
 		}
 
+		// Sort clips by avg start time
+		this.#clips.sort((a, b) => a.hasDefinedStartTimes && b.hasDefinedStartTimes ? a.startTimeAvgMs - b.startTimeAvgMs : a.hasDefinedStartTimes ? -Infinity : b.hasDefinedStartTimes ? +Infinity : NaN);
+
 		/** @type Set<string> */
 		const unfixable = new Set();
 		unfixable.add("0:41.067 to 1:33.221 in tHere flafter mee ,a hhhomage tu meye bestee"); // MCFlatty drawing a passport (likely in the dining tent).
@@ -396,9 +403,9 @@ export class Timeline {
 
 	updateZoom() {
 		if (this.#svg.parentElement) {
-			const newZoom = Math.min(this.#zoom, (this.#maxTimeMs - this.#minTimeMs) / this.#svg.parentElement.clientWidth);
-			if (this.#zoom != newZoom) {
-				this.#zoom = newZoom;
+			const newZoomLevel = Math.min(this.#zoomLevel, (this.#maxTimeMs - this.#minTimeMs) / this.#svg.parentElement.clientWidth);
+			if (this.#zoomLevel != newZoomLevel) {
+				this.#zoomLevel = newZoomLevel;
 				const oldSvg = this.#svg;
 				this.produceSvg(this.#svg.parentElement, true);
 				oldSvg.parentElement?.replaceChild(this.#svg, oldSvg);
@@ -417,22 +424,14 @@ export class Timeline {
 			throw new Error("Before rendering the timeline, the start and end date need to be determined.");
 		}
 		
-		if (Number.isNaN(this.#zoom)) {
-			this.#zoom = (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth * 0.25;
+		if (Number.isNaN(this.#zoomLevel)) {
+			this.#zoomLevel = (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth * 0.25;
 		}
 		this.#svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		this.#svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 		this.#svg.setAttribute("style", "background-color:#333333");
 		this.#svg.onwheel = (event) => {
-			const scrollTimeMs = parent.scrollLeft * this.#zoom + this.#minTimeMs;
-			const mouseTimeMs = event.offsetX * this.#zoom + this.#minTimeMs;
-			let scrollDelta = (mouseTimeMs - scrollTimeMs) / this.#zoom;
-			const oldSvg = this.#svg;
-			this.#zoom = Math.min(Math.max(this.#zoom * Math.pow(1.003, event.deltaY), 500), (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth);
-			scrollDelta *= this.#zoom;
-			this.produceSvg(parent, true);
-			parent.replaceChild(this.#svg, oldSvg);
-			parent.scrollLeft = ((mouseTimeMs - scrollDelta) - this.#minTimeMs) / this.#zoom;
+			this.zoom(event.offsetX, event.deltaY);
 			return false;
 		};
 		this.#svg.onclick = () => {
@@ -448,7 +447,7 @@ export class Timeline {
 		trackBar.onmousemove = (event) => {
 			trackBarTitle.innerHTML = "Jump to " + DATE_FORMAT_UGC_DETAILED.format(new Date(this.#XToMs(event.offsetX)));
 		}
-		trackBar.setAttribute("width", `${(this.#maxTimeMs - this.#minTimeMs) / this.#zoom}px`);
+		trackBar.setAttribute("width", `${(this.#maxTimeMs - this.#minTimeMs) / this.#zoomLevel}px`);
 		trackBar.setAttribute("height", "16pt");
 		trackBar.style.fill = "#4A4A4A";
 		this.#svg.appendChild(trackBar);
@@ -459,7 +458,7 @@ export class Timeline {
 		const numDayMarkers = Math.floor((this.#maxTimeMs + offsetMs) / MS_PER_DAY) - Math.ceil((this.#minTimeMs + offsetMs) / MS_PER_DAY) + 1;
 		for (let i = 0; i < numDayMarkers; i++) {
 			const dayMs = firstDayMarkerMs + i * MS_PER_DAY;
-			const x = (dayMs - this.#minTimeMs) / this.#zoom;
+			const x = (dayMs - this.#minTimeMs) / this.#zoomLevel;
 			const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 			line.setAttribute("x1", `${x}px`);
 			line.setAttribute("x2", `${x}px`);
@@ -481,7 +480,7 @@ export class Timeline {
 
 		// Events
 		for (const event of this.#events) {
-			const x = (event.date.valueOf() - this.#minTimeMs) / this.#zoom;
+			const x = (event.date.valueOf() - this.#minTimeMs) / this.#zoomLevel;
 			const a = document.createElementNS("http://www.w3.org/2000/svg", "a");
 			const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
 			title.innerHTML = event.name + "\n" + DATE_FORMAT_UGC_TOOLTIP.format(event.date);
@@ -513,11 +512,11 @@ export class Timeline {
 				const capA = document.createElementNS("http://www.w3.org/2000/svg", "line");
 				const capB = document.createElementNS("http://www.w3.org/2000/svg", "line");
 				const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-				const x1 = (clip.startTimeMinMs - this.#minTimeMs) / this.#zoom;
+				const x1 = (clip.startTimeMinMs - this.#minTimeMs) / this.#zoomLevel;
 				capA.setAttribute("x1", `${x1}px`);
 				capA.setAttribute("x2", `${x1}px`);
 				line.setAttribute("x1", `${x1}px`);
-				const x2 = (clip.startTimeMaxMs + clip.getRealTimeDurationMs(true) - this.#minTimeMs) / this.#zoom;
+				const x2 = (clip.startTimeMaxMs + clip.getRealTimeDurationMs(true) - this.#minTimeMs) / this.#zoomLevel;
 				capB.setAttribute("x1", `${x2}px`);
 				capB.setAttribute("x2", `${x2}px`);
 				line.setAttribute("x2", `${x2}px`);
@@ -577,7 +576,7 @@ export class Timeline {
 				const parent = this.#svg.parentElement;
 				if (parent) {
 					const delta = event.screenX - this.#trackerDragStartX;
-					this.trackerMs = this.#trackerDragStartMs + delta * this.#zoom;
+					this.trackerMs = this.#trackerDragStartMs + delta * this.#zoomLevel;
 				}
 			}
 		});
@@ -603,7 +602,7 @@ export class Timeline {
 		this.#svg.appendChild(this.#tracker);
 		this.#updateTracker(zooming);
 
-		this.#svg.setAttribute("width", `${(this.#maxTimeMs - this.#minTimeMs) / this.#zoom}px`);
+		this.#svg.setAttribute("width", `${(this.#maxTimeMs - this.#minTimeMs) / this.#zoomLevel}px`);
 		this.#svg.setAttribute("height", `${ROW_HEIGHT * (3 + this.#rowsNeeded) + 0.05}pt`);
 		return this.#svg;
 	}
@@ -624,8 +623,8 @@ export class Timeline {
 			const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
 			title.innerHTML = clip.tooltip;
 			rect.appendChild(title);
-			const width = clip.getRealTimeDurationMs(true) / this.#zoom;
-			const x = (clip.startTimeAvgMs - this.#minTimeMs) / this.#zoom;
+			const width = clip.getRealTimeDurationMs(true) / this.#zoomLevel;
+			const x = (clip.startTimeAvgMs - this.#minTimeMs) / this.#zoomLevel;
 			const y = ROW_HEIGHT * (3 + clip.timelineRow);
 			rect.setAttribute("x", `${x}px`);
 			rect.setAttribute("y", `${y}pt`);
@@ -654,7 +653,7 @@ export class Timeline {
 				// LIVE badge
 				if (clip.video.isLive) {
 					const liveRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-					const x = (clip.startTimeAvgMs - this.#minTimeMs) / this.#zoom + 2;
+					const x = (clip.startTimeAvgMs - this.#minTimeMs) / this.#zoomLevel + 2;
 					const y = ROW_HEIGHT * (3.39 + clip.timelineRow);
 					liveRect.setAttribute("x", `${x}px`);
 					liveRect.setAttribute("y", `${y}pt`);
@@ -718,7 +717,7 @@ export class Timeline {
 	 * @returns The date in milliseconds since 1970.
 	 */
 	#XToMs(x) {
-		return x * this.#zoom + this.#minTimeMs;
+		return x * this.#zoomLevel + this.#minTimeMs;
 	}
 
 	/**
@@ -727,12 +726,32 @@ export class Timeline {
 	 * @returns The X-coordinate of that time on the timeline in pixels.
 	 */
 	#msToX(ms) {
-		return (ms - this.#minTimeMs) / this.#zoom;
+		return (ms - this.#minTimeMs) / this.#zoomLevel;
 	}
 
 	/** @returns The zoom level. */
-	get zoom() {
-		return this.#zoom;
+	get zoomLevel() {
+		return this.#zoomLevel;
+	}
+
+	/**
+	 * Zooms into or out of the timeline.
+	 * @param {number} centerX X-position on the timeline that stays in place while zooming.
+	 * @param {number} delta Zoom "delta", which is 108 for scrolling with the mouse.
+	 */
+	zoom(centerX, delta) {
+		const parent = this.#svg.parentElement;
+		if (parent) {
+			const scrollTimeMs = parent.scrollLeft * this.#zoomLevel + this.#minTimeMs;
+			const mouseTimeMs = centerX * this.#zoomLevel + this.#minTimeMs;
+			let scrollDelta = (mouseTimeMs - scrollTimeMs) / this.#zoomLevel;
+			const oldSvg = this.#svg;
+			this.#zoomLevel = Math.min(Math.max(this.#zoomLevel * Math.pow(1.003, delta), 500), (this.#maxTimeMs - this.#minTimeMs) / parent.clientWidth);
+			scrollDelta *= this.#zoomLevel;
+			this.produceSvg(parent, true);
+			parent.replaceChild(this.#svg, oldSvg);
+			parent.scrollLeft = ((mouseTimeMs - scrollDelta) - this.#minTimeMs) / this.#zoomLevel;
+		}
 	}
 
 	/** @returns The start time & date of this timeline in milliseconds.  */
@@ -757,6 +776,35 @@ export class Timeline {
 	set trackerMs(ms) {
 		this.#trackerMs = Math.min(Math.max(ms, this.#minTimeMs), this.#maxTimeMs);
 		this.#updateTracker(false);
+		this.onTimecodeUpdate && this.onTimecodeUpdate();
+	}
+
+	/**
+	 * Returns the first clip strictly before a point in time that matches a filter.
+	 * @param {number} timeMs A Unix time on the timeline in milliseconds.
+	 * @param {*} filter A filter function that accepts clips.
+	 * @returns A clip if found or `undefined`.
+	 */
+	getFirstClipBefore(timeMs, filter) {
+		for (let i = this.#clips.length - 1; i >= 0; i--) {
+			if (this.#clips[i].hasDefinedStartTimes && this.#clips[i].startTimeAvgMs < timeMs && filter(this.#clips[i])) {
+				return this.#clips[i];
+			}
+		}
+	}
+
+	/**
+	 * Returns the first clip strictly after a point in time that matches a filter.
+	 * @param {number} timeMs A Unix time on the timeline in milliseconds.
+	 * @param {*} filter A filter function that accepts clips.
+	 * @returns A clip if found or `undefined`.
+	 */
+	getFirstClipAfter(timeMs, filter) {
+		for (let i = 0; i < this.#clips.length; i++) {
+			if (this.#clips[i].hasDefinedStartTimes && this.#clips[i].startTimeAvgMs > timeMs && filter(this.#clips[i])) {
+				return this.#clips[i];
+			}
+		}
 	}
 
 	/**

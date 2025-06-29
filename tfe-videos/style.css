@@ -101,8 +101,18 @@ tr:nth-child(even) th {
 
 .hori-flex {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: baseline;
+	gap: 3px;
+	padding: 3px;
+	white-space-collapse: collapse;
 	white-space: nowrap;
+}
+
+.hori-flex > div {
+	display: flex;
+	align-items: baseline;
+	gap: 3px;
 }
 
 #video-previews {
@@ -127,4 +137,18 @@ button {
 	color: initial;
 	background-color: silver;
 	border-radius: 4px;
+}
+
+button:disabled {
+	color: gray;
+}
+
+select, input, option {
+	color: #80bfdd;
+	background-color: #292929;
+	border-color: #80bfdd;
+}
+
+select option {
+	background-color: unset;
 }
