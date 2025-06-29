@@ -458,7 +458,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 			(success) => {
 				this.#messageHandler = (message) => {
 					const ps = message.info.playerState;
-					if (message.event == "infoDelivery" && message.info.progressState?.allowSeeking && (ps == 2 || ps == 3)) {
+					if (message.event == "infoDelivery" && message.info.progressState?.allowSeeking && (ps == 2 || ps == 3 || ps === undefined)) {
 						success(true);
 					}
 				};
@@ -503,7 +503,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 
 	/** @inheritdoc @type {EmbeddedVideoPlayer['seekTo']} */
 	seekTo(position) {
-		const clippedPosition = Math.max(Math.min(position, this.#seekableEnd, this.end), this.start);
+		const clippedPosition = Math.max(Math.min(position, this.#seekableEnd ?? +Infinity, this.end), this.start);
 		super.seekTo(clippedPosition);
 		if (this.hasTrackingConsent) {
 			this.courseOfActions(1, [
@@ -530,7 +530,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 		const delta = this.#currentTime === undefined ? Infinity : Math.abs(this.#currentTime - this.position);
 		// The player doesn't stop showing "buffering" when seeking within 5 ms of the current position so we will accept this "inaccuracy".
 		if (delta >= 0.0051) {
-			this.#postMessage({ event: "command", func: "seekTo", args: [ this.position, true ] });
+			this.#postMessage({ event: "command", func: "seekTo", args: [ this.#seekableEnd === undefined ? 0 : this.position, true ] });
 		}
 		else {
 			super.seekTo(this.#currentTime);
