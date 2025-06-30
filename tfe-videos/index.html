@@ -7,31 +7,8 @@
   <title>TFE Video Times</title>
   <link rel="stylesheet" href="style.css">
   <script defer type="module">
-    import {
-      closePopupWindow,
-      showClipInfo,
-      openClipLink,
-      validateTimecode,
-      jumpToTimecode,
-      checkJumpInterval,
-      jumpBack, jumpFwd,
-      checkClipCategory,
-      jumpToPrevClip, jumpToNextClip,
-      zoomIn, zoomOut,
-    } from "./video-times.js";
-    window.closePopupWindow = closePopupWindow;
-    window.showClipInfo = showClipInfo;
-    window.openClipLink = openClipLink;
-    window.validateTimecode = validateTimecode;
-    window.jumpToTimecode = jumpToTimecode;
-    window.checkJumpInterval = checkJumpInterval;
-    window.jumpBack = jumpBack;
-    window.jumpFwd = jumpFwd;
-    window.checkClipCategory = checkClipCategory;
-    window.jumpToPrevClip = jumpToPrevClip;
-    window.jumpToNextClip = jumpToNextClip;
-    window.zoomIn = zoomIn;
-    window.zoomOut = zoomOut;
+    import { Glue } from "./video-times.js";
+    window.glue = Glue;
   </script>
 </head>
 
@@ -42,13 +19,13 @@
   <div class="hori-flex">
     <div>
       <label for="timecode">Timecode: </label>
-      <input type="text" id="timecode" autocorrect="off" inputmode="full-width-latin" size="20" onchange="validateTimecode()"/>
-      <button id="timecodeGo" onclick="jumpToTimecode()" title="Jump to timecode">Go</button>
+      <input type="text" id="timecode" autocorrect="off" inputmode="full-width-latin" size="20" onchange="glue.validateTimecode()"/>
+      <button id="timecodeGo" onclick="glue.jumpToTimecode()" title="Jump to timecode">Go</button>
       ｜
     </div>
     <div>
       <label for="jumpInterval">Jump by: </label>
-      <select id="jumpInterval" onchange="checkJumpInterval();">
+      <select id="jumpInterval" onchange="glue.checkJumpInterval();">
         <option value="86400">24 hours</option>
         <option value="43200">12 hours</option>
         <option value="21600">6 hours</option>
@@ -59,12 +36,12 @@
         <option value="60">1 minute</option>
         <option value="5">5 seconds</option>
       </select>
-      <button id="jumpBack" onclick="jumpBack()" title="Jump backwards">⯬</button>
-      <button id="jumpFwd" onclick="jumpFwd()" title="Jump forwards">⯮</button>
+      <button id="jumpBack" onclick="glue.jumpBack()" title="Jump backwards">⯬</button>
+      <button id="jumpFwd" onclick="glue.jumpFwd()" title="Jump forwards">⯮</button>
     </div>
     <div>
       <label for="clipCategory"> or jump to </label>
-      <select id="clipCategory" onchange="checkClipCategory();">
+      <select id="clipCategory" onchange="glue.checkClipCategory();">
         <option value="all">any clip</option>
         <option value="personal">personal clips</option>
         <option value="live">live clips</option>
@@ -72,23 +49,23 @@
         <option value="timelapse">timelapses</option>
       </select>
       <label for="cameraOwner"> by </label>
-      <select id="cameraOwner" onchange="checkClipCategory();">
+      <select id="cameraOwner" onchange="glue.checkClipCategory();">
         <option value="anyone">anyone</option>
       </select>
-      <button id="prevClipBtn" onclick="jumpToPrevClip()" title="Previous clip">⏮</button>
-      <button id="nextClipBtn" onclick="jumpToNextClip()" title="Next clip">⏭</button>
+      <button id="prevClipBtn" onclick="glue.jumpToPrevClip()" title="Previous clip">⏮</button>
+      <button id="nextClipBtn" onclick="glue.jumpToNextClip()" title="Next clip">⏭</button>
       ｜
     </div>
     <div style="flex-grow: 1; align-items: flex-end;">
-      <button onclick="zoomIn()" title="Zoom in">➕🔍</button>
-      <button onclick="zoomOut()" title="Zoom out">➖🔍</button>
+      <button onclick="glue.zoomIn()" title="Zoom in">➕🔍</button>
+      <button onclick="glue.zoomOut()" title="Zoom out">➖🔍</button>
     </div>
   </div>
   <div class="hori-flex">
     <div>Selected clip:&nbsp;</div>
     <div id="clip-name" style="flex-grow: 1; text-overflow: ellipsis; overflow: hidden" width="100%">-</div>
-    <!--<button onclick="showClipInfo()">🎞️ Info</button>-->
-    <button onclick="openClipLink()">🔗 Open</button>
+    <!--<button onclick="glue.showClipInfo()">🎞️ Info</button>-->
+    <button onclick="glue.openClipLink()">🔗 Open</button>
   </div>
   <div id="video-previews"></div>
   <br/>
@@ -98,7 +75,7 @@
     <li>Videos, especially long recordings, are subject to <a href="https://protyposis.net/files/mmm2015-timedrift-cameraready.pdf" target="_blank">clock drift</a>, causing audio and video to go out of sync.</li>
   </ul>
 	
-  <div id="popup-background" onclick="closePopupWindow()">
+  <div id="popup-background" onclick="glue.closePopupWindow()">
     <div id="popup-window" onclick="event.stopPropagation()">
       <div id="popup-caption">
         <div id="popup-title">Clip properties</div>
