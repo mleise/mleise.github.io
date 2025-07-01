@@ -545,6 +545,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 
 	/** @inheritdoc @type {EmbeddedIframePlayer['handleMessage']} */
 	handleMessage(message) {
+		console.log(message);
 		message = JSON.parse(message);
 		if (message.channel == "widget" && message.id == this.#serial) {
 			switch (message.event) {
