@@ -193,6 +193,10 @@ export class EmbeddedVideoPlayer {
 		}
 	}
 
+	get busy() {
+		return this.#coas.length != 0;
+	}
+
 	/**
 	 * Processes the next action within the current sequence. May recurse if the action’s success callback fires synchronously.
 	 */
@@ -353,6 +357,10 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 	/** @type {function|null} */
 	#messageHandler = null;
 	#playerState = -1;
+	/** Whether we are currently in an ad break. */
+	#isPlayingAd = false;
+	/** @type {function|null} */
+	onPlayingAd = null;
 
 	/**
 	 * @param {number} start Minimum video time that the player should be limited to.
@@ -437,7 +445,6 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 		return [
 			// Seek into position, which starts playback
 			()        => {
-				this.player.style.pointerEvents = "";
 				this.#seekToInternal();
 			},
 			(success) => {
@@ -469,6 +476,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 				this.#messageHandler = (message) => {
 					if (message.info.currentTime == this.position) {
 						this.#messageHandler = null;
+						this.player.style.pointerEvents = "";
 						success(true);
 					}
 				};
@@ -497,6 +505,7 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 					};
 				},
 			]);
+			this.#togglePlayingAd(false);
 		}
 		super.hide();
 	}
@@ -545,14 +554,16 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 
 	/** @inheritdoc @type {EmbeddedIframePlayer['handleMessage']} */
 	handleMessage(message) {
-		console.log(message);
 		message = JSON.parse(message);
 		if (message.channel == "widget" && message.id == this.#serial) {
 			switch (message.event) {
 				case "infoDelivery": // All regular updates like player state playback time, volume changes etc.
-					if (message.info.progressState?.seekableEnd) {
-						// If we seek past 110 ms short of the seekable end of the video, YouTube will just stop the video and not show anything.
-						this.#seekableEnd = message.info.progressState.seekableEnd - 0.110;
+					if (message.info.progressState !== undefined) {
+						this.#togglePlayingAd(message.info.progressState.allowSeeking === false);
+						if (message.info.progressState.allowSeeking === true && message.info.progressState.seekableEnd) {
+							// If we seek past 110 ms short of the seekable end of the video, YouTube will just stop the video and not show anything.
+							this.#seekableEnd = message.info.progressState.seekableEnd - 0.110;
+						}
 					}
 					if (message.info.playerState !== undefined) {
 						this.#playerState = message.info.playerState;
@@ -605,7 +616,9 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 					}
 					break;
 			}
-			this.#messageHandler && this.#messageHandler(message);
+			if (!this.isPlayingAd) {
+				this.#messageHandler && this.#messageHandler(message);
+			}
 		}
 	}
 
@@ -614,6 +627,33 @@ export class EmbeddedYouTubePlayer extends EmbeddedIframePlayer {
 		this.#intervalId = window.setInterval(() => {
 			this.#postMessage({ event: "listening", id: this.#serial });
 		}, 500);
+	}
+
+	/**
+	 * Toggles the ad status on and off and calls the callback `onPlayingAd()` with the `value`.
+	 * @param {boolean} value `true` if playing an ad.
+	 */
+	#togglePlayingAd(value) {
+		if (this.#isPlayingAd !== value) {
+			this.#isPlayingAd = value;
+			if (value) {
+				// Allow mouse interaction to skip ad.
+				this.player.style.pointerEvents = "";
+				this.#postMessage({ event: "command", func: "mute" });
+			}
+			else if (this.busy) {
+				this.player.style.pointerEvents = "none";
+			}
+			else {
+				this.#postMessage({ event: "command", func: "unMute" });
+			}
+			this.onPlayingAd && this.onPlayingAd(value);
+		}
+	}
+
+	/** @returns Whether this player is currently showing an ad. */
+	get isPlayingAd() {
+		return this.#isPlayingAd;
 	}
 }
 
