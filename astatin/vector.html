@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Drawing</title>
+    <script type="text/javascript" src="vector.js"></script>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td>
+          <canvas id="drawing" style="float: left"></canvas>
+        </td>
+        <td style="vertical-align: top">
+          <div id="output" style="float: left; word-break: break-all"></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div>
+            <b>Controls:</b><br>
+            PgUp/PgDown = select next/previous vertex<br>
+            Click = select vertex under cursor<br>
+            Ins = Insert vertex after selected one<br>
+            Del = Delete selected vertex<br>
+            Left/Right = Rotate vertex direction<br>
+            Up/Down = Move drawing (when vertex 0 is selected) or increase/decrease line length<br>
+            Space = Turn line invisible
+          </div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
